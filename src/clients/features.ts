@@ -1,4 +1,4 @@
-import {Initial, Register} from 'screens';
+import {Initial, Register, Login, Onboarding} from 'screens';
 
 const features: FeatureGroup = {
   Initial: {
@@ -13,6 +13,19 @@ const features: FeatureGroup = {
       facebook: true,
       apple: false,
     },
+  },
+  Login: {
+    enabled: true,
+    component: Login,
+    enabledMethod: {
+      google: true,
+      facebook: true,
+      apple: false,
+    },
+  },
+  Onboarding: {
+    enabled: true,
+    component: Onboarding,
   },
 };
 

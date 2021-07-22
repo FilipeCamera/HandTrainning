@@ -40,6 +40,7 @@ const Initial = ({navigation}: any) => {
           weight={500}
           size={16}
           color="#090A0A"
+          onPress={() => navigation.navigate('Login')}
         />
       </Scroll>
     </Background>

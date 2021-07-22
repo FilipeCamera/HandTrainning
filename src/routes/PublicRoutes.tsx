@@ -4,7 +4,7 @@ import features from '../clients';
 
 import {createStackNavigator} from '@react-navigation/stack';
 
-const publicFeatures = ['Initial', 'Register'];
+const publicFeatures = ['Initial', 'Register', 'Login', 'Onboarding'];
 
 const routes = Object.keys(features).map((feature: keyof FeatureGroup) => {
   if (publicFeatures.includes(feature) && !!features[feature].enabled) {

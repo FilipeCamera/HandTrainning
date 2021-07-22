@@ -15,22 +15,29 @@ import Line from 'assets/svg/Line.svg';
 
 import {Container} from './styles';
 
-const Register = ({navigation}: any) => {
+const Login = ({navigation}: any) => {
   return (
     <Container>
       <Scroll>
         <SimpleHeader
           back
-          title="Cadastrar"
+          title="Efetuar login"
           onBack={() => navigation.goBack()}
           marginBottom={16}
         />
         <Input placeholder="E-mail" />
         <Input placeholder="Senha" />
-        <Input placeholder="Confirmar senha" />
+        <View style={{width: '95%', alignItems: 'flex-start'}}>
+          <ButtonText
+            title="Esqueceu a senha?"
+            weight={600}
+            size={13}
+            color="#FF6859"
+          />
+        </View>
         <Space marginVertical={20} />
         <ButtonRed
-          title="Cadastrar"
+          title="Acessar"
           background="#FF6859"
           size={15}
           color="#fff"
@@ -40,18 +47,18 @@ const Register = ({navigation}: any) => {
         <Space marginVertical={12} />
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <Text
-            title="Já possui uma conta?"
+            title="Não possui uma conta?"
             size={15}
             weight={400}
             color="#4C5673"
           />
           <Space marginHorizontal={2} />
           <ButtonText
-            title="Faça o login"
+            title="Cadastre-se"
             size={15}
             weight={600}
             color="#FF6859"
-            onPress={() => navigation.navigate('Login')}
+            onPress={() => navigation.navigate('Register')}
           />
         </View>
         <Space marginVertical={24} />
@@ -69,7 +76,7 @@ const Register = ({navigation}: any) => {
         <Space marginVertical={16} />
         <Button
           google
-          title="sign up with Google"
+          title="sign in with Google"
           border
           color="#090A0A"
           weight={500}
@@ -78,7 +85,7 @@ const Register = ({navigation}: any) => {
         />
         <Button
           apple
-          title="sign up with Apple"
+          title="sign in with Apple"
           border
           color="#090A0A"
           weight={500}
@@ -87,7 +94,7 @@ const Register = ({navigation}: any) => {
         />
         <Button
           facebook
-          title="sign up with Facebook"
+          title="sign in with Facebook"
           border
           color="#090A0A"
           weight={500}
@@ -99,4 +106,4 @@ const Register = ({navigation}: any) => {
   );
 };
 
-export default Register;
+export default Login;
