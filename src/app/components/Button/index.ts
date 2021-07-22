@@ -1,3 +1,5 @@
 import Button from './Button';
+import ButtonRed from './ButtonRed';
+import ButtonText from './ButtonText';
 
-export default Button;
+export {Button, ButtonRed, ButtonText};

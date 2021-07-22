@@ -4,12 +4,12 @@ import {Background} from './styles';
 
 import {Dimensions} from 'react-native';
 
-import LogoText from '../../../assets/svg/LogoText.svg';
-import Runner from '../../../assets/svg/Runner.svg';
+import LogoText from 'assets/svg/LogoText.svg';
+import Runner from 'assets/svg/Runner.svg';
 import {Button, Scroll} from 'components';
 import {View} from 'react-native';
 
-const Initial = () => {
+const Initial = ({navigation}: any) => {
   const {width, height} = Dimensions.get('screen');
   return (
     <Background>
@@ -33,6 +33,7 @@ const Initial = () => {
           size={16}
           background="#090A0A"
           color="#FFF"
+          onPress={() => navigation.navigate('Register')}
         />
         <Button
           title="Já tenho uma conta"

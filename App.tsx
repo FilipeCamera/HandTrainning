@@ -17,7 +17,11 @@ import {PublicRoutes} from './src/routes';
 const App = () => {
   return (
     <SafeAreaView style={{flex: 1}}>
-      <StatusBar translucent={true} backgroundColor="rgba(0,0,0, 0)" />
+      <StatusBar
+        translucent={true}
+        barStyle="dark-content"
+        backgroundColor="rgba(0,0,0, 0)"
+      />
       <NavigationContainer>
         <PublicRoutes />
       </NavigationContainer>

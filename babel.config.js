@@ -20,6 +20,7 @@ const plugins = [
         assets: './src/assets/',
         screens: './src/app/screens/',
         routes: './src/routes',
+        'assets/*': './src/assets',
       },
     },
   ],

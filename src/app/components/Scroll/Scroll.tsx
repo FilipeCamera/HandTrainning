@@ -4,7 +4,11 @@ import {ScrollView} from 'react-native';
 const Scroll = ({children}: any) => {
   return (
     <ScrollView
-      contentContainerStyle={{flexGrow: 1, padding: 16}}
+      contentContainerStyle={{
+        flexGrow: 1,
+        padding: 16,
+        alignItems: 'center',
+      }}
       showsVerticalScrollIndicator={false}>
       {children}
     </ScrollView>
