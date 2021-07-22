@@ -1,4 +1,4 @@
-import {Initial} from '../app/screens';
+import {Initial} from 'screens';
 
 const features: FeatureGroup = {
   Initial: {

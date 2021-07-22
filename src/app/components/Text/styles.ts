@@ -14,8 +14,8 @@ interface TextProps {
   weight: 300 | 400 | 500 | 600 | 700 | 900;
   color: string;
 }
-export const TextStyle = styled.TextInput<TextProps>`
-  font-size: ${(props: any) => props.size || '14px'};
+export const TextStyle = styled.Text<TextProps>`
+  font-size: ${(props: any) => `${props.size}px` || '14px'};
   font-family: ${(props: any) => family[props.weight || 400]};
   color: ${(props: any) => props.color || '#000'};
 `;

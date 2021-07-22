@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text} from 'components';
 
-import {ButtonStyle, ButtonContainer} from './styles';
+import {ButtonStyle, ButtonContainer, styles} from './styles';
 
 interface ButtonProps {
   title: string;
@@ -14,7 +14,7 @@ interface ButtonProps {
 const Button = ({title, color, background, size, weight}: ButtonProps) => {
   return (
     <ButtonStyle>
-      <ButtonContainer>
+      <ButtonContainer background={background} style={styles.shadow}>
         <Text title={title} size={size} weight={weight} color={color} />
       </ButtonContainer>
     </ButtonStyle>
