@@ -22,6 +22,8 @@ const Register = ({navigation}: any) => {
         <SimpleHeader
           back
           title="Cadastrar"
+          size={18}
+          weight={500}
           onBack={() => navigation.goBack()}
           marginBottom={16}
         />

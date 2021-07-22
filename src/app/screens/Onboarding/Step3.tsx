@@ -1,0 +1,107 @@
+import React, {useState} from 'react';
+import {Background} from './styles';
+
+import Runner from 'assets/svg/Runner.svg';
+import {Dimensions, View} from 'react-native';
+import {
+  CardButton,
+  CircleButton,
+  Scroll,
+  SimpleHeader,
+  Space,
+} from 'components';
+
+interface StepProps {
+  stateChange: () => any;
+  backStateChange: () => any;
+}
+
+const Step3 = ({stateChange, backStateChange}: StepProps) => {
+  const {width, height} = Dimensions.get('screen');
+  const [type, setType] = useState('trainner');
+  return (
+    <Background>
+      <Scroll>
+        <SimpleHeader
+          title="Escolha o seu plano"
+          color="#fff"
+          size={18}
+          weight={600}
+        />
+        <Runner
+          width={(width / 100) * 55}
+          height={(height / 100) * 65}
+          style={{
+            position: 'absolute',
+            right: 0,
+            top: type === 'gym' ? (height / 100) * 25 : (height / 100) * 10,
+          }}
+        />
+        {type === 'user' && (
+          <>
+            <CardButton
+              title="Básico - Grátis"
+              desc="Nesse plano você precisa está vinculado a uma academia para usar o aplicativo. Além disso, você só pode ter vínculo a uma academia."
+              onPress={stateChange}
+            />
+            <CardButton
+              title="Individual - R$ 5,90"
+              desc="Nesse plano você pode escolher o seu treinador de sua preferência, e não precisa se vincular alguma academia."
+              onPress={stateChange}
+            />
+          </>
+        )}
+        {type === 'trainner' && (
+          <>
+            <CardButton
+              title="Básico - Grátis"
+              desc="Nesse plano você precisa está vinculado a uma academia para usar o aplicativo e criar o treino dos seus alunos. Pode associar até 2 academia no máximo."
+              onPress={stateChange}
+            />
+            <CardButton
+              title="Individual - R$ 11,90"
+              desc="Nesse plano você pode escolher os seus alunos de sua preferência, e não é obrigatório está associado alguma academia."
+              onPress={stateChange}
+            />
+          </>
+        )}
+        {type === 'gym' && (
+          <>
+            <CardButton
+              title="Básico - R$ 19,90"
+              desc="Nesse plano você pode associar até 250 alunos e 3 treinadores."
+              onPress={stateChange}
+            />
+            <CardButton
+              title="Individual - R$ 29,90"
+              desc="Nesse plano você pode associar até 350 alunos e 5 treinadores."
+              onPress={stateChange}
+            />
+            <CardButton
+              title="Individual - R$ 39,90"
+              desc="Nesse plano você pode associar até 500 alunos e 8 treinadores."
+              onPress={stateChange}
+            />
+          </>
+        )}
+        <Space marginVertical={80} />
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            position: 'absolute',
+            bottom: 25,
+            right: 0,
+          }}>
+          <CircleButton title="1" onPress={backStateChange} />
+          <View style={{width: 80, height: 2, backgroundColor: '#fff'}} />
+          <CircleButton title="2" />
+          <View style={{width: 80, height: 2, backgroundColor: '#fff'}} />
+        </View>
+      </Scroll>
+    </Background>
+  );
+};
+
+export default Step3;

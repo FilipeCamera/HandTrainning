@@ -1,6 +1,13 @@
-import {Button, ButtonRed, ButtonText} from './Button';
+import {
+  Button,
+  ButtonRed,
+  ButtonText,
+  CardButton,
+  CircleButton,
+} from './Button';
 import {SimpleHeader} from './Header';
 import Input from './Input';
+import Label from './Label';
 import Scroll from './Scroll';
 import Space from './Space';
 import Text from './Text';
@@ -14,4 +21,7 @@ export {
   SimpleHeader,
   Input,
   Space,
+  CardButton,
+  CircleButton,
+  Label,
 };

@@ -1,5 +1,7 @@
-import {StyleSheet} from 'react-native';
+import {Dimensions, StyleSheet} from 'react-native';
 import styled from 'styled-components/native';
+
+const {height} = Dimensions.get('screen');
 
 interface ButtonProps {
   background: string;
@@ -8,6 +10,29 @@ interface ButtonProps {
 
 export const ButtonStyle = styled.TouchableOpacity`
   width: 95%;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const CardButtonStyle = styled.TouchableOpacity`
+  width: 90%;
+  margin: 8px 0;
+`;
+
+export const CircleButtonStyle = styled.TouchableOpacity`
+  background: #fff;
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const CardButtonContainer = styled.View`
+  width: 100%;
+  height: ${(height / 100) * 20}px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 20px;
   align-items: center;
   justify-content: center;
 `;

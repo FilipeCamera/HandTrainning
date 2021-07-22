@@ -22,6 +22,8 @@ const Login = ({navigation}: any) => {
         <SimpleHeader
           back
           title="Efetuar login"
+          size={18}
+          weight={500}
           onBack={() => navigation.goBack()}
           marginBottom={16}
         />

@@ -11,6 +11,9 @@ interface SimpleHeaderProps {
   marginBottom: number;
   onBack: () => any;
   onAdd: () => any;
+  color: string;
+  size: number;
+  weight: number;
 }
 
 const SimpleHeader = ({
@@ -19,6 +22,9 @@ const SimpleHeader = ({
   add,
   onBack,
   onAdd,
+  color,
+  size,
+  weight,
   marginBottom,
 }: SimpleHeaderProps) => {
   return (
@@ -28,7 +34,7 @@ const SimpleHeader = ({
           <ArrowBack />
         </IconLeft>
       )}
-      <Text title={title} weight={500} size={18} />
+      <Text title={title} weight={weight} size={size} color={color} />
       {!!add && <IconRight onPress={onAdd} />}
     </Container>
   );
