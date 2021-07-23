@@ -9,6 +9,7 @@ interface InputProps {
   password: boolean;
   multiline: number;
   slogan: boolean;
+  width: number | string;
 }
 
 const Input = ({
@@ -18,9 +19,10 @@ const Input = ({
   slogan,
   multiline,
   password,
+  width,
 }: InputProps) => {
   return (
-    <InputStyle slogan={slogan}>
+    <InputStyle slogan={slogan} width={width}>
       <TextInput
         style={{fontFamily: 'Poppins-Regular', fontSize: 15, width: '100%'}}
         multiline={multiline ? true : false}

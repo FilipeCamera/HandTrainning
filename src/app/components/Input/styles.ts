@@ -2,6 +2,7 @@ import styled from 'styled-components/native';
 
 interface InputProps {
   slogan: boolean;
+  width: number | string;
 }
 
 export const InputStyle = styled.View<InputProps>`
@@ -12,6 +13,8 @@ export const InputStyle = styled.View<InputProps>`
   padding: 0 8px;
   font-size: 15px;
   font-family: 'Poppins-Regular';
+  flex-direction: row;
+  align-items: ${(props: any) => (props.slogan ? 'flex-start' : 'center')};
   color: #1c2439;
-  width: 95%;
+  width: ${(props: any) => (props.width ? props.width : '95%')};
 `;

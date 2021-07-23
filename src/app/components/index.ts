@@ -1,3 +1,4 @@
+import Avatar from './Avatar';
 import {
   Button,
   ButtonRed,
@@ -5,6 +6,9 @@ import {
   CardButton,
   CircleButton,
 } from './Button';
+import Check from './CheckBox';
+import {DataTrainner, DataUser, DataGym} from './Data';
+import DropDown from './Dropdown';
 import {SimpleHeader} from './Header';
 import Input from './Input';
 import Label from './Label';
@@ -24,4 +28,10 @@ export {
   CardButton,
   CircleButton,
   Label,
+  Check,
+  DataUser,
+  DropDown,
+  DataTrainner,
+  DataGym,
+  Avatar,
 };

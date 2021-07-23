@@ -18,7 +18,7 @@ export const Background = styled(LinearGradient).attrs({
 })`
   flex: 1;
   height: 100%;
-  padding-top: ${getStatusBarHeight()};
+  padding-top: ${getStatusBarHeight()}px;
 `;
 
 export const Absolute = styled.View<AbsoluteProps>`

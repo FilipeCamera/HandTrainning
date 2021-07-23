@@ -18,7 +18,7 @@ interface StepProps {
 
 const Step3 = ({stateChange, backStateChange}: StepProps) => {
   const {width, height} = Dimensions.get('screen');
-  const [type, setType] = useState('trainner');
+  const [type, setType] = useState('gym');
   return (
     <Background>
       <Scroll>
