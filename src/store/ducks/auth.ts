@@ -1,7 +1,7 @@
 import {createAction, createReducer} from 'typesafe-actions';
 
-export const setUser = createAction('auth/SET_USER'){}
-export const logout = createAction('auth/LOGOUT'){}
+const setUser = createAction('auth/SET_USER')();
+const logout = createAction('auth/LOGOUT')();
 
 const initialState: any = {
   user: {
@@ -26,9 +26,16 @@ const initialState: any = {
   },
 };
 
-const reducer = createReducer(initialState).handleAction(setUser, (state: any, {payload}: any) => ({
-  ...state,
-  user: payload.data
-})).handleAction(logout, () => initialState)
+const reducer = createReducer(initialState)
+  .handleAction(setUser, (state: any, {payload}: any) => ({
+    ...state,
+    user: payload.data,
+  }))
+  .handleAction(logout, () => initialState);
 
-export default reducer
+const authActions = {
+  setUser,
+  logout,
+};
+
+export {reducer as default, authActions};

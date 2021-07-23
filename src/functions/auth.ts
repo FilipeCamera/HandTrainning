@@ -1,10 +1,10 @@
 import {firebase} from 'firebase';
 
-import {setUser, logout} from 'actions/auth';
+import {authActions} from 'actions/auth';
 import {dispatchAction} from 'store';
 
 const userPersist = (user: any) => {
-  dispatchAction(setUser, {
+  dispatchAction(authActions.setUser, {
     uid: user.uid,
     email: user.email,
     type: user.type,
@@ -32,7 +32,7 @@ const Logout = () => {
       .auth()
       .signOut()
       .then(() => {
-        dispatchAction(logout, {
+        dispatchAction(authActions.logout, {
           uid: undefined,
           email: undefined,
           type: undefined,

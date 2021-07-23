@@ -16,7 +16,7 @@ const store = createStore(persistReduce);
 
 const persist = persistStore(store);
 
-const dispatchAction = ({type, payload}: any) => {
+const dispatchAction = (type: any, payload: any) => {
   return store.dispatch({type: getType(type), payload});
 };
 

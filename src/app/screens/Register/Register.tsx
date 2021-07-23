@@ -8,14 +8,63 @@ import {
   Space,
   Text,
 } from 'components';
-import React from 'react';
-import {View} from 'react-native';
+import React, {useState} from 'react';
+import {Alert, View} from 'react-native';
 
 import Line from 'assets/svg/Line.svg';
 
 import {Container} from './styles';
 
+import {firestore, auth} from 'firebase';
+import {userPersist} from 'functions';
+
 const Register = ({navigation}: any) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setPassword] = useState('');
+
+  const signUp = (email: string, password: string) => {
+    auth()
+      .signInWithEmailAndPassword(email, password)
+      .then(async (user: any) => {
+        if (!user) {
+          return Alert.alert('Não foi possível cadastrar');
+        }
+        const {uid} = user.user;
+        saveUser(uid);
+      })
+      .catch((error: any) => console.log(error));
+  };
+
+  const saveUser = (uid: string) => {
+    const user = {
+      type: undefined,
+      plan: undefined,
+      name: undefined,
+      slogan: undefined,
+      avatar: undefined,
+      cnpj: undefined,
+      city: undefined,
+      state: undefined,
+      course: undefined,
+      university: undefined,
+      experience: undefined,
+      specs: undefined,
+      problemHealth: undefined,
+      weight: undefined,
+      years: undefined,
+      height: undefined,
+    };
+    firestore()
+      .collection('users')
+      .doc(uid)
+      .set(user)
+      .then(() => {
+        userPersist(user);
+        return navigation.navigate('Onboarding');
+      })
+      .catch((error: any) => console.log(error));
+  };
   return (
     <Container>
       <Scroll>
