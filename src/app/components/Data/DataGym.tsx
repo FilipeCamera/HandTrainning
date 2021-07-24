@@ -34,7 +34,7 @@ const DataGym = ({dados, setDados, errors}: DataProps) => {
     <>
       <Label title="Perfil" />
       <Space marginVertical={4} />
-      <Avatar />
+      <Avatar edit={true} dados={dados} setDados={setDados} />
       <Input
         placeholder="Nome da academia"
         value={name}

@@ -12,6 +12,7 @@ import com.facebook.soloader.SoLoader;
 import com.horcrux.svg.SvgPackage;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import com.zoontek.rnpermissions.RNPermissionsPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 

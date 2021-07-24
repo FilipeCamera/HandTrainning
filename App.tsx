@@ -8,15 +8,19 @@
  * @format
  */
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import {SafeAreaView, StatusBar} from 'react-native';
 import {Provider} from 'react-redux';
 import {NavigationContainer} from '@react-navigation/native';
 import {PublicRoutes} from './src/routes';
 import {PersistGate} from 'redux-persist/lib/integration/react';
 import store, {persist} from 'store';
+import {onPermission} from 'functions';
 
 const App = () => {
+  useEffect(() => {
+    onPermission();
+  }, []);
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persist}>

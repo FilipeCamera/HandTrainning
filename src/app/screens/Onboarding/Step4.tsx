@@ -8,6 +8,7 @@ import {
   Space,
 } from 'components';
 import React, {useState} from 'react';
+import {cnpjValidate, fieldValidate} from 'validation';
 import {ContainerTwo} from './styles';
 
 interface StepProps {
@@ -33,9 +34,26 @@ const Step4 = ({backStateChange, dados, setDados}: StepProps) => {
     years: '',
     height: '',
   });
+  const validate = () => {
+    const nameValidated = fieldValidate(dados.name);
+    const cnpjValidated = cnpjValidate(dados.cnpj);
 
+    setErrors({
+      ...errors,
+      name: nameValidated.error,
+      cnpj: nameValidated.error,
+    });
+    if (!nameValidated.value || !cnpjValidated.value) {
+      return false;
+    }
+    return true;
+  };
   const FinallizedSignUp = () => {
-    console.log(dados);
+    const validated = validate();
+
+    if (validated) {
+      console.log('Cadastro feito');
+    }
   };
   return (
     <ContainerTwo>
