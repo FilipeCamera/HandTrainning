@@ -7,7 +7,7 @@ import {View} from 'react-native';
 interface InputProps {
   value: string;
   placeholder: string;
-  onText: any;
+  onText: (e: any) => any;
   password: boolean;
   multiline: number;
   slogan: boolean;

@@ -8,7 +8,7 @@ import {
 } from './Button';
 import Check from './CheckBox';
 import {DataTrainner, DataUser, DataGym} from './Data';
-import DropDown from './Dropdown';
+import DropDownUF from './Dropdown';
 import {SimpleHeader} from './Header';
 import Input from './Input';
 import Label from './Label';
@@ -30,7 +30,7 @@ export {
   Label,
   Check,
   DataUser,
-  DropDown,
+  DropDownUF,
   DataTrainner,
   DataGym,
   Avatar,

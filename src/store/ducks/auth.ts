@@ -14,7 +14,7 @@ const initialState: any = {
     avatar: undefined,
     cnpj: undefined,
     city: undefined,
-    state: undefined,
+    uf: undefined,
     course: undefined,
     university: undefined,
     experience: undefined,

@@ -14,7 +14,7 @@ const userPersist = (user: any) => {
     avatar: user.avatar,
     cnpj: user.cnpj,
     city: user.city,
-    state: user.state,
+    uf: user.uf,
     course: user.course,
     university: user.university,
     experience: user.experience,

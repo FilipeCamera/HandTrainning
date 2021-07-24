@@ -1,20 +1,63 @@
-import {Label, Space, Input, DropDown, Avatar} from 'components';
-import React, {useState} from 'react';
+import {Label, Space, Input, DropDownUF, Avatar} from 'components';
+import React, {useState, useEffect} from 'react';
 import {View} from 'react-native';
+import maskCNPJ from '@mask';
 
-const DataGym = () => {
+interface DataProps {
+  dados: any;
+  setDados: any;
+  errors: any;
+}
+
+const DataGym = ({dados, setDados, errors}: DataProps) => {
+  const [name, setName] = useState('');
+  const [slogan, setSlogan] = useState('');
+  const [cnpj, setCnpj] = useState('');
+  const [uf, setUF] = useState(null);
+  const [city, setCity] = useState('');
+
+  useEffect(() => {
+    setDados({
+      ...dados,
+      name: name,
+      slogan: slogan,
+      cnpj: cnpj,
+      uf: uf,
+      city: city,
+    });
+  }, [name, slogan, cnpj, uf, city]);
+
+  const setCNPJ = (e: string) => {
+    setCnpj(maskCNPJ(e));
+  };
   return (
     <>
       <Label title="Perfil" />
       <Space marginVertical={4} />
       <Avatar />
-      <Input placeholder="Nome da academia" />
-      <Input slogan placeholder="Slogan" multiline={2} />
+      <Input
+        placeholder="Nome da academia"
+        value={name}
+        onText={e => setName(e)}
+        error={errors.name}
+      />
+      <Input
+        slogan
+        placeholder="Slogan"
+        multiline={2}
+        value={slogan}
+        onText={setSlogan}
+      />
       <Space marginVertical={20} />
 
       <Label title="Informações da Academia" />
       <Space marginVertical={4} />
-      <Input placeholder="CNPJ" />
+      <Input
+        placeholder="CNPJ"
+        value={cnpj}
+        onText={setCNPJ}
+        error={errors.cnpj}
+      />
       <View
         style={{
           flexDirection: 'row',
@@ -22,9 +65,15 @@ const DataGym = () => {
           alignItems: 'center',
           justifyContent: 'space-between',
         }}>
-        <Input placeholder="Cidade" width="65%" />
+        <Input
+          placeholder="Cidade"
+          width="65%"
+          value={city}
+          onText={setCity}
+          error={errors.city}
+        />
         <Space marginHorizontal={5} />
-        <DropDown />
+        <DropDownUF value={uf} onValue={setUF} errors={errors} />
       </View>
     </>
   );

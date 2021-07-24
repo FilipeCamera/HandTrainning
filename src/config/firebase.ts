@@ -18,6 +18,8 @@ const credentials = {
 
 if (firebase.app.length === 0) {
   firebase.initializeApp(credentials);
+} else {
+  firebase.app();
 }
 
 export {firebase, firestore, messaging, message, storage, auth};

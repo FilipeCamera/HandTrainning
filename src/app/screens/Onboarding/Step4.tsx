@@ -7,7 +7,7 @@ import {
   SimpleHeader,
   Space,
 } from 'components';
-import React from 'react';
+import React, {useState} from 'react';
 import {ContainerTwo} from './styles';
 
 interface StepProps {
@@ -17,6 +17,26 @@ interface StepProps {
 }
 
 const Step4 = ({backStateChange, dados, setDados}: StepProps) => {
+  const [errors, setErrors] = useState({
+    name: '',
+    slogan: '',
+    avatar: '',
+    cnpj: '',
+    city: '',
+    uf: '',
+    course: '',
+    university: '',
+    experience: '',
+    specs: '',
+    problemHealth: '',
+    weight: '',
+    years: '',
+    height: '',
+  });
+
+  const FinallizedSignUp = () => {
+    console.log(dados);
+  };
   return (
     <ContainerTwo>
       <Scroll>
@@ -30,9 +50,17 @@ const Step4 = ({backStateChange, dados, setDados}: StepProps) => {
         />
         {dados.type === 'common' && <DataUser />}
         {dados.type === 'trainner' && <DataTrainner />}
-        {dados.type === 'gym' && <DataGym />}
+        {dados.type === 'gym' && (
+          <DataGym dados={dados} setDados={setDados} errors={errors} />
+        )}
         <Space marginVertical={25} />
-        <ButtonRed title="Finalizar" color="#fff" size={15} weight={500} />
+        <ButtonRed
+          title="Finalizar"
+          color="#fff"
+          size={15}
+          weight={500}
+          onPress={() => FinallizedSignUp()}
+        />
       </Scroll>
     </ContainerTwo>
   );
