@@ -19,7 +19,7 @@ import store, {persist} from 'store';
 const App = () => {
   return (
     <Provider store={store}>
-      <PersistGate persistor={persist}>
+      <PersistGate loading={null} persistor={persist}>
         <SafeAreaView style={{flex: 1}}>
           <StatusBar
             translucent={true}

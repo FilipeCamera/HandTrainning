@@ -7,6 +7,7 @@ import message from '@react-native-firebase/in-app-messaging';
 
 const credentials = {
   apiKey: 'AIzaSyB0DJbbzj0V3jqAxkGLV6vKtAWzBYBvJaA',
+  databaseURL: 'https://handtrainning.firebaseio.com',
   authDomain: 'handtrainning.firebaseapp.com',
   projectId: 'handtrainning',
   storageBucket: 'handtrainning.appspot.com',
@@ -15,10 +16,8 @@ const credentials = {
   measurementId: 'G-YPX61V53L4',
 };
 
-const config = {
-  name: 'HandTrainning Credentials',
-};
-
-await firebase.initializeApp(credentials, config);
+if (firebase.app.length === 0) {
+  firebase.initializeApp(credentials);
+}
 
 export {firebase, firestore, messaging, message, storage, auth};

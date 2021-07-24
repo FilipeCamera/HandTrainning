@@ -14,9 +14,11 @@ import {
 interface StepProps {
   stateChange: () => any;
   backStateChange: () => any;
+  dados: any;
+  setDados: any;
 }
 
-const Step2 = ({stateChange, backStateChange}: StepProps) => {
+const Step2 = ({stateChange, setDados, dados}: StepProps) => {
   const {width, height} = Dimensions.get('screen');
   return (
     <Background>
@@ -32,9 +34,27 @@ const Step2 = ({stateChange, backStateChange}: StepProps) => {
           height={(height / 100) * 65}
           style={{position: 'absolute', right: 0, top: (height / 100) * 25}}
         />
-        <CardButton title="Aluno" onPress={stateChange} />
-        <CardButton title="Treinador" onPress={stateChange} />
-        <CardButton title="Academia" onPress={stateChange} />
+        <CardButton
+          title="Aluno"
+          onPress={() => {
+            setDados({...dados, type: 'common'});
+            stateChange();
+          }}
+        />
+        <CardButton
+          title="Treinador"
+          onPress={() => {
+            setDados({...dados, type: 'trainner'});
+            stateChange();
+          }}
+        />
+        <CardButton
+          title="Academia"
+          onPress={() => {
+            setDados({...dados, type: 'gym'});
+            stateChange();
+          }}
+        />
         <Space marginVertical={80} />
         <View
           style={{

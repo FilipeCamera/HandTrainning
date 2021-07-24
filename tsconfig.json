@@ -58,8 +58,8 @@
       "functions": [
         "src/functions"
       ],
-      "actions/*": [
-        "src/store/ducks/*"
+      "@actions/auth": [
+        "src/store/ducks/auth.ts"
       ],
       "store": [
         "src/store"

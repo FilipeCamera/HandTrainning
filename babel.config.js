@@ -22,7 +22,7 @@ const plugins = [
         routes: './src/routes',
         'assets/*': './src/assets',
         firebase: './src/config',
-        'actions/*': './src/store/ducks/*',
+        '@actions/auth': './src/store/ducks/auth.ts',
         functions: './src/functions',
         store: './src/store',
         validation: './src/utils/validation',

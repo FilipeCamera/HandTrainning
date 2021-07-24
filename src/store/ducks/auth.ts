@@ -27,9 +27,9 @@ const initialState: any = {
 };
 
 const reducer = createReducer(initialState)
-  .handleAction(setUser, (state: any, {payload}: any) => ({
+  .handleAction(setUser, (state: any, {payload: data}: any) => ({
     ...state,
-    user: payload.data,
+    user: data,
   }))
   .handleAction(logout, () => initialState);
 

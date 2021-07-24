@@ -1,6 +1,6 @@
 import {firebase} from 'firebase';
 
-import {authActions} from 'actions/auth';
+import {authActions} from '@actions/auth';
 import {dispatchAction} from 'store';
 
 const userPersist = (user: any) => {

@@ -17,43 +17,63 @@ import {Container} from './styles';
 
 import {firestore, auth} from 'firebase';
 import {userPersist} from 'functions';
+import {emailValidate, fieldPass, equalsPassword} from 'validation';
 
 const Register = ({navigation}: any) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [errors, setErrors] = useState({
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
 
+  const validate = () => {
+    const emailValidated = emailValidate(email);
+    const passwordValidated = fieldPass(password, 6);
+    const confirmPassValidated = fieldPass(confirmPassword, 6);
+    const equals = equalsPassword(password, confirmPassword);
+    setErrors({
+      ...errors,
+      email: emailValidated.error,
+      password: passwordValidated.error,
+      confirmPassword: confirmPassValidated.error,
+    });
+    if (
+      !emailValidated.value ||
+      !passwordValidated.value ||
+      !confirmPassValidated.value
+    ) {
+      return false;
+    }
+
+    if (!equals.value) {
+      setErrors({
+        ...errors,
+        password: equals.error,
+        confirmPassword: equals.error,
+      });
+      return false;
+    }
+    return true;
+  };
   const signUp = (email: string, password: string) => {
     auth()
-      .signInWithEmailAndPassword(email, password)
+      .createUserWithEmailAndPassword(email, password)
       .then(async (user: any) => {
-        if (!user) {
-          return Alert.alert('Não foi possível cadastrar');
-        }
-        const {uid} = user.user;
+        const {uid} = await user.user;
         saveUser(uid);
+        return navigation.navigate('Onboarding');
       })
       .catch((error: any) => console.log(error));
   };
 
   const saveUser = (uid: string) => {
     const user = {
-      type: undefined,
-      plan: undefined,
-      name: undefined,
-      slogan: undefined,
-      avatar: undefined,
-      cnpj: undefined,
-      city: undefined,
-      state: undefined,
-      course: undefined,
-      university: undefined,
-      experience: undefined,
-      specs: undefined,
-      problemHealth: undefined,
-      weight: undefined,
-      years: undefined,
-      height: undefined,
+      uid: uid,
+      email: email,
+      createdAt: firestore.FieldValue.serverTimestamp(),
     };
     firestore()
       .collection('users')
@@ -61,7 +81,6 @@ const Register = ({navigation}: any) => {
       .set(user)
       .then(() => {
         userPersist(user);
-        return navigation.navigate('Onboarding');
       })
       .catch((error: any) => console.log(error));
   };
@@ -76,9 +95,26 @@ const Register = ({navigation}: any) => {
           onBack={() => navigation.goBack()}
           marginBottom={16}
         />
-        <Input placeholder="E-mail" />
-        <Input placeholder="Senha" />
-        <Input placeholder="Confirmar senha" />
+        <Input
+          value={email}
+          onText={setEmail}
+          placeholder="E-mail"
+          error={errors.email}
+        />
+        <Input
+          value={password}
+          onText={setPassword}
+          placeholder="Senha"
+          error={errors.password}
+          password
+        />
+        <Input
+          value={confirmPassword}
+          onText={setConfirmPassword}
+          placeholder="Confirmar senha"
+          error={errors.confirmPassword}
+          password
+        />
         <Space marginVertical={20} />
         <ButtonRed
           title="Cadastrar"
@@ -86,7 +122,12 @@ const Register = ({navigation}: any) => {
           size={15}
           color="#fff"
           weight={500}
-          onPress={() => navigation.navigate('Onboarding')}
+          onPress={() => {
+            const validated = validate();
+            if (validated) {
+              signUp(email, password);
+            }
+          }}
         />
         <Space marginVertical={12} />
         <View style={{flexDirection: 'row', alignItems: 'center'}}>

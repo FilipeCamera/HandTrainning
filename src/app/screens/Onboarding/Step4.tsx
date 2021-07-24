@@ -7,15 +7,16 @@ import {
   SimpleHeader,
   Space,
 } from 'components';
-import React, {useState} from 'react';
+import React from 'react';
 import {ContainerTwo} from './styles';
 
 interface StepProps {
   backStateChange: () => any;
+  dados: any;
+  setDados: any;
 }
 
-const Step4 = ({backStateChange}: StepProps) => {
-  const [type, setType] = useState('gym');
+const Step4 = ({backStateChange, dados, setDados}: StepProps) => {
   return (
     <ContainerTwo>
       <Scroll>
@@ -27,9 +28,9 @@ const Step4 = ({backStateChange}: StepProps) => {
           weight={500}
           marginBottom={30}
         />
-        {type === 'user' && <DataUser />}
-        {type === 'trainner' && <DataTrainner />}
-        {type === 'gym' && <DataGym />}
+        {dados.type === 'common' && <DataUser />}
+        {dados.type === 'trainner' && <DataTrainner />}
+        {dados.type === 'gym' && <DataGym />}
         <Space marginVertical={25} />
         <ButtonRed title="Finalizar" color="#fff" size={15} weight={500} />
       </Scroll>
