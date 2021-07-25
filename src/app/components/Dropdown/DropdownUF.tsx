@@ -36,7 +36,8 @@ const DropDownUF = ({value, onValue, error}: DropDownProps) => {
       style={{
         backgroundColor: error !== '' ? 'rgba(255, 104, 89, 0.15)' : '#f1f4fa',
         borderRadius: 10,
-        borderWidth: 0,
+        borderWidth: error !== '' ? 1 : 0,
+        borderColor: '#FF6859',
         width: 100,
         height: 56,
       }}

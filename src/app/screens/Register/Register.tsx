@@ -18,6 +18,7 @@ import {Container} from './styles';
 import {firestore, auth} from 'firebase';
 import {userPersist} from 'functions';
 import {emailValidate, fieldPass, equalsPassword} from 'validation';
+import {showMessage} from 'react-native-flash-message';
 
 const Register = ({navigation}: any) => {
   const [email, setEmail] = useState('');
@@ -64,9 +65,18 @@ const Register = ({navigation}: any) => {
       .then(async (user: any) => {
         const {uid} = await user.user;
         saveUser(uid);
-        return navigation.navigate('Onboarding');
+        showMessage({type: 'success', message: 'Cadastron feito com sucesso!'});
+        navigation.navigate('Private');
       })
-      .catch((error: any) => console.log(error));
+      .catch((error: any) => {
+        switch (error.code) {
+          case 'auth/email-already-in-use':
+            return showMessage({
+              type: 'danger',
+              message: 'Usuário já cadastrado!',
+            });
+        }
+      });
   };
 
   const saveUser = (uid: string) => {
@@ -82,7 +92,7 @@ const Register = ({navigation}: any) => {
       .then(() => {
         userPersist(user);
       })
-      .catch((error: any) => console.log(error));
+      .catch((error: any) => {});
   };
   return (
     <Container>

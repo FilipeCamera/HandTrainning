@@ -7,7 +7,7 @@ import {
   CircleButton,
 } from './Button';
 import Check from './CheckBox';
-import {DataTrainner, DataUser, DataGym} from './Data';
+import {DataTrainner, DataCommon, DataGym} from './Data';
 import DropDownUF from './Dropdown';
 import {SimpleHeader} from './Header';
 import Input from './Input';
@@ -29,7 +29,7 @@ export {
   CircleButton,
   Label,
   Check,
-  DataUser,
+  DataCommon,
   DropDownUF,
   DataTrainner,
   DataGym,

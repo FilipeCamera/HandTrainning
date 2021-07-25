@@ -8,7 +8,7 @@ interface DataProps {
   errors: any;
 }
 
-const DataUser = ({dados, setDados, errors}: DataProps) => {
+const DataCommon = ({dados, setDados, errors}: DataProps) => {
   const [name, setName] = useState('');
   const [slogan, setSlogan] = useState('');
   const [uf, setUF] = useState('');
@@ -16,6 +16,8 @@ const DataUser = ({dados, setDados, errors}: DataProps) => {
   const [weight, setWeight] = useState('');
   const [age, setAge] = useState('');
   const [height, setHeight] = useState('');
+  const [lesionText, setLesionText] = useState('');
+  const [breathText, setBreathText] = useState('');
   const [lesion, setLesion] = useState(false);
   const [breath, setBreath] = useState(false);
   const [diabete, setDiabete] = useState(false);
@@ -26,6 +28,12 @@ const DataUser = ({dados, setDados, errors}: DataProps) => {
   const [cholesterol, setCholesterol] = useState(false);
   const [cancer, setCancer] = useState(false);
   useEffect(() => {
+    if (lesion === false) {
+      setLesionText('');
+    }
+    if (breath === false) {
+      setBreathText('');
+    }
     setDados({
       ...dados,
       name: name,
@@ -35,8 +43,37 @@ const DataUser = ({dados, setDados, errors}: DataProps) => {
       age: age,
       height: height,
       weight: weight,
+      problemHealth: {
+        diabete: {value: diabete},
+        lesion: {value: lesion, lesion: lesionText},
+        obesity: {value: obesity},
+        hypertension: {value: hypertension},
+        arthritis: {value: arthritis},
+        arthrosis: {value: arthritis},
+        cholesterol: {value: cholesterol},
+        cancer: {value: cancer},
+        breath: {value: breath, breath: breathText},
+      },
     });
-  }, [name, slogan, city, uf, age, height, weight]);
+  }, [
+    name,
+    slogan,
+    city,
+    uf,
+    age,
+    height,
+    weight,
+    diabete,
+    lesion,
+    lesionText,
+    obesity,
+    hypertension,
+    arthritis,
+    cholesterol,
+    cancer,
+    breath,
+    breathText,
+  ]);
   return (
     <>
       <Label title="Perfil" />
@@ -91,6 +128,7 @@ const DataUser = ({dados, setDados, errors}: DataProps) => {
           value={age}
           onText={setAge}
           error={errors.age}
+          numeric
         />
         <Input
           city
@@ -99,6 +137,7 @@ const DataUser = ({dados, setDados, errors}: DataProps) => {
           value={weight}
           onText={setWeight}
           error={errors.weight}
+          numeric
         />
         <Input
           city
@@ -107,6 +146,7 @@ const DataUser = ({dados, setDados, errors}: DataProps) => {
           value={height}
           onText={setHeight}
           error={errors.height}
+          numeric
         />
       </View>
       <Space marginVertical={20} />
@@ -122,7 +162,13 @@ const DataUser = ({dados, setDados, errors}: DataProps) => {
         <Check title="Lesão" value={lesion} setValue={setLesion} />
         {!!lesion && (
           <View style={{marginLeft: 30}}>
-            <Input slogan placeholder="Qual ou quais?" multiline={2} />
+            <Input
+              slogan
+              placeholder="Qual ou quais?"
+              multiline={4}
+              onText={setLesionText}
+              error={errors.lesion}
+            />
           </View>
         )}
         <Check title="Obesidade" value={obesity} setValue={setObesity} />
@@ -146,7 +192,13 @@ const DataUser = ({dados, setDados, errors}: DataProps) => {
         />
         {!!breath && (
           <View style={{marginLeft: 30}}>
-            <Input slogan placeholder="Quais?" multiline={2} />
+            <Input
+              slogan
+              placeholder="Quais?"
+              multiline={2}
+              onText={setBreathText}
+              error={errors.breath}
+            />
           </View>
         )}
       </View>
@@ -154,4 +206,4 @@ const DataUser = ({dados, setDados, errors}: DataProps) => {
   );
 };
 
-export default DataUser;
+export default DataCommon;

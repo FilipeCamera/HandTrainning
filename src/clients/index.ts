@@ -1,3 +1,3 @@
-import features from './features';
+import features, {privateFeatures} from './features';
 
-export default features;
+export {features as default, privateFeatures};

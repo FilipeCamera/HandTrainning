@@ -1,3 +1,4 @@
+import useGetUser from './useGetUser';
 import useSendFile from './useSendFile';
 
-export default useSendFile;
+export {useSendFile, useGetUser};

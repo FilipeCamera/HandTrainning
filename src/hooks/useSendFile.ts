@@ -11,7 +11,7 @@ const useSendFile = () => {
         // console.log('uploading ..', progress);
       },
       (error: any) => {
-        // console.log('error upload', error);
+        onFail(error);
       },
       () => {
         uploadFile.snapshot.ref

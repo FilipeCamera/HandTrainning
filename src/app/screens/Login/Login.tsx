@@ -8,14 +8,72 @@ import {
   Space,
   Text,
 } from 'components';
-import React from 'react';
+import React, {useState} from 'react';
 import {View} from 'react-native';
 
 import Line from 'assets/svg/Line.svg';
 
 import {Container} from './styles';
+import {emailValidate, fieldPass} from 'validation';
+import {showMessage} from 'react-native-flash-message';
+import {auth} from 'firebase';
+import {userPersist} from 'functions';
+import {useGetUser} from 'hooks';
 
 const Login = ({navigation}: any) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState({email: '', password: ''});
+  const {getUser} = useGetUser();
+  const validate = () => {
+    const emailValidated = emailValidate(email);
+    const passwordValidated = fieldPass(password, 6);
+    setErrors({
+      ...errors,
+      email: emailValidated.error,
+      password: passwordValidated.error,
+    });
+    if (!emailValidated.value || !passwordValidated.value) {
+      return false;
+    }
+    return true;
+  };
+
+  const signIn = () => {
+    const validated = validate();
+
+    if (validated) {
+      return auth()
+        .signInWithEmailAndPassword(email, password)
+        .then(async (res: any) => {
+          const userLogged = {email: res.user.email, uid: res.user.uid};
+          await getUser(userLogged.uid);
+          showMessage({
+            type: 'success',
+            message: 'Login efetuado com sucesso!',
+          });
+          navigation.navigate('Private');
+        })
+        .catch(error => {
+          switch (error.code) {
+            case 'auth/user-not-found':
+              return showMessage({
+                type: 'danger',
+                message: 'Usuário não encontrado',
+              });
+            case 'auth/wrong-password':
+              return showMessage({
+                type: 'danger',
+                message: 'E-mail ou senha incorreta',
+              });
+          }
+        });
+    }
+    return showMessage({
+      type: 'danger',
+      message: 'Preencha todos os campos!',
+    });
+  };
   return (
     <Container>
       <Scroll>
@@ -27,8 +85,19 @@ const Login = ({navigation}: any) => {
           onBack={() => navigation.goBack()}
           marginBottom={16}
         />
-        <Input placeholder="E-mail" />
-        <Input placeholder="Senha" />
+        <Input
+          placeholder="E-mail"
+          value={email}
+          onText={setEmail}
+          error={errors.email}
+        />
+        <Input
+          placeholder="Senha"
+          value={password}
+          onText={setPassword}
+          error={errors.password}
+          password
+        />
         <View style={{width: '95%', alignItems: 'flex-start'}}>
           <ButtonText
             title="Esqueceu a senha?"
@@ -44,7 +113,7 @@ const Login = ({navigation}: any) => {
           size={15}
           color="#fff"
           weight={500}
-          onPress={() => navigation.navigate('Onboarding')}
+          onPress={() => signIn()}
         />
         <Space marginVertical={12} />
         <View style={{flexDirection: 'row', alignItems: 'center'}}>

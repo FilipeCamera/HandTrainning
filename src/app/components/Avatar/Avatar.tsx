@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import {Image, Platform, View} from 'react-native';
+import {Image, Platform} from 'react-native';
 import {AvatarStyle, ProfilePicBox} from './styles';
 
 import Profile from 'assets/svg/profile.svg';
 import ProfilePic from 'assets/svg/profile_pic.svg';
-import useSendFile from 'hooks';
-import {onPermission, selectImage} from 'functions';
+import {useSendFile} from 'hooks';
+import {selectImage} from 'functions';
 import {firestore} from 'firebase';
 
 interface AvatarProps {
@@ -41,7 +41,9 @@ const Avatar = ({edit, dados, setDados, error}: AvatarProps) => {
         onComplete: (url: string) => {
           setDados({...dados, avatar: url});
         },
-        onFail: () => {},
+        onFail: error => {
+          console.log(error);
+        },
       });
     }
   }, [image]);

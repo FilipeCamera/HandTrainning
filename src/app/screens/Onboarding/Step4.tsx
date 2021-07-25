@@ -1,13 +1,14 @@
 import {
   ButtonRed,
+  DataCommon,
   DataGym,
   DataTrainner,
-  DataUser,
   Scroll,
   SimpleHeader,
   Space,
 } from 'components';
 import {firestore} from 'firebase';
+import {userPersist} from 'functions';
 import React, {useState} from 'react';
 import {showMessage} from 'react-native-flash-message';
 import {cnpjValidate, fieldValidate} from 'validation';
@@ -17,9 +18,10 @@ interface StepProps {
   backStateChange: () => any;
   dados: any;
   setDados: any;
+  navigation: any;
 }
 
-const Step4 = ({backStateChange, dados, setDados}: StepProps) => {
+const Step4 = ({backStateChange, dados, setDados, navigation}: StepProps) => {
   const [errors, setErrors] = useState({
     name: '',
     slogan: '',
@@ -29,55 +31,123 @@ const Step4 = ({backStateChange, dados, setDados}: StepProps) => {
     uf: '',
     course: '',
     university: '',
-    experience: '',
-    specs: '',
     weight: '',
-    years: '',
+    age: '',
     height: '',
+    lesion: '',
+    breath: '',
   });
   const validate = () => {
     const nameValidated = fieldValidate(dados.name);
-    const cnpjValidated = cnpjValidate(dados.cnpj);
     const avatarValidated = fieldValidate(dados.avatar);
     const cityValidated = fieldValidate(dados.city);
     const ufValidated = fieldValidate(dados.uf);
-    setErrors({
-      ...errors,
-      name: nameValidated.error,
-      cnpj: cnpjValidated.error,
-      avatar: avatarValidated.error,
-      city: cityValidated.error,
-      uf: ufValidated.error,
-    });
-    if (
-      !nameValidated.value &&
-      !cnpjValidated.value &&
-      !avatarValidated.value &&
-      !cityValidated.value &&
-      !ufValidated.value
-    ) {
-      return true;
+    if (dados.type === 'gym') {
+      const cnpjValidated = cnpjValidate(dados.cnpj);
+      setErrors({
+        ...errors,
+        name: nameValidated.error,
+        cnpj: cnpjValidated.error,
+        avatar: avatarValidated.error,
+        city: cityValidated.error,
+        uf: ufValidated.error,
+      });
+      if (
+        !nameValidated.value &&
+        !cnpjValidated.value &&
+        !avatarValidated.value &&
+        !cityValidated.value &&
+        !ufValidated.value
+      ) {
+        return true;
+      }
+      return false;
     }
-    return false;
+    if (dados.type === 'common') {
+      const ageValidated = fieldValidate(dados.age);
+      const weightValidated = fieldValidate(dados.weight);
+      const heightValidated = fieldValidate(dados.height);
+      const lesionValidated =
+        dados.problemHealth.lesion.value === true
+          ? fieldValidate(dados.problemHealth.lesion.lesion)
+          : {value: false, error: ''};
+      const breathValidated =
+        dados.problemHealth.breath.value === true
+          ? fieldValidate(dados.problemHealth.breath.breath)
+          : {value: false, error: ''};
+      setErrors({
+        ...errors,
+        name: nameValidated.error,
+        avatar: avatarValidated.error,
+        city: cityValidated.error,
+        uf: ufValidated.error,
+        age: ageValidated.error,
+        weight: weightValidated.error,
+        height: heightValidated.error,
+        lesion: lesionValidated.error,
+        breath: breathValidated.error,
+      });
+      if (
+        !nameValidated.value &&
+        !ageValidated.value &&
+        !avatarValidated.value &&
+        !cityValidated.value &&
+        !ufValidated.value &&
+        !weightValidated.value &&
+        !heightValidated.value &&
+        !lesionValidated.value &&
+        !breathValidated.value
+      ) {
+        return true;
+      }
+      return false;
+    }
+    if (dados.type === 'trainner') {
+      const courseValidated = fieldValidate(dados.course);
+      const universityValidated = fieldValidate(dados.university);
+      setErrors({
+        ...errors,
+        name: nameValidated.error,
+        avatar: avatarValidated.error,
+        city: cityValidated.error,
+        uf: ufValidated.error,
+        course: courseValidated.error,
+        university: universityValidated.error,
+      });
+      if (
+        !nameValidated.value &&
+        !avatarValidated.value &&
+        !cityValidated.value &&
+        !ufValidated.value &&
+        !courseValidated.value &&
+        !universityValidated.value
+      ) {
+        return true;
+      }
+      return false;
+    }
   };
   const FinallizedSignUp = () => {
     const validated = validate();
-
+    setDados({...dados, completeRegister: true});
     if (validated) {
-      firestore()
+      return firestore()
         .collection('users')
         .doc(dados.uid)
         .update(dados)
         .then(res => {
+          userPersist(dados);
           showMessage({
             type: 'success',
-            message: 'Cadastro feito com sucesso!',
+            message: 'Cadastro completo!',
           });
+          navigation.navigate('Home');
         });
     }
-    showMessage({
+    return showMessage({
       type: 'danger',
-      message: 'Preencha todos os campos!',
+      message:
+        errors.cnpj !== '' ? 'CNPJ inválido' : 'Preencha todos os campos!',
     });
   };
   return (
@@ -92,7 +162,7 @@ const Step4 = ({backStateChange, dados, setDados}: StepProps) => {
           marginBottom={30}
         />
         {dados.type === 'common' && (
-          <DataUser dados={dados} setDados={setDados} errors={errors} />
+          <DataCommon dados={dados} setDados={setDados} errors={errors} />
         )}
         {dados.type === 'trainner' && (
           <DataTrainner dados={dados} setDados={setDados} errors={errors} />

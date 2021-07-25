@@ -14,6 +14,7 @@ interface InputProps {
   width: number | string;
   error: string;
   city: boolean;
+  numeric: boolean;
 }
 
 const Input = ({
@@ -26,12 +27,18 @@ const Input = ({
   width,
   error,
   city,
+  numeric,
 }: InputProps) => {
   return (
     <>
       <InputStyle slogan={slogan} width={width} error={!error ? false : true}>
         <TextInput
-          style={{fontFamily: 'Poppins-Regular', fontSize: 15, width: '100%'}}
+          style={{
+            fontFamily: 'Poppins-Regular',
+            fontSize: 15,
+            width: '100%',
+            height: slogan ? 80 : 56,
+          }}
           multiline={multiline ? true : false}
           placeholder={placeholder}
           value={value}
@@ -39,6 +46,7 @@ const Input = ({
           maxLength={250}
           secureTextEntry={password}
           placeholderTextColor={!error ? '#1C2439' : '#FF6859'}
+          keyboardType={numeric ? 'numeric' : 'default'}
         />
       </InputStyle>
       {!!error && !city && (

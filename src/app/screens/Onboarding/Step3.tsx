@@ -45,7 +45,7 @@ const Step3 = ({stateChange, backStateChange, dados, setDados}: StepProps) => {
               title="Básico - Grátis"
               desc="Nesse plano você precisa está vinculado a uma academia para usar o aplicativo. Além disso, você só pode ter vínculo a uma academia."
               onPress={() => {
-                setDados({...dados, plan: 'basic'});
+                setDados({...dados, plan: 'basic', limitGym: 1});
                 stateChange();
               }}
             />
@@ -65,7 +65,7 @@ const Step3 = ({stateChange, backStateChange, dados, setDados}: StepProps) => {
               title="Básico - Grátis"
               desc="Nesse plano você precisa está vinculado a uma academia para usar o aplicativo e criar o treino dos seus alunos. Pode associar até 2 academia no máximo."
               onPress={() => {
-                setDados({...dados, plan: 'basic'});
+                setDados({...dados, plan: 'basic', limitGym: 2});
                 stateChange();
               }}
             />
@@ -85,7 +85,12 @@ const Step3 = ({stateChange, backStateChange, dados, setDados}: StepProps) => {
               title="Básico - R$ 19,90"
               desc="Nesse plano você pode associar até 250 alunos e 3 treinadores."
               onPress={() => {
-                setDados({...dados, plan: 'basic'});
+                setDados({
+                  ...dados,
+                  plan: 'basic',
+                  limitTrainner: 3,
+                  limitCommon: 250,
+                });
                 stateChange();
               }}
             />
@@ -93,7 +98,12 @@ const Step3 = ({stateChange, backStateChange, dados, setDados}: StepProps) => {
               title="Intermediário - R$ 29,90"
               desc="Nesse plano você pode associar até 350 alunos e 5 treinadores."
               onPress={() => {
-                setDados({...dados, plan: 'intermediary'});
+                setDados({
+                  ...dados,
+                  plan: 'intermediary',
+                  limitTrainner: 5,
+                  limitCommon: 350,
+                });
                 stateChange();
               }}
             />
@@ -101,7 +111,12 @@ const Step3 = ({stateChange, backStateChange, dados, setDados}: StepProps) => {
               title="Ultimate - R$ 39,90"
               desc="Nesse plano você pode associar até 500 alunos e 8 treinadores."
               onPress={() => {
-                setDados({...dados, plan: 'ultimate'});
+                setDados({
+                  ...dados,
+                  plan: 'ultimate',
+                  limitTrainner: 8,
+                  limitCommon: 500,
+                });
                 stateChange();
               }}
             />

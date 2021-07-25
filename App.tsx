@@ -12,10 +12,11 @@ import React, {useEffect} from 'react';
 import {SafeAreaView, StatusBar} from 'react-native';
 import {Provider} from 'react-redux';
 import {NavigationContainer} from '@react-navigation/native';
-import {PublicRoutes} from './src/routes';
+
 import {PersistGate} from 'redux-persist/lib/integration/react';
 import store, {persist} from 'store';
 import {onPermission} from 'functions';
+import Routes from 'routes';
 import FlashMessage from 'react-native-flash-message';
 
 const App = () => {
@@ -31,15 +32,17 @@ const App = () => {
             barStyle="dark-content"
             backgroundColor="rgba(0,0,0, 0)"
           />
-          <FlashMessage
-            position="top"
-            duration={5000}
-            textStyle={{fontFamily: 'Poppins-Medium', fontSize: 15}}
-          />
           <NavigationContainer>
-            <PublicRoutes />
+            <Routes />
           </NavigationContainer>
         </SafeAreaView>
+        <FlashMessage
+          statusBarHeight={30}
+          position="top"
+          duration={5000}
+          titleStyle={{fontFamily: 'Poppins-Medium', fontSize: 15}}
+          textStyle={{fontFamily: 'Poppins-Medium', fontSize: 15}}
+        />
       </PersistGate>
     </Provider>
   );

@@ -14,6 +14,9 @@ type PublicGroup = CommonGroup & {
 
 type PrivateGroup = CommonGroup & {};
 
-type ConfigGroup = PublicGroup | PrivateGroup;
+type ConfigGroup = PublicGroup;
+type ConfigPrivateGroup = PrivateGroup;
 
 type FeatureGroup = Record<string, ConfigGroup>;
+
+type PrivateFeatureGroup = Record<string, ConfigPrivateGroup>;

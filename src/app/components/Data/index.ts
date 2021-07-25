@@ -1,5 +1,5 @@
 import DataGym from './DataGym';
 import DataTrainner from './DataTrainner';
-import DataUser from './DataUser';
+import DataCommon from './DataCommon';
 
-export {DataUser, DataTrainner, DataGym};
+export {DataCommon, DataTrainner, DataGym};

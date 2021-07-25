@@ -23,6 +23,10 @@ const initialState: any = {
     weight: undefined,
     age: undefined,
     height: undefined,
+    limitGym: undefined,
+    limitCommon: undefined,
+    limitTrainner: undefined,
+    completeRegister: undefined,
   },
 };
 

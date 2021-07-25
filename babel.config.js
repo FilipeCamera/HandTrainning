@@ -15,7 +15,7 @@ const plugins = [
         '.png',
       ],
       alias: {
-        clients: './src/clients/',
+        features: './src/clients',
         components: './src/app/components/',
         assets: './src/assets/',
         screens: './src/app/screens/',

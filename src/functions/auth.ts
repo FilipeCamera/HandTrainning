@@ -23,6 +23,10 @@ const userPersist = (user: any) => {
     weight: user.weight,
     age: user.age,
     height: user.height,
+    limitGym: user.limitGym,
+    limitCommon: user.limitCommon,
+    limitTrainner: user.limitTrainner,
+    completeRegister: user.completeRegister,
   });
 };
 
@@ -51,6 +55,10 @@ const Logout = () => {
           weight: undefined,
           age: undefined,
           height: undefined,
+          limitGym: undefined,
+          limitCommon: undefined,
+          limitTrainner: undefined,
+          completeRegister: undefined,
         });
         resolve(true);
       })
