@@ -21,7 +21,7 @@ const initialState: any = {
     specs: undefined,
     problemHealth: undefined,
     weight: undefined,
-    years: undefined,
+    age: undefined,
     height: undefined,
   },
 };

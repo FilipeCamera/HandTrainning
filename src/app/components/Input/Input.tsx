@@ -13,6 +13,7 @@ interface InputProps {
   slogan: boolean;
   width: number | string;
   error: string;
+  city: boolean;
 }
 
 const Input = ({
@@ -24,6 +25,7 @@ const Input = ({
   password,
   width,
   error,
+  city,
 }: InputProps) => {
   return (
     <>
@@ -39,8 +41,12 @@ const Input = ({
           placeholderTextColor={!error ? '#1C2439' : '#FF6859'}
         />
       </InputStyle>
-      {!!error && (
-        <View style={{width: '90%', marginBottom: 10}}>
+      {!!error && !city && (
+        <View
+          style={{
+            width: '90%',
+            marginBottom: 10,
+          }}>
           <Text title={error} size={12} weight={500} color="#FF6859" />
         </View>
       )}

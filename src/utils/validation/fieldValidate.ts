@@ -1,5 +1,5 @@
 const fieldValidate = (e: string) => {
-  if (e.length === 0) {
+  if (e === undefined || e === null || e.length === 0) {
     return {
       value: true,
       error: 'Campo Obrigatório',

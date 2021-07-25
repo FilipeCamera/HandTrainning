@@ -6,10 +6,10 @@ import axios from 'axios';
 interface DropDownProps {
   value: string | null;
   onValue: any;
-  errors: any;
+  error: any;
 }
 
-const DropDownUF = ({value, onValue, errors}: DropDownProps) => {
+const DropDownUF = ({value, onValue, error}: DropDownProps) => {
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState<any>([]);
   useEffect(() => {
@@ -28,14 +28,13 @@ const DropDownUF = ({value, onValue, errors}: DropDownProps) => {
     <DropDownPicker
       placeholder="Estado"
       placeholderStyle={{
-        color: errors.uf !== '' ? '#FF6859' : '#1C2439',
+        color: error !== '' ? '#FF6859' : '#1C2439',
         fontFamily: 'Poppins-Regular',
       }}
       textStyle={{fontFamily: 'Poppins-Regular'}}
       listMode="SCROLLVIEW"
       style={{
-        backgroundColor:
-          errors.uf !== '' ? 'rgba(255, 104, 89, 0.15)' : '#f1f4fa',
+        backgroundColor: error !== '' ? 'rgba(255, 104, 89, 0.15)' : '#f1f4fa',
         borderRadius: 10,
         borderWidth: 0,
         width: 100,

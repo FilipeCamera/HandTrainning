@@ -90,7 +90,7 @@ const Step3 = ({stateChange, backStateChange, dados, setDados}: StepProps) => {
               }}
             />
             <CardButton
-              title="Individual - R$ 29,90"
+              title="Intermediário - R$ 29,90"
               desc="Nesse plano você pode associar até 350 alunos e 5 treinadores."
               onPress={() => {
                 setDados({...dados, plan: 'intermediary'});
@@ -98,7 +98,7 @@ const Step3 = ({stateChange, backStateChange, dados, setDados}: StepProps) => {
               }}
             />
             <CardButton
-              title="Individual - R$ 39,90"
+              title="Ultimate - R$ 39,90"
               desc="Nesse plano você pode associar até 500 alunos e 8 treinadores."
               onPress={() => {
                 setDados({...dados, plan: 'ultimate'});

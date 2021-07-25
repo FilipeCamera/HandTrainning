@@ -21,7 +21,7 @@ const userPersist = (user: any) => {
     specs: user.specs,
     problemHealth: user.problemHealth,
     weight: user.weight,
-    years: user.years,
+    age: user.age,
     height: user.height,
   });
 };
@@ -49,7 +49,7 @@ const Logout = () => {
           specs: undefined,
           problemHealth: undefined,
           weight: undefined,
-          years: undefined,
+          age: undefined,
           height: undefined,
         });
         resolve(true);

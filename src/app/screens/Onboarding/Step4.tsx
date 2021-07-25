@@ -7,7 +7,9 @@ import {
   SimpleHeader,
   Space,
 } from 'components';
+import {firestore} from 'firebase';
 import React, {useState} from 'react';
+import {showMessage} from 'react-native-flash-message';
 import {cnpjValidate, fieldValidate} from 'validation';
 import {ContainerTwo} from './styles';
 
@@ -29,7 +31,6 @@ const Step4 = ({backStateChange, dados, setDados}: StepProps) => {
     university: '',
     experience: '',
     specs: '',
-    problemHealth: '',
     weight: '',
     years: '',
     height: '',
@@ -37,23 +38,47 @@ const Step4 = ({backStateChange, dados, setDados}: StepProps) => {
   const validate = () => {
     const nameValidated = fieldValidate(dados.name);
     const cnpjValidated = cnpjValidate(dados.cnpj);
-
+    const avatarValidated = fieldValidate(dados.avatar);
+    const cityValidated = fieldValidate(dados.city);
+    const ufValidated = fieldValidate(dados.uf);
     setErrors({
       ...errors,
       name: nameValidated.error,
-      cnpj: nameValidated.error,
+      cnpj: cnpjValidated.error,
+      avatar: avatarValidated.error,
+      city: cityValidated.error,
+      uf: ufValidated.error,
     });
-    if (!nameValidated.value || !cnpjValidated.value) {
-      return false;
+    if (
+      !nameValidated.value &&
+      !cnpjValidated.value &&
+      !avatarValidated.value &&
+      !cityValidated.value &&
+      !ufValidated.value
+    ) {
+      return true;
     }
-    return true;
+    return false;
   };
   const FinallizedSignUp = () => {
     const validated = validate();
 
     if (validated) {
-      console.log('Cadastro feito');
+      firestore()
+        .collection('users')
+        .doc(dados.uid)
+        .update(dados)
+        .then(res => {
+          showMessage({
+            type: 'success',
+            message: 'Cadastro feito com sucesso!',
+          });
+        });
     }
+    showMessage({
+      type: 'danger',
+      message: 'Preencha todos os campos!',
+    });
   };
   return (
     <ContainerTwo>
@@ -66,8 +91,12 @@ const Step4 = ({backStateChange, dados, setDados}: StepProps) => {
           weight={500}
           marginBottom={30}
         />
-        {dados.type === 'common' && <DataUser />}
-        {dados.type === 'trainner' && <DataTrainner />}
+        {dados.type === 'common' && (
+          <DataUser dados={dados} setDados={setDados} errors={errors} />
+        )}
+        {dados.type === 'trainner' && (
+          <DataTrainner dados={dados} setDados={setDados} errors={errors} />
+        )}
         {dados.type === 'gym' && (
           <DataGym dados={dados} setDados={setDados} errors={errors} />
         )}

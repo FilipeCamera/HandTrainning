@@ -34,7 +34,12 @@ const DataGym = ({dados, setDados, errors}: DataProps) => {
     <>
       <Label title="Perfil" />
       <Space marginVertical={4} />
-      <Avatar edit={true} dados={dados} setDados={setDados} />
+      <Avatar
+        edit={true}
+        dados={dados}
+        setDados={setDados}
+        error={errors.avatar}
+      />
       <Input
         placeholder="Nome da academia"
         value={name}
@@ -71,9 +76,10 @@ const DataGym = ({dados, setDados, errors}: DataProps) => {
           value={city}
           onText={setCity}
           error={errors.city}
+          city
         />
         <Space marginHorizontal={5} />
-        <DropDownUF value={uf} onValue={setUF} errors={errors} />
+        <DropDownUF value={uf} onValue={setUF} error={errors.uf} />
       </View>
     </>
   );

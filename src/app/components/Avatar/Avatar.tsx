@@ -12,9 +12,10 @@ interface AvatarProps {
   edit: boolean;
   dados: any;
   setDados: any;
+  error: any;
 }
 
-const Avatar = ({edit, dados, setDados}: AvatarProps) => {
+const Avatar = ({edit, dados, setDados, error}: AvatarProps) => {
   const {sendFile} = useSendFile();
   const [image, setImage] = useState({});
 
@@ -45,9 +46,9 @@ const Avatar = ({edit, dados, setDados}: AvatarProps) => {
     }
   }, [image]);
   return (
-    <AvatarStyle onPress={handleImage}>
-      {!!edit && (
-        <ProfilePicBox>
+    <AvatarStyle onPress={handleImage} error={error ? true : false}>
+      {!!edit && !image.uri && (
+        <ProfilePicBox error={error ? true : false}>
           <ProfilePic />
         </ProfilePicBox>
       )}

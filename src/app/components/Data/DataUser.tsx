@@ -1,8 +1,21 @@
-import {Label, Space, Input, Check, DropDown, Avatar} from 'components';
-import React, {useState} from 'react';
+import {Label, Space, Input, Check, DropDownUF, Avatar} from 'components';
+import React, {useState, useEffect} from 'react';
 import {View} from 'react-native';
 
-const DataUser = () => {
+interface DataProps {
+  dados: any;
+  setDados: any;
+  errors: any;
+}
+
+const DataUser = ({dados, setDados, errors}: DataProps) => {
+  const [name, setName] = useState('');
+  const [slogan, setSlogan] = useState('');
+  const [uf, setUF] = useState('');
+  const [city, setCity] = useState('');
+  const [weight, setWeight] = useState('');
+  const [age, setAge] = useState('');
+  const [height, setHeight] = useState('');
   const [lesion, setLesion] = useState(false);
   const [breath, setBreath] = useState(false);
   const [diabete, setDiabete] = useState(false);
@@ -12,14 +25,36 @@ const DataUser = () => {
   const [arthrosis, setArthrosis] = useState(false);
   const [cholesterol, setCholesterol] = useState(false);
   const [cancer, setCancer] = useState(false);
-
+  useEffect(() => {
+    setDados({
+      ...dados,
+      name: name,
+      slogan: slogan,
+      city: city,
+      uf: uf,
+      age: age,
+      height: height,
+      weight: weight,
+    });
+  }, [name, slogan, city, uf, age, height, weight]);
   return (
     <>
       <Label title="Perfil" />
       <Space marginVertical={4} />
-      <Avatar />
-      <Input placeholder="Nome" />
-      <Input slogan placeholder="Slogan" multiline={2} />
+      <Avatar edit dados={dados} setDados={setDados} error={errors.avatar} />
+      <Input
+        placeholder="Nome"
+        value={name}
+        onText={setName}
+        error={errors.name}
+      />
+      <Input
+        slogan
+        placeholder="Slogan"
+        multiline={2}
+        value={slogan}
+        onText={setSlogan}
+      />
       <Space marginVertical={20} />
 
       <Label title="Informações do Aluno" />
@@ -31,9 +66,16 @@ const DataUser = () => {
           alignItems: 'center',
           justifyContent: 'space-between',
         }}>
-        <Input placeholder="Cidade" width="65%" />
+        <Input
+          city
+          placeholder="Cidade"
+          width="65%"
+          value={city}
+          onText={setCity}
+          error={errors.city}
+        />
         <Space marginHorizontal={5} />
-        <DropDown />
+        <DropDownUF value={uf} onValue={setUF} error={errors.uf} />
       </View>
       <View
         style={{
@@ -42,9 +84,30 @@ const DataUser = () => {
           alignItems: 'center',
           justifyContent: 'space-between',
         }}>
-        <Input placeholder="Idade" width="30%" />
-        <Input placeholder="Peso" width="30%" />
-        <Input placeholder="Altura" width="30%" />
+        <Input
+          city
+          placeholder="Idade"
+          width="30%"
+          value={age}
+          onText={setAge}
+          error={errors.age}
+        />
+        <Input
+          city
+          placeholder="Peso"
+          width="30%"
+          value={weight}
+          onText={setWeight}
+          error={errors.weight}
+        />
+        <Input
+          city
+          placeholder="Altura"
+          width="30%"
+          value={height}
+          onText={setHeight}
+          error={errors.height}
+        />
       </View>
       <Space marginVertical={20} />
       <Label title="Problemas de saúde" />

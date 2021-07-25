@@ -16,6 +16,7 @@ import {PublicRoutes} from './src/routes';
 import {PersistGate} from 'redux-persist/lib/integration/react';
 import store, {persist} from 'store';
 import {onPermission} from 'functions';
+import FlashMessage from 'react-native-flash-message';
 
 const App = () => {
   useEffect(() => {
@@ -29,6 +30,11 @@ const App = () => {
             translucent={true}
             barStyle="dark-content"
             backgroundColor="rgba(0,0,0, 0)"
+          />
+          <FlashMessage
+            position="top"
+            duration={5000}
+            textStyle={{fontFamily: 'Poppins-Medium', fontSize: 15}}
           />
           <NavigationContainer>
             <PublicRoutes />
