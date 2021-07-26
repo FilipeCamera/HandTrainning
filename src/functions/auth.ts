@@ -63,7 +63,7 @@ const Logout = () => {
         resolve(true);
       })
       .catch((error: any) => {
-        reject(false);
+        reject(error);
       });
   });
 };

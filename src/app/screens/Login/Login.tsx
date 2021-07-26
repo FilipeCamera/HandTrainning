@@ -24,7 +24,7 @@ const Login = ({navigation}: any) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({email: '', password: ''});
-  const {getUser} = useGetUser();
+  const {getUserLogged, getUser} = useGetUser();
   const validate = () => {
     const emailValidated = emailValidate(email);
     const passwordValidated = fieldPass(password, 6);
@@ -38,16 +38,31 @@ const Login = ({navigation}: any) => {
     }
     return true;
   };
-
+  const save = (user: any) => {
+    getUser({
+      uid: user.uid,
+      onComplete: user => {
+        if (user) {
+          userPersist(user);
+          navigation.navigate('Private');
+        }
+      },
+    });
+  };
   const signIn = () => {
     const validated = validate();
 
     if (validated) {
       return auth()
         .signInWithEmailAndPassword(email, password)
-        .then(async (res: any) => {
-          const userLogged = {email: res.user.email, uid: res.user.uid};
-          await getUser(userLogged.uid);
+        .then(() => {
+          getUserLogged({
+            onComplete: (user: any) => {
+              if (user) {
+                save(user);
+              }
+            },
+          });
           showMessage({
             type: 'success',
             message: 'Login efetuado com sucesso!',
@@ -59,12 +74,13 @@ const Login = ({navigation}: any) => {
             case 'auth/user-not-found':
               return showMessage({
                 type: 'danger',
-                message: 'Usuário não encontrado',
+                message: 'Usuário não encontrado. Por favor, tente novamente!',
               });
             case 'auth/wrong-password':
               return showMessage({
                 type: 'danger',
-                message: 'E-mail ou senha incorreta',
+                message:
+                  'E-mail ou senha incorreta. Por favor, tente novamente!',
               });
           }
         });

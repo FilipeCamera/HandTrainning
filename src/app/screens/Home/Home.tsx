@@ -1,4 +1,4 @@
-import {Button, Text} from 'components';
+import {Button} from 'components';
 import {Logout} from 'functions';
 import React from 'react';
 import {View} from 'react-native';

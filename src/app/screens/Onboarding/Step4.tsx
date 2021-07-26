@@ -9,7 +9,7 @@ import {
 } from 'components';
 import {firestore} from 'firebase';
 import {userPersist} from 'functions';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {showMessage} from 'react-native-flash-message';
 import {cnpjValidate, fieldValidate} from 'validation';
 import {ContainerTwo} from './styles';
@@ -22,6 +22,7 @@ interface StepProps {
 }
 
 const Step4 = ({backStateChange, dados, setDados, navigation}: StepProps) => {
+  const [complete, setComplete] = useState(false);
   const [errors, setErrors] = useState({
     name: '',
     slogan: '',
@@ -37,6 +38,13 @@ const Step4 = ({backStateChange, dados, setDados, navigation}: StepProps) => {
     lesion: '',
     breath: '',
   });
+
+  useEffect(() => {
+    setDados({...dados, completeRegister: true});
+    if (dados.completeRegister) {
+      setComplete(true);
+    }
+  }, []);
   const validate = () => {
     const nameValidated = fieldValidate(dados.name);
     const avatarValidated = fieldValidate(dados.avatar);
@@ -129,7 +137,6 @@ const Step4 = ({backStateChange, dados, setDados, navigation}: StepProps) => {
   };
   const FinallizedSignUp = () => {
     const validated = validate();
-    setDados({...dados, completeRegister: true});
     if (validated) {
       return firestore()
         .collection('users')

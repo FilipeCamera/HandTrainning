@@ -1,8 +1,7 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {privateFeatures} from 'features';
 import {useSelector} from 'react-redux';
-import {useGetUser} from 'hooks';
 
 const privateFeature = ['Home', 'Onboarding'];
 
@@ -25,10 +24,7 @@ const {Navigator, Screen} = createStackNavigator<RootStackParamList>();
 
 export default () => {
   const user = useSelector((state: any) => state.auth.user);
-  const {getUser} = useGetUser();
-  useEffect(() => {
-    getUser(user.uid);
-  }, []);
+
   return (
     <Navigator
       initialRouteName={user.completeRegister ? 'Home' : 'Onboarding'}

@@ -9,7 +9,7 @@ import {
   Text,
 } from 'components';
 import React, {useState} from 'react';
-import {Alert, View} from 'react-native';
+import {View} from 'react-native';
 
 import Line from 'assets/svg/Line.svg';
 
@@ -136,6 +136,11 @@ const Register = ({navigation}: any) => {
             const validated = validate();
             if (validated) {
               signUp(email, password);
+            } else {
+              showMessage({
+                type: 'danger',
+                message: 'Preencha todos os campos corretamente!',
+              });
             }
           }}
         />
