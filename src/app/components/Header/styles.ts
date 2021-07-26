@@ -14,6 +14,13 @@ export const Container = styled.View<HeaderProps>`
     props.marginBottom ? `margin-bottom: ${props.marginBottom}px` : ''}
 `;
 
+export const HeaderStyle = styled.View`
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+`;
+
 export const IconLeft = styled.TouchableOpacity`
   position: absolute;
   left: 10px;
@@ -23,3 +30,5 @@ export const IconRight = styled.TouchableOpacity`
   position: absolute;
   right: 10px;
 `;
+
+export const ButtonAlert = styled.TouchableOpacity``;

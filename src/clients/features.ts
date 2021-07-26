@@ -1,4 +1,4 @@
-import {Initial, Register, Login, Onboarding, Home} from 'screens';
+import {Initial, Register, Login, Onboarding, Dashboard} from 'screens';
 
 const features: FeatureGroup = {
   Initial: {
@@ -34,9 +34,9 @@ const features: FeatureGroup = {
 };
 
 const privateFeatures: PrivateFeatureGroup = {
-  Home: {
+  Dashboard: {
     enabled: true,
-    component: Home,
+    component: Dashboard,
   },
   Onboarding: {
     enabled: true,

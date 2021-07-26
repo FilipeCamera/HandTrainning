@@ -3,7 +3,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {privateFeatures} from 'features';
 import {useSelector} from 'react-redux';
 
-const privateFeature = ['Home', 'Onboarding'];
+const privateFeature = ['Dashboard', 'Onboarding'];
 
 const routes = Object.keys(privateFeatures).map(
   (feature: keyof PrivateFeatureGroup) => {
@@ -27,7 +27,7 @@ export default () => {
 
   return (
     <Navigator
-      initialRouteName={user.completeRegister ? 'Home' : 'Onboarding'}
+      initialRouteName={user.completeRegister ? 'Dashboard' : 'Onboarding'}
       headerMode="none">
       {routes.map(({name, component}) => (
         <Screen key={name} name={name as any} component={component} />

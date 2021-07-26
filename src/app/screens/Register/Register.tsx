@@ -65,7 +65,7 @@ const Register = ({navigation}: any) => {
       .then(async (user: any) => {
         const {uid} = await user.user;
         saveUser(uid);
-        showMessage({type: 'success', message: 'Cadastron feito com sucesso!'});
+        showMessage({type: 'success', message: 'Cadastro feito com sucesso!'});
         navigation.navigate('Private');
       })
       .catch((error: any) => {

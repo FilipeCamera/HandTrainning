@@ -9,7 +9,7 @@ import {
 import Check from './CheckBox';
 import {DataTrainner, DataCommon, DataGym} from './Data';
 import DropDownUF from './Dropdown';
-import {SimpleHeader} from './Header';
+import {SimpleHeader, Header} from './Header';
 import Input from './Input';
 import Label from './Label';
 import Scroll from './Scroll';
@@ -34,4 +34,5 @@ export {
   DataTrainner,
   DataGym,
   Avatar,
+  Header,
 };

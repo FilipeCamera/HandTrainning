@@ -1,11 +1,12 @@
-import {Button} from 'components';
+import {Button, Header} from 'components';
 import {Logout} from 'functions';
 import React from 'react';
-import {View} from 'react-native';
+import {HomeStyle} from './styles';
 
 const Home = ({navigation}: any) => {
   return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+    <HomeStyle>
+      <Header />
       <Button
         title="Sair"
         onPress={() =>
@@ -16,7 +17,7 @@ const Home = ({navigation}: any) => {
         size={16}
         weight={500}
       />
-    </View>
+    </HomeStyle>
   );
 };
 
