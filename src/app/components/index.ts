@@ -1,4 +1,5 @@
 import Avatar from './Avatar';
+import BarChart from './BarChart';
 import {
   Button,
   ButtonRed,
@@ -6,6 +7,7 @@ import {
   CardButton,
   CircleButton,
 } from './Button';
+import CardStatus from './Cards';
 import Check from './CheckBox';
 import {DataTrainner, DataCommon, DataGym} from './Data';
 import DropDownUF from './Dropdown';
@@ -35,4 +37,6 @@ export {
   DataGym,
   Avatar,
   Header,
+  BarChart,
+  CardStatus,
 };

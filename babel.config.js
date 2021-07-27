@@ -28,6 +28,7 @@ const plugins = [
         validation: './src/utils/validation',
         '@mask': './src/utils/mask',
         hooks: './src/hooks',
+        '@styles': './src/styles',
       },
     },
   ],
