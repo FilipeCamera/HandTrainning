@@ -34,7 +34,6 @@ const BarChart = () => {
         flexGrow: 1,
         flexDirection: 'row',
         alignItems: 'baseline',
-        height: 160,
       }}>
       {data.map(item => (
         <View

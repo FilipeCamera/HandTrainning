@@ -5,5 +5,5 @@ export const RowStyle = styled.View`
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  margin-bottom: 30px;
+  ${(props: any) => (props.noMargin ? '' : 'margin: 30px 0 30px')};
 `;

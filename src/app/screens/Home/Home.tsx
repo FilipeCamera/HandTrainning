@@ -9,25 +9,17 @@ import {
 } from 'components';
 import {Logout} from 'functions';
 import React from 'react';
-import {HomeStyle} from './styles';
+import {useSelector} from 'react-redux';
+import HomeCommon from './HomeCommon';
+import HomeGym from './HomeGym';
 
 const Home = ({navigation}: any) => {
+  const user = useSelector((state: any) => state.auth.user);
   return (
-    <HomeStyle
-      contentContainerStyle={{
-        flexGrow: 1,
-        padding: 16,
-        alignItems: 'center',
-        width: '100%',
-      }}
-      showsVerticalScrollIndicator={false}>
-      <Header />
-      <BarChart />
-      <Row>
-        <CardTrainner />
-        <CardStatus />
-      </Row>
-    </HomeStyle>
+    <>
+      {user.type === 'gym' && <HomeGym navigation={navigation} />}
+      {user.type === 'common' && <HomeCommon navigation={navigation} />}
+    </>
   );
 };
 

@@ -7,7 +7,7 @@ interface BarLineProps {
 }
 
 export const BarChartStyle = styled.ScrollView`
-  margin: 30px 0 16px;
+  margin: 50px 0 0;
 `;
 
 export const BarLineRed = styled(LinearGradient).attrs({

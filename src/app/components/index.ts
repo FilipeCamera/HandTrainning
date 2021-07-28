@@ -1,5 +1,6 @@
 import {Avatar, AvatarActive} from './Avatar';
 import BarChart from './BarChart';
+import Board from './Board';
 import {
   Button,
   ButtonRed,
@@ -43,4 +44,5 @@ export {
   CardTrainner,
   Row,
   AvatarActive,
+  Board,
 };
