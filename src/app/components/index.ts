@@ -1,4 +1,4 @@
-import Avatar from './Avatar';
+import {Avatar, AvatarActive} from './Avatar';
 import BarChart from './BarChart';
 import {
   Button,
@@ -7,13 +7,14 @@ import {
   CardButton,
   CircleButton,
 } from './Button';
-import CardStatus from './Cards';
+import {CardStatus, CardTrainner} from './Cards';
 import Check from './CheckBox';
 import {DataTrainner, DataCommon, DataGym} from './Data';
 import DropDownUF from './Dropdown';
 import {SimpleHeader, Header} from './Header';
 import Input from './Input';
 import Label from './Label';
+import Row from './Row';
 import Scroll from './Scroll';
 import Space from './Space';
 import Text from './Text';
@@ -39,4 +40,7 @@ export {
   Header,
   BarChart,
   CardStatus,
+  CardTrainner,
+  Row,
+  AvatarActive,
 };

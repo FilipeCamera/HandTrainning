@@ -13,12 +13,12 @@ const BarChart = () => {
   const data = [
     {
       label: 'Jan',
-      valueLose: 5,
+      valueLose: 0,
       valueWin: 100,
       total: 100,
       date: Date.now(),
     },
-    {label: 'Fev', valueLose: 32, valueWin: 56, total: 125, date: new Date()},
+    {label: 'Fev', valueLose: 82, valueWin: 206, total: 300, date: new Date()},
     {label: 'Abril', valueLose: 32, valueWin: 56, total: 125, date: new Date()},
     {label: 'Maio', valueLose: 32, valueWin: 56, total: 125, date: new Date()},
     {label: 'Jun', valueLose: 32, valueWin: 56, total: 125, date: new Date()},
@@ -34,6 +34,7 @@ const BarChart = () => {
         flexGrow: 1,
         flexDirection: 'row',
         alignItems: 'baseline',
+        height: 160,
       }}>
       {data.map(item => (
         <View
@@ -59,7 +60,7 @@ const BarChart = () => {
             <Text
               title={item.label}
               size={12}
-              weight={item.date === currentDate ? 700 : 500}
+              weight={item.date === currentDate ? 900 : 500}
               color={item.date === currentDate ? '#454459' : '#A2A2AC'}
             />
             {item.date === currentDate ? <LinerCircle /> : null}

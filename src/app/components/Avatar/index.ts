@@ -1,3 +1,3 @@
 import Avatar from './Avatar';
-
-export default Avatar;
+import AvatarActive from './AvatarActive';
+export {Avatar, AvatarActive};

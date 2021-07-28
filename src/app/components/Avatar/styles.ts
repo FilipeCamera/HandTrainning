@@ -29,3 +29,11 @@ export const ProfilePicBox = styled.View<AvatarProps>`
   right: 0;
   elevation: 1;
 `;
+
+export const AvatarActiveStyle = styled.View`
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  border: 1px solid #fff;
+  margin: 5px;
+`;

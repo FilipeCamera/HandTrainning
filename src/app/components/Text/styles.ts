@@ -20,5 +20,4 @@ export const TextStyle = styled.Text<TextProps>`
   font-family: ${(props: TextProps) => family[props.weight || 400]};
   color: ${(props: any) => props.color || '#000'};
   ${(props: any) => (props.center ? 'text-align: center' : '')};
-  line-height: 20px;
 `;

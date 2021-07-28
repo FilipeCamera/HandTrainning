@@ -7,8 +7,10 @@ import RectangleRed2 from 'assets/svg/Rectangle17.svg';
 import RectangleLine2 from 'assets/svg/Rectangle19.svg';
 import RectangleShadow2 from 'assets/svg/Rectangle18.svg';
 import DownIcon from 'assets/svg/Down.svg';
+import UpIcon from 'assets/svg/Up.svg';
 import {CardStatusStyle, CardBoxTwoStyle, CardBoxStyle} from './styles';
 import {View} from 'react-native';
+import {Text} from 'components';
 
 const CardStatus = () => {
   return (
@@ -28,6 +30,25 @@ const CardStatus = () => {
         <View style={{position: 'absolute', right: 20, top: 0}}>
           <RectangleLine />
         </View>
+        <View>
+          <View>
+            <Text
+              title="Ganhos de usuários"
+              size={15}
+              weight={600}
+              color="#fff"
+            />
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'flex-start',
+            }}>
+            <Text title="16" size={25} weight={500} color="#FFF" />
+            <UpIcon />
+          </View>
+        </View>
       </CardBoxStyle>
       <CardBoxTwoStyle>
         <View
@@ -43,6 +64,25 @@ const CardStatus = () => {
         </View>
         <View style={{position: 'absolute', right: 20, top: 0}}>
           <RectangleLine2 />
+        </View>
+        <View>
+          <View>
+            <Text
+              title="Usuários desvinculados"
+              size={15}
+              weight={600}
+              color="#662924"
+            />
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'flex-start',
+            }}>
+            <Text title="12" size={25} weight={500} color="#662924" />
+            <DownIcon />
+          </View>
         </View>
       </CardBoxTwoStyle>
     </CardStatusStyle>

@@ -1,3 +1,4 @@
 import CardStatus from './CardStatus';
+import CardTrainner from './CardTrainner';
 
-export default CardStatus;
+export {CardStatus, CardTrainner};
