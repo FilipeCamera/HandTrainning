@@ -1,6 +1,7 @@
-import {Button, Header} from 'components';
+import {Button, Carousel, Header} from 'components';
 import {Logout} from 'functions';
 import React from 'react';
+import {View} from 'react-native';
 
 import {HomeStyle} from './styles';
 
@@ -15,6 +16,8 @@ const HomeCommon = ({navigation}: any) => {
       }}
       showsVerticalScrollIndicator={false}>
       <Header />
+
+      <Carousel />
       <Button
         title="Logout"
         size={15}

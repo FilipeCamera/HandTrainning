@@ -9,6 +9,7 @@ import {
   CircleButton,
 } from './Button';
 import {CardStatus, CardTrainner} from './Cards';
+import Carousel from './Carousel';
 import Check from './CheckBox';
 import {DataTrainner, DataCommon, DataGym} from './Data';
 import DropDownUF from './Dropdown';
@@ -45,4 +46,5 @@ export {
   Row,
   AvatarActive,
   Board,
+  Carousel,
 };
