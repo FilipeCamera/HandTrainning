@@ -1,13 +1,12 @@
 import React, {useState, useRef} from 'react';
 import {View, Dimensions, Image} from 'react-native';
-import Carousel, {Pagination} from 'react-native-snap-carousel';
+import Carousel from 'react-native-snap-carousel';
 import {Text} from 'components';
 import {styles} from './styles';
 
 const CarouselComponent = () => {
   const carouselRef = useRef(null);
   const {width} = Dimensions.get('screen');
-  const [active, setActive] = useState(0);
   const data = [
     {
       title: 'Viagem para Morro do São Paulo',
@@ -43,10 +42,10 @@ const CarouselComponent = () => {
       style={[
         {
           width: '100%',
-          height: '100%',
+          height: 180,
           backgroundColor: '#342345',
           borderRadius: 20,
-          marginTop: 40,
+          marginTop: 20,
         },
         styles.shadow,
       ]}>
@@ -82,40 +81,25 @@ const CarouselComponent = () => {
     </View>
   );
   return (
-    <View style={{flex: 1}}>
+    <>
       <Carousel
+        slideStyle={{backgroundColor: '#fff', paddingVertical: 16}}
+        autoplay={true}
+        horizontal={true}
+        autoplayDelay={1000}
+        autoplayInterval={5000}
+        loop={true}
         layout="default"
         data={data}
         ref={carouselRef}
         renderItem={_renderItem}
         sliderWidth={width}
         itemWidth={width - 60}
-        onSnapToItem={index => setActive(index)}
+        lockScrollWhileSnapping={true}
+        enableMomentum={false}
+        enableSnap={false}
       />
-      <Pagination
-        dotsLength={data.length}
-        activeDotIndex={active}
-        dotContainerStyle={{
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: 8,
-        }}
-        dotStyle={{
-          width: 20,
-          height: 10,
-          borderRadius: 5,
-          marginHorizontal: 8,
-          backgroundColor: '#FF6859',
-        }}
-        inactiveDotStyle={{
-          width: 20,
-          height: 20,
-          borderRadius: 10,
-          marginHorizontal: 8,
-          backgroundColor: '#FF8080',
-        }}
-      />
-    </View>
+    </>
   );
 };
 

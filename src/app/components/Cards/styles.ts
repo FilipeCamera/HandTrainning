@@ -1,7 +1,7 @@
 import {Dimensions, StyleSheet} from 'react-native';
 import styled from 'styled-components/native';
 
-const {width} = Dimensions.get('screen');
+const {width, height} = Dimensions.get('screen');
 
 export const CardStatusStyle = styled.View``;
 
@@ -25,7 +25,7 @@ export const CardBoxTwoStyle = styled.View`
   padding: 10px 16px;
 `;
 
-export const CardTrainnerStyle = styled.View`
+export const CardTrainnerStatusStyle = styled.View`
   padding: 8px 0;
   background: #fff;
   border-radius: 20px;
@@ -35,6 +35,14 @@ export const CardTrainnerStyle = styled.View`
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
+`;
+
+export const CardCommonStyle = styled.View`
+  background: #fff;
+  width: 100%;
+  margin: 40px 0;
+  border-radius: 25px;
+  height: ${height - 180}px;
 `;
 
 export const styles = StyleSheet.create({

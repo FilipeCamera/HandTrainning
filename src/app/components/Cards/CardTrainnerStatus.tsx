@@ -1,13 +1,12 @@
 import React from 'react';
 import {AvatarActive} from 'components';
-import {CardTrainnerStyle, styles} from './styles';
+import {CardTrainnerStatusStyle, styles} from './styles';
 import {useSelector} from 'react-redux';
-import Space from '../Space';
 
-const CardTrainner = () => {
+const CardTrainnerStatus = () => {
   const user = useSelector((state: any) => state.auth.user);
   return (
-    <CardTrainnerStyle style={styles.shadow}>
+    <CardTrainnerStatusStyle style={styles.shadow}>
       <AvatarActive avatar={user.avatar} status={true} />
       <AvatarActive avatar={user.avatar} status={true} />
       <AvatarActive avatar={user.avatar} status={true} />
@@ -16,8 +15,8 @@ const CardTrainner = () => {
       <AvatarActive avatar={user.avatar} status={true} />
       <AvatarActive avatar={user.avatar} status={true} />
       <AvatarActive avatar={user.avatar} status={true} />
-    </CardTrainnerStyle>
+    </CardTrainnerStatusStyle>
   );
 };
 
-export default CardTrainner;
+export default CardTrainnerStatus;

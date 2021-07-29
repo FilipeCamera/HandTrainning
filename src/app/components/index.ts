@@ -8,7 +8,7 @@ import {
   CardButton,
   CircleButton,
 } from './Button';
-import {CardStatus, CardTrainner} from './Cards';
+import {CardStatus, CardTrainnerStatus, CardCommon} from './Cards';
 import Carousel from './Carousel';
 import Check from './CheckBox';
 import {DataTrainner, DataCommon, DataGym} from './Data';
@@ -42,9 +42,10 @@ export {
   Header,
   BarChart,
   CardStatus,
-  CardTrainner,
+  CardTrainnerStatus,
   Row,
   AvatarActive,
   Board,
   Carousel,
+  CardCommon,
 };

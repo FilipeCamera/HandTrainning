@@ -1,4 +1,4 @@
-import {Button, Carousel, Header} from 'components';
+import {Button, CardCommon, Carousel, Header} from 'components';
 import {Logout} from 'functions';
 import React from 'react';
 import {View} from 'react-native';
@@ -16,17 +16,8 @@ const HomeCommon = ({navigation}: any) => {
       }}
       showsVerticalScrollIndicator={false}>
       <Header />
-
       <Carousel />
-      <Button
-        title="Logout"
-        size={15}
-        weight={500}
-        color="#090A0A"
-        onPress={() => {
-          Logout().then(_ => navigation.navigate('Public'));
-        }}
-      />
+      <CardCommon />
     </HomeStyle>
   );
 };

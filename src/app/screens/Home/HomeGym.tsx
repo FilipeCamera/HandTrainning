@@ -3,7 +3,7 @@ import {
   Board,
   Button,
   CardStatus,
-  CardTrainner,
+  CardTrainnerStatus,
   Header,
   Row,
 } from 'components';
@@ -24,7 +24,7 @@ const HomeGym = ({navigation}: any) => {
       <Header />
       <BarChart />
       <Row>
-        <CardTrainner />
+        <CardTrainnerStatus />
         <CardStatus />
       </Row>
       <Board title="Mural de Avisos" />
