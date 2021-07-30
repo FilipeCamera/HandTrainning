@@ -1,4 +1,4 @@
-import {Label, Space, Input, DropDownUF, Avatar} from 'components';
+import {Label, Space, Input, DropdownUF, Avatar} from 'components';
 import React, {useState, useEffect} from 'react';
 import {View} from 'react-native';
 import maskCNPJ from '@mask';
@@ -79,7 +79,7 @@ const DataGym = ({dados, setDados, errors}: DataProps) => {
           city
         />
         <Space marginHorizontal={5} />
-        <DropDownUF value={uf} onValue={setUF} error={errors.uf} />
+        <DropdownUF value={uf} onValue={setUF} error={errors.uf} />
       </View>
     </>
   );

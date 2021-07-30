@@ -12,7 +12,7 @@ import {CardStatus, CardTrainnerStatus, CardCommon} from './Cards';
 import Carousel from './Carousel';
 import Check from './CheckBox';
 import {DataTrainner, DataCommon, DataGym} from './Data';
-import DropDownUF from './Dropdown';
+import {DropdownUF, DropdownGender} from './Dropdown';
 import {SimpleHeader, Header} from './Header';
 import Input from './Input';
 import Label from './Label';
@@ -35,7 +35,8 @@ export {
   Label,
   Check,
   DataCommon,
-  DropDownUF,
+  DropdownUF,
+  DropdownGender,
   DataTrainner,
   DataGym,
   Avatar,

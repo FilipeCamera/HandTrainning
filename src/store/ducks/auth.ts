@@ -15,6 +15,7 @@ const initialState: any = {
     cnpj: undefined,
     city: undefined,
     uf: undefined,
+    sex: undefined,
     course: undefined,
     university: undefined,
     experience: undefined,

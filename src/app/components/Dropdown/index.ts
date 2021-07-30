@@ -1,3 +1,4 @@
-import DropDownUF from './DropdownUF';
+import DropdownGender from './DropdownGender';
+import DropdownUF from './DropdownUF';
 
-export default DropDownUF;
+export {DropdownUF, DropdownGender};

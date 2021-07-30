@@ -8,6 +8,7 @@ interface TextProps {
   weight: number;
   color: string;
   center: boolean;
+  style: any;
 }
 
 const Text = ({title, ...props}: TextProps) => {

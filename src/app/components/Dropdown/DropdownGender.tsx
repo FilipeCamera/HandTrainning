@@ -1,7 +1,6 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 
 import DropDownPicker from 'react-native-dropdown-picker';
-import axios from 'axios';
 
 interface DropDownProps {
   value: string | null;
@@ -9,24 +8,16 @@ interface DropDownProps {
   error: any;
 }
 
-const DropdownUF = ({value, onValue, error}: DropDownProps) => {
+const DropdownGender = ({value, onValue, error}: DropDownProps) => {
   const [open, setOpen] = useState(false);
-  const [items, setItems] = useState<any>([]);
-  useEffect(() => {
-    axios
-      .get('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
-      .then(response => {
-        const data = response.data;
-        let list = [];
-        data.map(item => {
-          list.push({label: item.sigla, value: item.sigla});
-        });
-        setItems(list);
-      });
-  }, []);
+  const [items, setItems] = useState<any>([
+    {value: 'man', label: 'Masculino'},
+    {value: 'woman', label: 'Feminino'},
+  ]);
+
   return (
     <DropDownPicker
-      placeholder="Estado"
+      placeholder="Sexo"
       placeholderStyle={{
         color: error !== '' ? '#FF6859' : '#1C2439',
         fontFamily: 'Poppins-Regular',
@@ -38,14 +29,13 @@ const DropdownUF = ({value, onValue, error}: DropDownProps) => {
         borderRadius: 10,
         borderWidth: error !== '' ? 1 : 0,
         borderColor: '#FF6859',
-        width: 100,
         height: 56,
       }}
       dropDownContainerStyle={{
         backgroundColor: '#f1f4fa',
         borderRadius: 10,
         borderWidth: 0,
-        width: 100,
+        paddingVertical: 5,
       }}
       scrollViewProps={{showsVerticalScrollIndicator: false}}
       open={open}
@@ -58,4 +48,4 @@ const DropdownUF = ({value, onValue, error}: DropDownProps) => {
   );
 };
 
-export default DropdownUF;
+export default DropdownGender;

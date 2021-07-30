@@ -1,4 +1,12 @@
-import {Label, Space, Input, Check, DropDownUF, Avatar} from 'components';
+import {
+  Label,
+  Space,
+  Input,
+  Check,
+  DropdownUF,
+  Avatar,
+  DropdownGender,
+} from 'components';
 import React, {useState, useEffect} from 'react';
 import {View} from 'react-native';
 
@@ -12,6 +20,7 @@ const DataCommon = ({dados, setDados, errors}: DataProps) => {
   const [name, setName] = useState('');
   const [slogan, setSlogan] = useState('');
   const [uf, setUF] = useState('');
+  const [sex, setSex] = useState('');
   const [city, setCity] = useState('');
   const [weight, setWeight] = useState('');
   const [age, setAge] = useState('');
@@ -41,6 +50,7 @@ const DataCommon = ({dados, setDados, errors}: DataProps) => {
       city: city,
       uf: uf,
       age: age,
+      sex: sex,
       height: height,
       weight: weight,
       problemHealth: {
@@ -61,6 +71,7 @@ const DataCommon = ({dados, setDados, errors}: DataProps) => {
     city,
     uf,
     age,
+    sex,
     height,
     weight,
     diabete,
@@ -112,7 +123,10 @@ const DataCommon = ({dados, setDados, errors}: DataProps) => {
           error={errors.city}
         />
         <Space marginHorizontal={5} />
-        <DropDownUF value={uf} onValue={setUF} error={errors.uf} />
+        <DropdownUF value={uf} onValue={setUF} error={errors.uf} />
+      </View>
+      <View style={{width: '95%', marginVertical: 8}}>
+        <DropdownGender value={sex} onValue={setSex} error={errors.sex} />
       </View>
       <View
         style={{

@@ -37,6 +37,7 @@ const Step4 = ({backStateChange, dados, setDados, navigation}: StepProps) => {
     height: '',
     lesion: '',
     breath: '',
+    sex: '',
   });
 
   useEffect(() => {
@@ -75,6 +76,7 @@ const Step4 = ({backStateChange, dados, setDados, navigation}: StepProps) => {
       const ageValidated = fieldValidate(dados.age);
       const weightValidated = fieldValidate(dados.weight);
       const heightValidated = fieldValidate(dados.height);
+      const sexValidated = fieldValidate(dados.sex);
       const lesionValidated =
         dados.problemHealth.lesion.value === true
           ? fieldValidate(dados.problemHealth.lesion.lesion)
@@ -94,6 +96,7 @@ const Step4 = ({backStateChange, dados, setDados, navigation}: StepProps) => {
         height: heightValidated.error,
         lesion: lesionValidated.error,
         breath: breathValidated.error,
+        sex: sexValidated.error,
       });
       if (
         !nameValidated.value &&
@@ -104,7 +107,8 @@ const Step4 = ({backStateChange, dados, setDados, navigation}: StepProps) => {
         !weightValidated.value &&
         !heightValidated.value &&
         !lesionValidated.value &&
-        !breathValidated.value
+        !breathValidated.value &&
+        !sexValidated.value
       ) {
         return true;
       }
@@ -148,7 +152,7 @@ const Step4 = ({backStateChange, dados, setDados, navigation}: StepProps) => {
             type: 'success',
             message: 'Cadastro completo!',
           });
-          navigation.navigate('Home');
+          navigation.navigate('Dashboard');
         });
     }
     return showMessage({

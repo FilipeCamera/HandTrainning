@@ -18,6 +18,12 @@ const HomeCommon = ({navigation}: any) => {
       <Header />
       <Carousel />
       <CardCommon />
+      <Button
+        size={15}
+        weight={500}
+        color="#090A0A"
+        onPress={() => Logout().then(_ => navigation.navigate('Public'))}
+      />
     </HomeStyle>
   );
 };
