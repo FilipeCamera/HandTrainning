@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text} from 'components';
 
-import {ButtonStyle, ButtonContainer, styles} from './styles';
+import {ButtonStyle, ButtonContainer, styles, ButtonRedStyle} from './styles';
 
 interface ButtonProps {
   title: string;
@@ -14,11 +14,9 @@ interface ButtonProps {
 
 const ButtonRed = ({title, color, size, weight, onPress}: ButtonProps) => {
   return (
-    <ButtonStyle onPress={onPress}>
-      <ButtonContainer background="#FF6859" style={styles.shadowRed}>
-        <Text title={title} size={size} weight={weight} color={color} />
-      </ButtonContainer>
-    </ButtonStyle>
+    <ButtonRedStyle onPress={onPress} style={styles.shadowRed}>
+      <Text title={title} size={size} weight={weight} color={color} />
+    </ButtonRedStyle>
   );
 };
 

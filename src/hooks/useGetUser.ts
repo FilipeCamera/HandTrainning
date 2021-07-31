@@ -2,6 +2,7 @@ import {auth, firestore} from 'firebase';
 
 const useGetUser = () => {
   const controller = new AbortController();
+
   const getUserLogged = async ({onComplete}: any) => {
     auth().onAuthStateChanged((user: any) => {
       if (user) {
@@ -34,8 +35,19 @@ const useGetUser = () => {
       clearTimeout(timeout);
     };
   };
-
-  return {getUser, getUserLogged};
+  const searchUser = async (value: string, {onComplete, onFail}: any) => {
+    await firestore()
+      .collection('users')
+      .where('name', '>=', value)
+      .where('name', '<=', value + '\uf8ff')
+      .get()
+      .then(querySnapshot => {
+        const users = querySnapshot.docs.map(res => res.data());
+        onComplete(users);
+      })
+      .catch(error => onFail(error));
+  };
+  return {getUser, getUserLogged, searchUser};
 };
 
 export default useGetUser;

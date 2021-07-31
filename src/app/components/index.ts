@@ -7,6 +7,7 @@ import {
   ButtonText,
   CardButton,
   CircleButton,
+  ButtonMiniRed,
 } from './Button';
 import {
   CardStatus,
@@ -23,6 +24,7 @@ import Input from './Input';
 import Label from './Label';
 import Row from './Row';
 import Scroll from './Scroll';
+import Search from './Search';
 import Space from './Space';
 import Text from './Text';
 
@@ -55,4 +57,6 @@ export {
   Carousel,
   CardCommon,
   CardTrainner,
+  Search,
+  ButtonMiniRed,
 };

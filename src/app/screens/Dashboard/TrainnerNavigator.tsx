@@ -1,6 +1,6 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import React from 'react';
-import {Home} from 'screens';
+import {Home, Invites} from 'screens';
 
 import HomeIcon from 'assets/svg/home_icon.svg';
 import HomeIconSelected from 'assets/svg/home_icon_selected.svg';
@@ -56,7 +56,7 @@ const TrainnerNavigator = () => {
       />
       <Tab.Screen
         name="Invites"
-        component={Home}
+        component={Invites}
         options={{
           unmountOnBlur: true,
           tabBarLabel: ({color}) => (

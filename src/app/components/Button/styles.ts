@@ -14,6 +14,27 @@ export const ButtonStyle = styled.TouchableOpacity`
   justify-content: center;
 `;
 
+export const ButtonRedStyle = styled.TouchableOpacity`
+  width: 95%;
+  align-items: center;
+  justify-content: center;
+  height: 56px;
+  border-radius: 8px;
+  background: #ff6859;
+`;
+
+export const ButtonMiniRedStyle = styled.TouchableOpacity`
+  align-items: center;
+  justify-content: center;
+  background: #ff6859;
+  flex-direction: row;
+  align-items: center;
+  flex: 1;
+  border-radius: 5px;
+  padding: 2px 8px;
+  justify-content: space-evenly;
+`;
+
 export const CardButtonStyle = styled.TouchableOpacity`
   width: 90%;
   margin: 8px 0;
