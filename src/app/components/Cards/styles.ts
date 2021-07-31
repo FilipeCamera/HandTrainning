@@ -45,6 +45,14 @@ export const CardCommonStyle = styled.View`
   height: ${height - 180}px;
 `;
 
+export const CardTrainnerStyle = styled.View`
+  background: #fff;
+  width: 100%;
+  margin: 40px 0;
+  border-radius: 25px;
+  height: ${height - 180}px;
+`;
+
 export const styles = StyleSheet.create({
   shadow: {
     shadowColor: '#1C2439',

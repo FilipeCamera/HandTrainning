@@ -8,7 +8,12 @@ import {
   CardButton,
   CircleButton,
 } from './Button';
-import {CardStatus, CardTrainnerStatus, CardCommon} from './Cards';
+import {
+  CardStatus,
+  CardTrainnerStatus,
+  CardCommon,
+  CardTrainner,
+} from './Cards';
 import Carousel from './Carousel';
 import Check from './CheckBox';
 import {DataTrainner, DataCommon, DataGym} from './Data';
@@ -49,4 +54,5 @@ export {
   Board,
   Carousel,
   CardCommon,
+  CardTrainner,
 };
