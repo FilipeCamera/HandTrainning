@@ -1,7 +1,7 @@
 import styled from 'styled-components/native';
 
 export const SearchStyle = styled.View`
-  width: 90%;
+  width: 95%;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;

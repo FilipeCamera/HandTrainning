@@ -8,6 +8,10 @@ interface ButtonProps {
   border: boolean;
 }
 
+interface ButtonInviteProps {
+  background: boolean;
+}
+
 export const ButtonStyle = styled.TouchableOpacity`
   width: 95%;
   align-items: center;
@@ -23,10 +27,10 @@ export const ButtonRedStyle = styled.TouchableOpacity`
   background: #ff6859;
 `;
 
-export const ButtonMiniRedStyle = styled.TouchableOpacity`
+export const ButtonInviteStyle = styled.TouchableOpacity<ButtonInviteProps>`
   align-items: center;
   justify-content: center;
-  background: #ff6859;
+  background: ${(props: any) => (props.background ? '#a3a3a3' : '#ff6859')};
   flex-direction: row;
   align-items: center;
   flex: 1;

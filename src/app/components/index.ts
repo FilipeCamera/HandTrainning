@@ -7,7 +7,7 @@ import {
   ButtonText,
   CardButton,
   CircleButton,
-  ButtonMiniRed,
+  ButtonInvite,
 } from './Button';
 import {
   CardStatus,
@@ -58,5 +58,5 @@ export {
   CardCommon,
   CardTrainner,
   Search,
-  ButtonMiniRed,
+  ButtonInvite,
 };
