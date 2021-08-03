@@ -8,6 +8,7 @@ import {
   CardButton,
   CircleButton,
   ButtonInvite,
+  ButtonMiniRed,
 } from './Button';
 import {
   CardStatus,
@@ -59,4 +60,5 @@ export {
   CardTrainner,
   Search,
   ButtonInvite,
+  ButtonMiniRed,
 };

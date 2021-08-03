@@ -83,6 +83,12 @@ export const ButtonIcon = styled.View`
   left: 25px;
 `;
 
+export const ButtonMiniRedStyle = styled.TouchableOpacity`
+  background: #ff6859;
+  border-radius: 5px;
+  padding: 4px 8px;
+`;
+
 export const styles = StyleSheet.create({
   shadow: {
     shadowColor: '#000',

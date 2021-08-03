@@ -42,7 +42,7 @@ export const CardCommonStyle = styled.View`
   width: 100%;
   margin: 40px 0;
   border-radius: 25px;
-  height: ${height - 180}px;
+  height: 510px;
 `;
 
 export const CardTrainnerStyle = styled.View`
@@ -50,7 +50,7 @@ export const CardTrainnerStyle = styled.View`
   width: 100%;
   margin: 40px 0;
   border-radius: 25px;
-  height: ${height - 180}px;
+  height: 510px;
 `;
 
 export const styles = StyleSheet.create({

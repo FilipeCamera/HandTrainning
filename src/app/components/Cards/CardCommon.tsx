@@ -168,7 +168,7 @@ const CardCommon = () => {
           )}
           {user.sex === 'man' && (
             <>
-              <View style={{padding: 16}}>
+              <View style={{padding: 16, marginTop: 20}}>
                 <Text
                   title="Treinador"
                   size={16}
@@ -311,6 +311,7 @@ const CardCommon = () => {
               alignItems: 'center',
               justifyContent: 'center',
               padding: 16,
+              marginTop: 30,
             }}>
             <Text
               title="Você não possui um treino"
@@ -318,7 +319,7 @@ const CardCommon = () => {
               size={15}
               color="#A3A3A3"
             />
-            <Notify style={{marginVertical: 30}} />
+            <Notify style={{marginVertical: 40}} />
             <ButtonText
               title="Solicitar novo treino"
               size={12}

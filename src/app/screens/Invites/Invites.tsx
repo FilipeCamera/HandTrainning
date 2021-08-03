@@ -1,4 +1,13 @@
-import {ButtonInvite, Header, Label, Search, Space, Text} from 'components';
+import {
+  ButtonInvite,
+  ButtonMiniRed,
+  ButtonText,
+  Header,
+  Label,
+  Search,
+  Space,
+  Text,
+} from 'components';
 import {useGetUser, useInvites} from 'hooks';
 import React, {useState, useEffect} from 'react';
 import {View, Image} from 'react-native';
@@ -7,11 +16,11 @@ import {InvitesStyle} from './styles';
 
 const Invites = () => {
   const user = useSelector((state: any) => state.auth.user);
-  const {searchUser, getUsersByInvited} = useGetUser();
+  const {searchUser, getUsers} = useGetUser();
   const {getInvites} = useInvites();
   const [userSearch, setUserSearch] = useState('');
   const [users, setUsers] = useState([]);
-  const [invitedUsers, setInvitedUsers] = useState([]);
+  const [usersSearch, setUsersSearch] = useState([]);
   const [invites, setInvites] = useState([]);
 
   useEffect(() => {
@@ -23,20 +32,13 @@ const Invites = () => {
       },
       onFail: error => console.log(error),
     });
-  }, []);
-
-  useEffect(() => {
-    invites.map(invite => {
-      getUsersByInvited(invite.to, {
-        onComplete: users => {
-          if (users) {
-            setInvitedUsers(users);
-          }
-        },
-        onFail: error => console.log(error),
-      });
+    getUsers({
+      onComplete: users => {
+        setUsers(users);
+      },
+      onFail: error => console.log(error),
     });
-  }, [invites]);
+  }, []);
 
   return (
     <InvitesStyle
@@ -55,7 +57,7 @@ const Invites = () => {
             searchUser(e, {
               onComplete: (users: any) => {
                 if (users) {
-                  setUsers(users);
+                  setUsersSearch(users);
                 }
                 return;
               },
@@ -65,8 +67,8 @@ const Invites = () => {
             });
         }}
       />
-      {users.length !== 0 &&
-        users.map(userInvite => {
+      {usersSearch.length !== 0 &&
+        usersSearch.map(userInvite => {
           return (
             <View
               key={userInvite.uid}
@@ -137,138 +139,373 @@ const Invites = () => {
           );
         })}
       <Space marginVertical={5} />
-      {users.length === 0 && user.type === 'gym' && (
+      {usersSearch.length === 0 && user.type === 'gym' && (
         <Label title="Treinadores" />
       )}
-      {users.length === 0 && user.type !== 'gym' && <Label title="Academias" />}
       <Space marginVertical={4} />
-      {users.length === 0 &&
-        invitedUsers.length !== 0 &&
-        invitedUsers.map(invitedUser => {
-          if (invitedUser.type === 'trainner') {
-            return (
-              <View
-                key={invitedUser.uid}
-                style={{
-                  width: '100%',
-                  backgroundColor: '#fff',
-                  padding: 16,
-                  borderRadius: 10,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  marginVertical: 8,
-                  shadowColor: '#1C2439',
-                  shadowOffset: {
-                    width: 0,
-                    height: 2,
-                  },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 3.84,
+      {usersSearch.length === 0 &&
+        users.map(user => {
+          const invite = invites.filter(invite => invite.to === user.uid);
+          const status = invite.length > 0 ? invite[0].accept : {status: null};
+          if (status === null) {
+            if (user.type === 'trainner') {
+              return (
+                <View
+                  key={user.uid}
+                  style={{
+                    width: '100%',
+                    backgroundColor: '#fff',
+                    padding: 16,
+                    borderRadius: 10,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginVertical: 8,
+                    shadowColor: '#1C2439',
+                    shadowOffset: {
+                      width: 0,
+                      height: 2,
+                    },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 3.84,
 
-                  elevation: 5,
-                }}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <View style={{width: 60, height: 60, borderRadius: 30}}>
-                    <Image
-                      source={{uri: invitedUser.avatar}}
-                      style={{width: '100%', height: '100%', borderRadius: 999}}
-                    />
+                    elevation: 5,
+                  }}>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <View style={{width: 60, height: 60, borderRadius: 30}}>
+                      <Image
+                        source={{uri: user.avatar}}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          borderRadius: 999,
+                        }}
+                      />
+                    </View>
+                    <View
+                      style={{
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                        marginLeft: 8,
+                      }}>
+                      <Text
+                        title={user.name}
+                        size={16}
+                        weight={600}
+                        color="#090A0A"
+                      />
+                      <Text
+                        title={
+                          user.type === 'common' ? 'Aluno(a)' : 'Treinador(a)'
+                        }
+                        size={14}
+                        weight={500}
+                        color="#090A0A"
+                      />
+                    </View>
                   </View>
                   <View
                     style={{
+                      width: 70,
                       flexDirection: 'column',
-                      alignItems: 'flex-start',
-                      marginLeft: 8,
+                      alignItems: 'center',
+                      justifyContent: 'center',
                     }}>
-                    <Text
-                      title={invitedUser.name}
-                      size={16}
+                    <ButtonMiniRed
+                      title="Aceitar"
                       weight={600}
-                      color="#090A0A"
+                      size={13}
+                      color="#FFF"
                     />
-                    <Text
-                      title={
-                        invitedUser.type === 'common'
-                          ? 'Aluno(a)'
-                          : 'Treinador(a)'
-                      }
-                      size={14}
-                      weight={500}
-                      color="#090A0A"
+                    <Space marginVertical={5} />
+                    <ButtonText
+                      title="Recusar"
+                      weight={400}
+                      size={12}
+                      color="#FF6859"
                     />
                   </View>
                 </View>
-                <View style={{height: 30}} />
-              </View>
-            );
+              );
+            }
+          }
+        })}
+      {usersSearch.length === 0 && user.type !== 'gym' && (
+        <Label title="Academias" />
+      )}
+      {usersSearch.length === 0 &&
+        user.type !== 'gym' &&
+        users.map(user => {
+          const invite = invites.filter(invite => invite.to === user.uid);
+          const status = invite.length > 0 ? invite[0].accept : {status: null};
+
+          if (status === null) {
+            if (user.type === 'trainner') {
+              return (
+                <View
+                  key={user.uid}
+                  style={{
+                    width: '100%',
+                    backgroundColor: '#fff',
+                    padding: 16,
+                    borderRadius: 10,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginVertical: 8,
+                    shadowColor: '#1C2439',
+                    shadowOffset: {
+                      width: 0,
+                      height: 2,
+                    },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 3.84,
+
+                    elevation: 5,
+                  }}>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <View style={{width: 60, height: 60, borderRadius: 30}}>
+                      <Image
+                        source={{uri: user.avatar}}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          borderRadius: 999,
+                        }}
+                      />
+                    </View>
+                    <View
+                      style={{
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                        marginLeft: 8,
+                      }}>
+                      <Text
+                        title={user.name}
+                        size={16}
+                        weight={600}
+                        color="#090A0A"
+                      />
+                      <Text
+                        title={
+                          user.type === 'common' ? 'Aluno(a)' : 'Treinador(a)'
+                        }
+                        size={14}
+                        weight={500}
+                        color="#090A0A"
+                      />
+                    </View>
+                  </View>
+                  <View
+                    style={{
+                      width: 70,
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <ButtonMiniRed
+                      title="Aceitar"
+                      weight={600}
+                      size={13}
+                      color="#FFF"
+                    />
+                    <Space marginVertical={5} />
+                    <ButtonText
+                      title="Recusar"
+                      weight={400}
+                      size={12}
+                      color="#FF6859"
+                    />
+                  </View>
+                </View>
+              );
+            }
           }
         })}
       <Space marginVertical={20} />
-      {users.length === 0 && user.type !== 'common' && <Label title="Alunos" />}
-      {users.length === 0 && user.type === 'common' && (
-        <Label title="Treinadores" />
+      {usersSearch.length === 0 && user.type !== 'common' && (
+        <Label title="Alunos" />
       )}
-      {users.length === 0 &&
-        invitedUsers.length !== 0 &&
-        invitedUsers.map(invitedUser => {
-          if (invitedUser.type === 'common') {
-            return (
-              <View
-                key={invitedUser.uid}
-                style={{
-                  width: '100%',
-                  backgroundColor: '#fff',
-                  padding: 16,
-                  borderRadius: 10,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  marginVertical: 8,
-                  shadowColor: '#1C2439',
-                  shadowOffset: {
-                    width: 0,
-                    height: 2,
-                  },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 3.84,
+      <Space marginVertical={4} />
+      {usersSearch.length === 0 &&
+        users.map(user => {
+          const invite = invites.filter(invite => invite.to === user.uid);
+          const status = invite.length > 0 ? invite[0].accept : {status: null};
 
-                  elevation: 5,
-                }}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <View style={{width: 60, height: 60, borderRadius: 30}}>
-                    <Image
-                      source={{uri: invitedUser.avatar}}
-                      style={{width: '100%', height: '100%', borderRadius: 999}}
-                    />
+          if (status === null) {
+            if (user.type === 'common') {
+              return (
+                <View
+                  key={user.uid}
+                  style={{
+                    width: '100%',
+                    backgroundColor: '#fff',
+                    padding: 16,
+                    borderRadius: 10,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginVertical: 8,
+                    shadowColor: '#1C2439',
+                    shadowOffset: {
+                      width: 0,
+                      height: 2,
+                    },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 3.84,
+
+                    elevation: 5,
+                  }}>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <View style={{width: 60, height: 60, borderRadius: 30}}>
+                      <Image
+                        source={{uri: user.avatar}}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          borderRadius: 999,
+                        }}
+                      />
+                    </View>
+                    <View
+                      style={{
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                        marginLeft: 8,
+                      }}>
+                      <Text
+                        title={user.name}
+                        size={16}
+                        weight={600}
+                        color="#090A0A"
+                      />
+                      <Text
+                        title={
+                          user.type === 'common' ? 'Aluno(a)' : 'Treinador(a)'
+                        }
+                        size={14}
+                        weight={500}
+                        color="#090A0A"
+                      />
+                    </View>
                   </View>
                   <View
                     style={{
+                      width: 70,
                       flexDirection: 'column',
-                      alignItems: 'flex-start',
-                      marginLeft: 8,
+                      alignItems: 'center',
+                      justifyContent: 'center',
                     }}>
-                    <Text
-                      title={invitedUser.name}
-                      size={16}
+                    <ButtonMiniRed
+                      title="Aceitar"
                       weight={600}
-                      color="#090A0A"
+                      size={13}
+                      color="#FFF"
                     />
-                    <Text
-                      title={
-                        invitedUser.type === 'common'
-                          ? 'Aluno(a)'
-                          : 'Treinador(a)'
-                      }
-                      size={14}
-                      weight={500}
-                      color="#090A0A"
+                    <Space marginVertical={5} />
+                    <ButtonText
+                      title="Recusar"
+                      weight={400}
+                      size={12}
+                      color="#FF6859"
                     />
                   </View>
                 </View>
-                <View style={{height: 30}} />
-              </View>
-            );
+              );
+            }
+          }
+        })}
+      <Space marginVertical={20} />
+      {usersSearch.length === 0 && user.type === 'common' && (
+        <Label title="Treinadores" />
+      )}
+      {usersSearch.length === 0 &&
+        user.type === 'common' &&
+        users.map(user => {
+          const invite = invites.filter(invite => invite.to === user.uid);
+          const status = invite.length > 0 ? invite[0].accept : {status: null};
+
+          if (status === null) {
+            if (user.type === 'trainner') {
+              return (
+                <View
+                  key={user.uid}
+                  style={{
+                    width: '100%',
+                    backgroundColor: '#fff',
+                    padding: 16,
+                    borderRadius: 10,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginVertical: 8,
+                    shadowColor: '#1C2439',
+                    shadowOffset: {
+                      width: 0,
+                      height: 2,
+                    },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 3.84,
+
+                    elevation: 5,
+                  }}>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <View style={{width: 60, height: 60, borderRadius: 30}}>
+                      <Image
+                        source={{uri: user.avatar}}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          borderRadius: 999,
+                        }}
+                      />
+                    </View>
+                    <View
+                      style={{
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                        marginLeft: 8,
+                      }}>
+                      <Text
+                        title={user.name}
+                        size={16}
+                        weight={600}
+                        color="#090A0A"
+                      />
+                      <Text
+                        title={
+                          user.type === 'common' ? 'Aluno(a)' : 'Treinador(a)'
+                        }
+                        size={14}
+                        weight={500}
+                        color="#090A0A"
+                      />
+                    </View>
+                  </View>
+                  <View
+                    style={{
+                      width: 70,
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <ButtonMiniRed
+                      title="Aceitar"
+                      weight={600}
+                      size={13}
+                      color="#FFF"
+                    />
+                    <Space marginVertical={5} />
+                    <ButtonText
+                      title="Recusar"
+                      weight={400}
+                      size={12}
+                      color="#FF6859"
+                    />
+                  </View>
+                </View>
+              );
+            }
           }
         })}
     </InvitesStyle>

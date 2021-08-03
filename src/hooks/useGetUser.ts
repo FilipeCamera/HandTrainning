@@ -36,17 +36,6 @@ const useGetUser = () => {
     };
   };
 
-  const getUsersByInvited = async (uid: any, {onComplete, onFail}: any) => {
-    await firestore()
-      .collection('users')
-      .where('uid', '==', uid)
-      .get()
-      .then(querySnapshot => {
-        const users = querySnapshot.docs.map(doc => doc.data());
-        onComplete(users);
-      })
-      .catch(error => onFail(error));
-  };
   const searchUser = async (value: string, {onComplete, onFail}: any) => {
     await firestore()
       .collection('users')
@@ -59,7 +48,18 @@ const useGetUser = () => {
       })
       .catch(error => onFail(error));
   };
-  return {getUser, getUserLogged, searchUser, getUsersByInvited};
+
+  const getUsers = async ({onComplete, onFail}: any) => {
+    await firestore()
+      .collection('users')
+      .get()
+      .then(res => {
+        const users = res.docs.map(doc => doc.data());
+        onComplete(users);
+      })
+      .catch(error => onFail(error));
+  };
+  return {getUser, getUserLogged, searchUser, getUsers};
 };
 
 export default useGetUser;

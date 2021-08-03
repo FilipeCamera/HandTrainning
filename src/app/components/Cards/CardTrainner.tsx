@@ -155,7 +155,10 @@ const CardTrainner = () => {
           </View>
         </View>
       </View>
-      <TrainnerActivity style={{alignSelf: 'center'}} width="90%" />
+      <TrainnerActivity
+        style={{alignSelf: 'center', marginTop: 10}}
+        width="95%"
+      />
       <View
         style={{
           position: 'absolute',
