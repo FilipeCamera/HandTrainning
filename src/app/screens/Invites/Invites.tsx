@@ -8,6 +8,7 @@ import {
   Space,
   Text,
 } from 'components';
+import {firestore} from 'firebase';
 import {useGetUser, useInvites} from 'hooks';
 import React, {useState, useEffect} from 'react';
 import {View, Image} from 'react-native';
@@ -17,11 +18,11 @@ import {InvitesStyle} from './styles';
 const Invites = () => {
   const user = useSelector((state: any) => state.auth.user);
   const {searchUser, getUsers} = useGetUser();
-  const {getInvites} = useInvites();
+  const {getInvites, acceptedInvite} = useInvites();
   const [userSearch, setUserSearch] = useState('');
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<any>([]);
   const [usersSearch, setUsersSearch] = useState([]);
-  const [invites, setInvites] = useState([]);
+  const [invites, setInvites] = useState<any>([]);
 
   useEffect(() => {
     getInvites(user.uid, {
@@ -39,6 +40,47 @@ const Invites = () => {
       onFail: error => console.log(error),
     });
   }, []);
+
+  const handleAcceptOrRecused = async ({state, uid}: any) => {
+    const invite = await firestore()
+      .collection('invites')
+      .where('to', '==', uid)
+      .get()
+      .then(res => {
+        return res.docs.map(doc => {
+          return {id: doc.id};
+        });
+      });
+    await acceptedInvite(invite, state, {
+      onComplete: async (status: boolean) => {
+        if (status) {
+          const data = {
+            createdAt: firestore.FieldValue.serverTimestamp(),
+            type: user.type,
+            users: [uid] || uid,
+          };
+          await firestore()
+            .collection('relations')
+            .doc(user.uid)
+            .set(data)
+            .then(() => {
+              firestore()
+                .collection('users')
+                .doc(uid)
+                .update({gymAssociate: user.uid});
+            })
+            .catch(error => console.log(error));
+          setUsers(users.filter(user => user.uid !== uid));
+        }
+        if (!status) {
+          setUsers(users.filter(user => user.uid !== uid));
+        }
+      },
+      onFail: error => {
+        console.log(error);
+      },
+    });
+  };
 
   return (
     <InvitesStyle
@@ -144,14 +186,14 @@ const Invites = () => {
       )}
       <Space marginVertical={4} />
       {usersSearch.length === 0 &&
-        users.map(user => {
-          const invite = invites.filter(invite => invite.to === user.uid);
+        users.map(userInvite => {
+          const invite = invites.filter(invite => invite.to === userInvite.uid);
           const status = invite.length > 0 ? invite[0].accept : {status: null};
           if (status === null) {
-            if (user.type === 'trainner') {
+            if (userInvite.type === 'trainner') {
               return (
                 <View
-                  key={user.uid}
+                  key={userInvite.uid}
                   style={{
                     width: '100%',
                     backgroundColor: '#fff',
@@ -174,7 +216,7 @@ const Invites = () => {
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <View style={{width: 60, height: 60, borderRadius: 30}}>
                       <Image
-                        source={{uri: user.avatar}}
+                        source={{uri: userInvite.avatar}}
                         style={{
                           width: '100%',
                           height: '100%',
@@ -189,14 +231,16 @@ const Invites = () => {
                         marginLeft: 8,
                       }}>
                       <Text
-                        title={user.name}
+                        title={userInvite.name}
                         size={16}
                         weight={600}
                         color="#090A0A"
                       />
                       <Text
                         title={
-                          user.type === 'common' ? 'Aluno(a)' : 'Treinador(a)'
+                          userInvite.type === 'common'
+                            ? 'Aluno(a)'
+                            : 'Treinador(a)'
                         }
                         size={14}
                         weight={500}
@@ -216,6 +260,12 @@ const Invites = () => {
                       weight={600}
                       size={13}
                       color="#FFF"
+                      onPress={() =>
+                        handleAcceptOrRecused({
+                          state: true,
+                          uid: userInvite.uid,
+                        })
+                      }
                     />
                     <Space marginVertical={5} />
                     <ButtonText
@@ -223,6 +273,12 @@ const Invites = () => {
                       weight={400}
                       size={12}
                       color="#FF6859"
+                      onPress={() =>
+                        handleAcceptOrRecused({
+                          state: false,
+                          uid: userInvite.uid,
+                        })
+                      }
                     />
                   </View>
                 </View>
@@ -308,6 +364,12 @@ const Invites = () => {
                       weight={600}
                       size={13}
                       color="#FFF"
+                      onPress={() =>
+                        handleAcceptOrRecused({
+                          state: true,
+                          uid: user.uid,
+                        })
+                      }
                     />
                     <Space marginVertical={5} />
                     <ButtonText
@@ -315,6 +377,12 @@ const Invites = () => {
                       weight={400}
                       size={12}
                       color="#FF6859"
+                      onPress={() =>
+                        handleAcceptOrRecused({
+                          state: false,
+                          uid: user.uid,
+                        })
+                      }
                     />
                   </View>
                 </View>
@@ -401,6 +469,12 @@ const Invites = () => {
                       weight={600}
                       size={13}
                       color="#FFF"
+                      onPress={() =>
+                        handleAcceptOrRecused({
+                          state: true,
+                          uid: user.uid,
+                        })
+                      }
                     />
                     <Space marginVertical={5} />
                     <ButtonText
@@ -408,6 +482,12 @@ const Invites = () => {
                       weight={400}
                       size={12}
                       color="#FF6859"
+                      onPress={() =>
+                        handleAcceptOrRecused({
+                          state: false,
+                          uid: user.uid,
+                        })
+                      }
                     />
                   </View>
                 </View>
@@ -494,6 +574,12 @@ const Invites = () => {
                       weight={600}
                       size={13}
                       color="#FFF"
+                      onPress={() =>
+                        handleAcceptOrRecused({
+                          state: true,
+                          uid: user.uid,
+                        })
+                      }
                     />
                     <Space marginVertical={5} />
                     <ButtonText
@@ -501,6 +587,12 @@ const Invites = () => {
                       weight={400}
                       size={12}
                       color="#FF6859"
+                      onPress={() =>
+                        handleAcceptOrRecused({
+                          state: false,
+                          uid: user.uid,
+                        })
+                      }
                     />
                   </View>
                 </View>

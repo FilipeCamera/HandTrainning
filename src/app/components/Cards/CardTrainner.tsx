@@ -6,10 +6,8 @@ import TrainnerActivity from 'assets/svg/trainner_activity.svg';
 import {CardTrainnerStyle, styles} from './styles';
 import {Image, View} from 'react-native';
 import {ButtonText, Space, Text} from 'components';
-import {useSelector} from 'react-redux';
 
 const CardTrainner = () => {
-  const user = useSelector((state: any) => state.auth.user);
   return (
     <CardTrainnerStyle style={styles.shadow}>
       <RectangleRed width="100%" style={{position: 'absolute', top: -14}} />

@@ -7,20 +7,20 @@ const useInvites = () => {
     {onComplete, onFail}: any,
   ) => {
     const data = {
-      ...invite,
       accept: state,
       updatedAt: firestore.FieldValue.serverTimestamp(),
     };
     await firestore()
       .collection('invites')
-      .doc(invite.uid)
+      .doc(invite[0].id)
       .update(data)
       .then((res: any) => {
-        if (res) {
-          onComplete(true);
+        if (state === false) {
+          return onComplete(false);
         }
+        return onComplete(true);
       })
-      .catch(error => onFail(false));
+      .catch(error => onFail(error));
   };
   const getInvites = async (uid: any, {onComplete, onFail}: any) => {
     await firestore()
@@ -29,7 +29,12 @@ const useInvites = () => {
       .where('accept', '==', null)
       .get()
       .then(res => {
-        const invites = res.docs.map(doc => doc.data());
+        const invites = res.docs.map(doc => {
+          return {
+            ...doc.data(),
+            id: doc.id,
+          };
+        });
         onComplete(invites);
       })
       .catch((error: any) => onFail(error));
