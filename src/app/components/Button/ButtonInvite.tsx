@@ -4,7 +4,8 @@ import {Space, Text} from 'components';
 import Telegram from 'assets/svg/telegram.svg';
 
 import {ButtonInviteStyle} from './styles';
-import {useInvites} from 'hooks';
+import {useInvites, useVerification} from 'hooks';
+import {showMessage} from 'react-native-flash-message';
 
 interface ButtonProps {
   title: string;
@@ -14,7 +15,7 @@ interface ButtonProps {
   size: number;
   weight: number;
   onPress: () => any;
-  uid: any;
+  to: any;
   from: any;
 }
 
@@ -24,22 +25,54 @@ const ButtonInvite = ({
   size,
   weight,
   sendTitle,
-  uid,
+  to,
   from,
 }: ButtonProps) => {
   const [send, setSend] = useState(false);
   const {sendInvite} = useInvites();
-
-  const handleInviteSend = (uid: any, from: any) => {
-    sendInvite(uid, from, {
-      onComplete: (res: any) => {
-        setSend(true);
+  const {verifyUserAssociate, verifyUserIsGym} = useVerification();
+  const verify = ({user, uid}: any) => {
+    let status;
+    verifyUserIsGym(user, uid, {
+      onComplete: (error: any) => {
+        if (error) {
+          status = true;
+          showMessage({type: 'warning', message: error});
+        } else {
+          verifyUserAssociate(uid, {
+            onComplete: (error: any) => {
+              if (error) {
+                status = true;
+                showMessage({type: 'warning', message: error});
+              }
+            },
+            onFail: error => {
+              console.log(error);
+            },
+          });
+        }
       },
+      onFail: error => console.log(error),
     });
+    return status;
+  };
+
+  const handleInviteSend = (to: any, from: any) => {
+    const verified = verify({user: to, uid: from});
+
+    if (verified) {
+      return sendInvite(to.uid, from, {
+        onComplete: (res: any) => {
+          setSend(true);
+        },
+      });
+    } else {
+      return;
+    }
   };
   return (
     <ButtonInviteStyle
-      onPress={() => handleInviteSend(uid, from)}
+      onPress={() => handleInviteSend(to, from)}
       disabled={send}
       background={send}>
       <Telegram />

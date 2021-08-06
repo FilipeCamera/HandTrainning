@@ -9,20 +9,23 @@ import {
   Text,
 } from 'components';
 import {firestore} from 'firebase';
-import {useGetUser, useInvites} from 'hooks';
+import {useGetUser, useInvites, useVerification} from 'hooks';
 import React, {useState, useEffect} from 'react';
 import {View, Image} from 'react-native';
+import {showMessage} from 'react-native-flash-message';
 import {useSelector} from 'react-redux';
 import {InvitesStyle} from './styles';
 
 const Invites = () => {
   const user = useSelector((state: any) => state.auth.user);
   const {searchUser, getUsers} = useGetUser();
+  const {verifyUserAssociate, verifyUserIsGym} = useVerification();
   const {getInvites, acceptedInvite} = useInvites();
   const [userSearch, setUserSearch] = useState('');
   const [users, setUsers] = useState<any>([]);
   const [usersSearch, setUsersSearch] = useState([]);
   const [invites, setInvites] = useState<any>([]);
+  const [verified, setVerified] = useState(false);
 
   useEffect(() => {
     getInvites(user.uid, {
@@ -41,7 +44,34 @@ const Invites = () => {
     });
   }, []);
 
+  const verify = async ({user, uid}: any) => {
+    await verifyUserIsGym(user, uid, {
+      onComplete: (error: any) => {
+        if (error) {
+          showMessage({type: 'warning', message: error});
+          return setVerified(false);
+        } else {
+          return setVerified(true);
+        }
+      },
+      onFail: error => console.log(error),
+    });
+    await verifyUserAssociate(uid, {
+      onComplete: (error: any) => {
+        if (error) {
+          showMessage({type: 'warning', message: error});
+          return setVerified(false);
+        } else {
+          return setVerified(true);
+        }
+      },
+      onFail: error => {
+        console.log(error);
+      },
+    });
+  };
   const handleAcceptOrRecused = async ({state, uid}: any) => {
+    await verify({user, uid});
     const invite = await firestore()
       .collection('invites')
       .where('to', '==', uid)
@@ -51,35 +81,48 @@ const Invites = () => {
           return {id: doc.id};
         });
       });
-    await acceptedInvite(invite, state, {
-      onComplete: async (status: boolean) => {
-        if (status) {
-          const data = {
-            createdAt: firestore.FieldValue.serverTimestamp(),
-            type: user.type,
-            users: [uid] || uid,
-          };
-          await firestore()
-            .collection('relations')
-            .doc(user.uid)
-            .set(data)
-            .then(() => {
-              firestore()
-                .collection('users')
-                .doc(uid)
-                .update({gymAssociate: user.uid});
-            })
-            .catch(error => console.log(error));
-          setUsers(users.filter(user => user.uid !== uid));
-        }
-        if (!status) {
-          setUsers(users.filter(user => user.uid !== uid));
-        }
-      },
-      onFail: error => {
-        console.log(error);
-      },
-    });
+    if (!state) {
+      return await acceptedInvite(invite, state, {
+        onComplete: async (status: boolean) => {
+          if (!status) {
+            setUsers(users.filter(user => user.uid !== uid));
+          }
+        },
+        onFail: error => {
+          console.log(error);
+        },
+      });
+    }
+    if (verified) {
+      return await acceptedInvite(invite, state, {
+        onComplete: async (status: boolean) => {
+          if (status) {
+            const data = {
+              createdAt: firestore.FieldValue.serverTimestamp(),
+              type: user.type,
+              users: [uid] || uid,
+            };
+            await firestore()
+              .collection('relations')
+              .doc(user.uid)
+              .set(data)
+              .then(() => {
+                firestore()
+                  .collection('users')
+                  .doc(uid)
+                  .update({userAssociate: user.uid});
+              })
+              .catch(error => console.log(error));
+            setUsers(users.filter(user => user.uid !== uid));
+          }
+        },
+        onFail: error => {
+          console.log(error);
+        },
+      });
+    } else {
+      return;
+    }
   };
 
   return (
@@ -173,7 +216,7 @@ const Invites = () => {
                   size={10}
                   weight={600}
                   color="#fff"
-                  uid={user.uid}
+                  to={user}
                   from={userInvite.uid}
                 />
               </View>
