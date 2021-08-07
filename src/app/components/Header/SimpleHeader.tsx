@@ -2,7 +2,8 @@ import {Text} from 'components';
 import React from 'react';
 import {Container, IconLeft, IconRight} from './styles';
 
-import ArrowBack from '../../../assets/svg/arrowBack.svg';
+import ArrowBack from 'assets/svg/arrowBack.svg';
+import Add from 'assets/svg/add_icon_black.svg';
 
 interface SimpleHeaderProps {
   title: string;
@@ -35,7 +36,11 @@ const SimpleHeader = ({
         </IconLeft>
       )}
       <Text title={title} weight={weight} size={size} color={color} />
-      {!!add && <IconRight onPress={onAdd} />}
+      {!!add && (
+        <IconRight onPress={onAdd}>
+          <Add />
+        </IconRight>
+      )}
     </Container>
   );
 };

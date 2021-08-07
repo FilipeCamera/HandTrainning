@@ -44,6 +44,7 @@ const Input = ({
           value={value}
           onChangeText={e => onText(e)}
           maxLength={250}
+          autoCapitalize="none"
           secureTextEntry={password}
           placeholderTextColor={!error ? '#1C2439' : '#FF6859'}
           keyboardType={numeric ? 'numeric' : 'default'}
