@@ -1,5 +1,12 @@
-import {SimpleHeader} from 'components';
-import React, {useEffect} from 'react';
+import {
+  Button,
+  DropdownCategories,
+  DropdownType,
+  Input,
+  SimpleHeader,
+  Space,
+} from 'components';
+import React, {useEffect, useState} from 'react';
 import {BackHandler} from 'react-native';
 import {ExerciseStyle} from './styles';
 
@@ -8,6 +15,10 @@ interface CreateExerciseProps {
 }
 
 const CreateExercise = ({goBack}: CreateExerciseProps) => {
+  const [category, setCategory] = useState('');
+  const [type, setType] = useState('');
+  const [name, setName] = useState('');
+  const [errors, setErrors] = useState({category: '', type: ''});
   const handleCreate = () => {
     goBack(false);
     return true;
@@ -35,6 +46,28 @@ const CreateExercise = ({goBack}: CreateExerciseProps) => {
         size={20}
         weight={500}
         onBack={() => goBack(false)}
+      />
+      <Space marginVertical={10} />
+      <DropdownCategories
+        value={category}
+        onValue={(e: any) => setCategory(e)}
+        error={errors.category}
+      />
+      <Space marginVertical={4} />
+      <DropdownType
+        value={type}
+        onValue={(e: any) => setType(e)}
+        error={errors.type}
+      />
+      <Input placeholder="Nome do exercício" />
+
+      <Button
+        title="Criar exercício"
+        size={15}
+        weight={500}
+        color="#FFF"
+        background="#FF6859"
+        notShadow
       />
     </ExerciseStyle>
   );

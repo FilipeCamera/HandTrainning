@@ -19,7 +19,12 @@ import {
 import Carousel from './Carousel';
 import Check from './CheckBox';
 import {DataTrainner, DataCommon, DataGym} from './Data';
-import {DropdownUF, DropdownGender} from './Dropdown';
+import {
+  DropdownUF,
+  DropdownGender,
+  DropdownCategories,
+  DropdownType,
+} from './Dropdown';
 import {SimpleHeader, Header} from './Header';
 import Input from './Input';
 import Label from './Label';
@@ -61,4 +66,6 @@ export {
   Search,
   ButtonInvite,
   ButtonMiniRed,
+  DropdownCategories,
+  DropdownType,
 };

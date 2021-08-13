@@ -14,8 +14,12 @@ interface ButtonInviteProps {
 
 export const ButtonStyle = styled.TouchableOpacity`
   width: 95%;
+  margin: 8px 0;
   align-items: center;
   justify-content: center;
+  border-radius: 8px;
+  background: ${(props: any) => props.background || '#fff'};
+  ${(props: any) => (props.border ? 'border: 1px solid #dedede' : '')}
 `;
 
 export const ButtonRedStyle = styled.TouchableOpacity`
@@ -68,14 +72,10 @@ export const ButtonStyleText = styled.TouchableOpacity`
 `;
 
 export const ButtonContainer = styled.View<ButtonProps>`
-  background: ${(props: any) => props.background || '#fff'};
-  margin: 8px 0;
   height: 56px;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
   width: 100%;
-  ${(props: any) => (props.border ? 'border: 1px solid #dedede' : '')}
 `;
 
 export const ButtonIcon = styled.View`

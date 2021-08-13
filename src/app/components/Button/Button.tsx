@@ -35,11 +35,12 @@ const Button = ({
   onPress,
 }: ButtonProps) => {
   return (
-    <ButtonStyle onPress={onPress}>
-      <ButtonContainer
-        background={background}
-        style={notShadow ? '' : styles.shadow}
-        border={border}>
+    <ButtonStyle
+      onPress={onPress}
+      background={background}
+      border={border}
+      style={notShadow ? '' : styles.shadow}>
+      <ButtonContainer>
         {!!google && (
           <ButtonIcon>
             <Google />
