@@ -67,7 +67,6 @@ const CreateExercise = ({goBack}: CreateExerciseProps) => {
         weight={500}
         color="#FFF"
         background="#FF6859"
-        notShadow
       />
     </ExerciseStyle>
   );

@@ -1,14 +1,39 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 import {ProfileContainer} from './styles';
 
 import BackRedHeader from 'assets/svg/RedTopBack.svg';
-import {View} from 'react-native';
+import PlayIcon from 'assets/svg/PlayIcon.svg';
+import LineGray from 'assets/svg/LineGran.svg';
+import {TouchableOpacity, View} from 'react-native';
 import {BarChart, Button, Label, Space, Text} from 'components';
 import {Image} from 'react-native';
 import {Logout} from 'functions';
+import ProfileGymStateScreen from './ProfileGymState/ProfileGymStateScreen';
 
 const ProfileGym = ({user, navigation}: any) => {
+  const [state, setState] = useState('');
+
+  if (state === 'common') {
+    return (
+      <ProfileGymStateScreen
+        onBack={setState}
+        user={user}
+        type="common"
+        title="Alunos"
+      />
+    );
+  }
+  if (state === 'trainner') {
+    return (
+      <ProfileGymStateScreen
+        onBack={setState}
+        user={user}
+        type="trainner"
+        title="Treinadores"
+      />
+    );
+  }
   return (
     <ProfileContainer
       contentContainerStyle={{
@@ -106,10 +131,50 @@ const ProfileGym = ({user, navigation}: any) => {
         </View>
       </View>
       <Space marginVertical={20} />
-      <View style={{width: '95%'}}>
-        <Label title="Engajamento da academia" color="#d2d3d7" />
-        <BarChart />
+      <View style={{width: '90%'}}>
+        <TouchableOpacity
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+          onPress={() => setState('common')}>
+          <Text
+            title="Alunos"
+            size={18}
+            weight={600}
+            color="#090a0a"
+            style={{marginLeft: 5}}
+          />
+          <PlayIcon />
+        </TouchableOpacity>
+        <LineGray width="100%" />
       </View>
+      <Space marginVertical={8} />
+      <View style={{width: '90%'}}>
+        <TouchableOpacity
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+          onPress={() => setState('trainner')}>
+          <Text
+            title="Treinadores"
+            size={18}
+            weight={600}
+            color="#090a0a"
+            style={{marginLeft: 5}}
+          />
+          <PlayIcon />
+        </TouchableOpacity>
+        <LineGray width="100%" />
+      </View>
+      <Space marginVertical={20} />
+      <View style={{width: '90%'}}>
+        <Label title="Engajamento da academia" color="#d2d3d7" />
+      </View>
+      <BarChart />
       <Space marginVertical={20} />
       <View style={{width: '90%', alignItems: 'center'}}>
         <Button

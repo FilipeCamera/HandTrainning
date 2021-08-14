@@ -99,7 +99,7 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.58,
     shadowRadius: 16.0,
 
-    elevation: 24,
+    elevation: 8,
   },
   shadowRed: {
     shadowColor: '#3A296A',

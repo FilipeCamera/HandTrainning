@@ -97,16 +97,35 @@ const Invites = () => {
       return await acceptedInvite(invite, state, {
         onComplete: async (status: boolean) => {
           if (status) {
+            const users: any = await firestore()
+              .collection('relations')
+              .doc(user.uid)
+              .get()
+              .then(querySnapshot => {
+                return querySnapshot.data();
+              });
             const data = {
               createdAt: firestore.FieldValue.serverTimestamp(),
               type: user.type,
-              users: [uid] || uid,
+              users: [...users, uid],
             };
             await firestore()
               .collection('relations')
               .doc(user.uid)
               .set(data)
               .then(() => {
+                firestore()
+                  .collection('users')
+                  .where('uid', '==', uid)
+                  .where('type', '==', 'trainner')
+                  .get()
+                  .then(querySnapshot => {
+                    const trainner = querySnapshot.docs.map(doc => doc.data());
+                    firestore()
+                      .collection('users')
+                      .doc(trainner[0].uid)
+                      .update({userAssociate: [user.uid]});
+                  });
                 firestore()
                   .collection('users')
                   .doc(uid)

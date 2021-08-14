@@ -65,7 +65,7 @@ const GymNavigator = () => {
           tabBarIcon: ({focused}) => (
             <View
               style={{
-                backgroundColor: focused ? '#ff5646' : '#FF6859',
+                backgroundColor: focused ? '#ff6859' : '#a3a3a3',
                 width: 50,
                 height: 50,
                 borderRadius: 25,
