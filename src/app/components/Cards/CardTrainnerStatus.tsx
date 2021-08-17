@@ -9,7 +9,7 @@ import {firestore} from 'firebase';
 
 const CardTrainnerStatus = () => {
   const user = useSelector((state: any) => state.auth.user);
-  const [trainners, setTrainners] = useState<[]>([]);
+  const [trainners, setTrainners] = useState<any>([]);
 
   useEffect(() => {
     firestore()

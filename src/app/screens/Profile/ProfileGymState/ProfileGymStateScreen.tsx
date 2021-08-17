@@ -5,7 +5,7 @@ import {BackHandler, Image, View} from 'react-native';
 import {Container} from './styles';
 
 const ProfileGymStateScreen = ({onBack, user, title, type}: any) => {
-  const [users, setUsers] = useState<[]>([]);
+  const [users, setUsers] = useState<any>([]);
   const handleCreate = () => {
     onBack('');
     return true;
