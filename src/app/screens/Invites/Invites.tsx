@@ -26,7 +26,6 @@ const Invites = () => {
   const [usersSearch, setUsersSearch] = useState([]);
   const [invites, setInvites] = useState<any>([]);
   const [verified, setVerified] = useState(false);
-  const [erro, setErro] = useState('');
 
   useEffect(() => {
     getInvites(user.uid, {
@@ -45,19 +44,15 @@ const Invites = () => {
     });
   }, []);
 
-  useEffect(() => {
-    if (erro !== '') {
-      return showMessage({type: 'warning', message: erro});
-    }
-  }, [erro]);
   const verify = async ({user, uid}: any) => {
+    let result;
     await verifyUserIsGym(user, uid, {
       onComplete: (error: any) => {
         if (error) {
-          setErro(error);
-          return setVerified(false);
+          showMessage({type: 'warning', message: error});
+          result = false;
         } else {
-          return setVerified(true);
+          result = true;
         }
       },
       onFail: error => console.log(error),
@@ -65,16 +60,17 @@ const Invites = () => {
     await verifyUserAssociate(uid, {
       onComplete: (error: any) => {
         if (error) {
-          setErro(error);
-          return setVerified(false);
+          showMessage({type: 'warning', message: error});
+          result = false;
         } else {
-          return setVerified(true);
+          result = true;
         }
       },
       onFail: error => {
         console.log(error);
       },
     });
+    return result;
   };
   const handleAcceptOrRecused = async ({state, uid}: any) => {
     await verify({user, uid});
@@ -164,7 +160,7 @@ const Invites = () => {
         user={userSearch}
         onSearch={e => {
           setUserSearch(e),
-            searchUser(e, {
+            searchUser(e, user.uid, {
               onComplete: (users: any) => {
                 if (users) {
                   setUsersSearch(users);
@@ -178,7 +174,7 @@ const Invites = () => {
         }}
       />
       {usersSearch.length !== 0 &&
-        usersSearch.map(userInvite => {
+        usersSearch.map((userInvite: any) => {
           return (
             <View
               key={userInvite.uid}

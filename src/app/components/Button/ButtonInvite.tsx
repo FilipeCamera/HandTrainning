@@ -31,19 +31,21 @@ const ButtonInvite = ({
   const [send, setSend] = useState(false);
   const {sendInvite} = useInvites();
   const {verifyUserAssociate, verifyUserIsGym} = useVerification();
-  const verify = ({user, uid}: any) => {
-    let status;
-    verifyUserIsGym(user, uid, {
-      onComplete: (error: any) => {
+  const [status, setStatus] = useState(false);
+  const verify = async ({user, uid}: any) => {
+    await verifyUserIsGym(user, uid, {
+      onComplete: async (error: any) => {
         if (error) {
-          status = true;
           showMessage({type: 'warning', message: error});
+          setStatus(false);
         } else {
-          verifyUserAssociate(uid, {
+          await verifyUserAssociate(uid, {
             onComplete: (error: any) => {
               if (error) {
-                status = true;
                 showMessage({type: 'warning', message: error});
+                setStatus(false);
+              } else {
+                setStatus(true);
               }
             },
             onFail: error => {
@@ -54,21 +56,19 @@ const ButtonInvite = ({
       },
       onFail: error => console.log(error),
     });
-    return status;
   };
 
-  const handleInviteSend = (to: any, from: any) => {
-    const verified = verify({user: to, uid: from});
-
-    if (verified) {
-      return sendInvite(to.uid, from, {
-        onComplete: (res: any) => {
+  const handleInviteSend = async (to, from) => {
+    await verify({user: to, uid: from});
+    console.log('status:', status);
+    if (status) {
+      sendInvite(to.uid, from, {
+        onComplete: () => {
           setSend(true);
         },
       });
-    } else {
-      return;
     }
+    console.log('send:', send);
   };
   return (
     <ButtonInviteStyle

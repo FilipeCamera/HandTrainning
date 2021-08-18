@@ -1,8 +1,6 @@
 import {firestore} from 'firebase';
-import {useState} from 'react';
 
 const useVerification = () => {
-  const [error, setError] = useState('');
   const verifyUserAssociate = async (uid: any, {onComplete, onFail}: any) => {
     await firestore()
       .collection('users')
@@ -13,7 +11,7 @@ const useVerification = () => {
         if (user[0].type === 'trainner') {
           if (user[0].userAssociate) {
             if (user[0].userAssociate.length > 2) {
-              setError('Usuário já possui o máximo de associações');
+              const error = 'Usuário já possui o máximo de associações';
               onComplete(error);
             }
           } else {
@@ -23,7 +21,7 @@ const useVerification = () => {
 
         if (user[0].type === 'common') {
           if (user[0].userAssociate) {
-            setError('Usuário já é associado alguma academia ou treinador');
+            const error = 'Usuário já é associado alguma academia ou treinador';
             onComplete(error);
           } else {
             onComplete(false);
@@ -45,7 +43,8 @@ const useVerification = () => {
         const gym = querySnapshot.docs.map(doc => doc.data());
 
         if (user.type === gym[0].type) {
-          setError('Usuário não pode convidar ou associar a outra academia');
+          const error =
+            'Usuário não pode convidar ou associar a outra academia';
           onComplete(error);
         } else {
           onComplete(false);
