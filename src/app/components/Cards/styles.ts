@@ -53,6 +53,14 @@ export const CardTrainnerStyle = styled.View`
   height: 510px;
 `;
 
+export const CardMiniStyle = styled.View`
+  flex-direction: row;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: #fff;
+`;
+
 export const styles = StyleSheet.create({
   shadow: {
     shadowColor: '#1C2439',

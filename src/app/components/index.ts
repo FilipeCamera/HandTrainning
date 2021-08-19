@@ -15,6 +15,7 @@ import {
   CardTrainnerStatus,
   CardCommon,
   CardTrainner,
+  CardMini,
 } from './Cards';
 import Carousel from './Carousel';
 import Check from './CheckBox';
@@ -68,4 +69,5 @@ export {
   ButtonMiniRed,
   DropdownCategories,
   DropdownType,
+  CardMini,
 };

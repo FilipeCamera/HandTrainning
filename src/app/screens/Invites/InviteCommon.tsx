@@ -9,57 +9,56 @@ import {
   ButtonText,
 } from 'components';
 import {firestore} from 'firebase';
-import {useGetUser, useInvites, useVerification} from 'hooks';
+import {useGetUser, useInvites} from 'hooks';
 import React, {useState, useEffect} from 'react';
 import {Image, View} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
 import {InvitesStyle} from './styles';
 
+import Notify from 'assets/svg/Notify.svg';
+import {userPersist} from 'functions';
+
 const InviteCommon = ({auth}: any) => {
   const {searchUser, getUsers} = useGetUser();
   const {getInvites, acceptedInvite} = useInvites();
-  const {verifyUserAssociate} = useVerification();
   const [userSearch, setUserSearch] = useState('');
   const [usersSearch, setUsersSearch] = useState<any>([]);
   const [users, setUsers] = useState<any>([]);
   const [invites, setInvites] = useState<any>([]);
+  const [associated, setAssociated] = useState(false);
+
+  useEffect(() => {
+    firestore()
+      .collection('users')
+      .doc(auth.uid)
+      .get()
+      .then(querySnapshot => {
+        const {userAssociate} = querySnapshot.data();
+
+        if (userAssociate) {
+          setAssociated(true);
+        }
+      });
+  }, []);
 
   useEffect(() => {
     getInvites(auth.uid, {
-      onComplete: invites => {
-        if (invites) {
-          setInvites(invites);
+      onComplete: (invite: any) => {
+        if (invite) {
+          setInvites(invite);
         }
       },
-      onFail: error => console.log(error),
+      onFail: (error: any) => console.log(error),
     });
     getUsers({
-      onComplete: users => {
-        setUsers(users);
+      onComplete: (user: any) => {
+        setUsers(user);
       },
-      onFail: error => console.log(error),
+      onFail: (error: any) => console.log(error),
     });
   }, []);
 
-  const verify = async ({user, uid}: any) => {
-    let result;
-    await verifyUserAssociate(uid, {
-      onComplete: (error: any) => {
-        if (error) {
-          showMessage({type: 'warning', message: error});
-          result = false;
-        } else {
-          result = true;
-        }
-      },
-      onFail: error => {
-        console.log(error);
-      },
-    });
-    return result;
-  };
   const handleAcceptOrRecused = async ({state, uid}: any) => {
-    const verified = await verify({auth, uid});
     const invite = await firestore()
       .collection('invites')
       .where('to', '==', uid)
@@ -73,53 +72,56 @@ const InviteCommon = ({auth}: any) => {
       return await acceptedInvite(invite, state, {
         onComplete: async (status: boolean) => {
           if (!status) {
-            setUsers(users.filter(user => user.uid !== uid));
+            setUsers(users.filter((user: any) => user.uid !== uid));
           }
         },
-        onFail: error => {
+        onFail: (error: any) => {
           console.log(error);
         },
       });
     }
-    if (verified) {
-      return await acceptedInvite(invite, state, {
-        onComplete: async (status: boolean) => {
-          if (status) {
-            const users: any = await firestore()
-              .collection('relations')
-              .doc(auth.uid)
-              .get()
-              .then(querySnapshot => {
-                return querySnapshot.data();
-              });
-            const data = {
-              createdAt: firestore.FieldValue.serverTimestamp(),
-              type: auth.type,
-              users: uid,
-            };
-            await firestore()
-              .collection('relations')
-              .doc(auth.uid)
-              .set(data)
-              .then(() => {
-                firestore()
-                  .collection('users')
-                  .doc(auth.uid)
-                  .update({userAssociate: uid})
-                  .then(querySnapshot => {});
-              })
-              .catch(error => console.log(error));
-            setUsers(users.filter(user => user.uid !== uid));
-          }
-        },
-        onFail: error => {
-          console.log(error);
-        },
-      });
-    } else {
-      return;
-    }
+    return await acceptedInvite(invite, state, {
+      onComplete: async (status: boolean) => {
+        if (status) {
+          const users: any = await firestore()
+            .collection('relations')
+            .doc(auth.uid)
+            .get()
+            .then(querySnapshot => {
+              return querySnapshot.data();
+            });
+          const data = {
+            createdAt: firestore.FieldValue.serverTimestamp(),
+            type: auth.type,
+            users: uid,
+          };
+          await firestore()
+            .collection('relations')
+            .doc(auth.uid)
+            .set(data)
+            .then(() => {
+              firestore()
+                .collection('users')
+                .doc(auth.uid)
+                .update({userAssociate: uid})
+                .then(querySnapshot => {
+                  const user = firestore()
+                    .collection('users')
+                    .doc(auth.uid)
+                    .get();
+                  userPersist(user);
+                  setUsers(users.filter((user: any) => user.uid !== uid));
+                });
+            })
+            .catch(error => console.log(error));
+        }
+      },
+      onFail: (error: any) => {
+        console.log(error);
+      },
+    });
   };
+
   return (
     <InvitesStyle
       contentContainerStyle={{
@@ -130,24 +132,47 @@ const InviteCommon = ({auth}: any) => {
       }}
       showsVerticalScrollIndicator={false}>
       <Header />
-      <Search
-        user={userSearch}
-        onSearch={e => {
-          setUserSearch(e),
-            searchUser(e, auth.uid, {
-              onComplete: (users: any) => {
-                if (users) {
-                  setUsersSearch(users);
-                }
-                return;
-              },
-              onFail: (error: any) => {
-                console.log(error);
-              },
-            });
-        }}
-      />
-      {usersSearch.length !== 0 &&
+      {!!associated && (
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Space marginVertical={20} />
+          <Notify />
+          <Space marginVertical={12} />
+          <Text
+            title="Você já é associado a uma academia ou treinador!"
+            size={15}
+            weight={500}
+            color="#bdbdbd"
+            center
+          />
+        </View>
+      )}
+      {!associated && (
+        <Search
+          user={userSearch}
+          onSearch={e => {
+            setUserSearch(e),
+              searchUser(e, auth.uid, {
+                onComplete: (users: any) => {
+                  if (users) {
+                    setUsersSearch(users);
+                  }
+                  return;
+                },
+                onFail: (error: any) => {
+                  console.log(error);
+                },
+              });
+          }}
+        />
+      )}
+      {!associated &&
+        usersSearch.length !== 0 &&
         usersSearch.map((userInvite: any) => {
           return (
             <View
@@ -194,6 +219,8 @@ const InviteCommon = ({auth}: any) => {
                     title={
                       userInvite.type === 'trainner'
                         ? 'Treinador(a)'
+                        : userInvite.type === 'common'
+                        ? 'Aluno(a)'
                         : 'Academia'
                     }
                     size={14}
@@ -217,9 +244,10 @@ const InviteCommon = ({auth}: any) => {
           );
         })}
       <Space marginVertical={5} />
-      {usersSearch.length === 0 && <Label title="Academias" />}
+      {!associated && usersSearch.length === 0 && <Label title="Academias" />}
       <Space marginVertical={5} />
-      {usersSearch.length === 0 &&
+      {!associated &&
+        usersSearch.length === 0 &&
         users.map(userInvite => {
           const invite = invites.filter(
             (invite: any) => invite.to === userInvite.uid,
@@ -323,9 +351,13 @@ const InviteCommon = ({auth}: any) => {
           }
         })}
       <Space marginVertical={20} />
-      {usersSearch.length === 0 && <Label title="Treinadores" />}
+      {!associated && usersSearch.length === 0 && auth.plan !== 'basic' && (
+        <Label title="Treinadores" />
+      )}
       <Space marginVertical={5} />
-      {usersSearch.length === 0 &&
+      {!associated &&
+        usersSearch.length === 0 &&
+        auth.plan !== 'basic' &&
         users.map(userInvite => {
           const invite = invites.filter(
             (invite: any) => invite.to === userInvite.uid,

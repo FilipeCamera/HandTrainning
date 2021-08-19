@@ -1,5 +1,6 @@
 import React from 'react';
 import {useSelector} from 'react-redux';
+import ProfileCommon from './ProfileCommon';
 import ProfileGym from './ProfileGym';
 
 const Profile = ({navigation}: any) => {
@@ -8,6 +9,9 @@ const Profile = ({navigation}: any) => {
     <>
       {user.type === 'gym' && (
         <ProfileGym user={user} navigation={navigation} />
+      )}
+      {user.type === 'common' && (
+        <ProfileCommon user={user} navigation={navigation} />
       )}
     </>
   );

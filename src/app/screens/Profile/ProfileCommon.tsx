@@ -1,40 +1,40 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 import {ProfileContainer} from './styles';
 
 import BackRedHeader from 'assets/svg/RedTopBack.svg';
 import PlayIcon from 'assets/svg/PlayIcon.svg';
-import LineGray from 'assets/svg/LineGran.svg';
+import CloseIcon from 'assets/svg/CloseIcon.svg';
 import LocationIcon from 'assets/svg/locationIcon.svg';
+import LineGray from 'assets/svg/LineGran.svg';
 import {TouchableOpacity, View} from 'react-native';
-import {BarChart, Button, Label, Space, Text} from 'components';
+import {Button, CardMini, Space, Text} from 'components';
 import {Image} from 'react-native';
 import {Logout} from 'functions';
-import ProfileGymStateScreen from './ProfileGymState/ProfileGymStateScreen';
+import {firestore} from 'firebase';
 
-const ProfileGym = ({user, navigation}: any) => {
-  const [state, setState] = useState('');
+const ProfileCommon = ({user, navigation}: any) => {
+  const [gym, setGym] = useState<any>([]);
 
-  if (state === 'common') {
-    return (
-      <ProfileGymStateScreen
-        onBack={setState}
-        user={user}
-        type="common"
-        title="Alunos"
-      />
-    );
-  }
-  if (state === 'trainner') {
-    return (
-      <ProfileGymStateScreen
-        onBack={setState}
-        user={user}
-        type="trainner"
-        title="Treinadores"
-      />
-    );
-  }
+  useEffect(() => {
+    firestore()
+      .collection('users')
+      .where('uid', '==', user.uid)
+      .get()
+      .then(res => {
+        const common = res.docs.map(doc => doc.data());
+        firestore()
+          .collection('users')
+          .doc(common[0].userAssociate)
+          .get()
+          .then(res => {
+            setGym(res.data());
+          });
+      });
+  }, []);
+  useEffect(() => {
+    console.log(gym);
+  }, [gym]);
   return (
     <ProfileContainer
       contentContainerStyle={{
@@ -70,9 +70,6 @@ const ProfileGym = ({user, navigation}: any) => {
       <Space marginVertical={8} />
       <View style={{alignItems: 'center'}}>
         <Text title={user.name} size={22} weight={600} color="#090A0A" />
-        {user.type === 'gym' && (
-          <Text title={user.cnpj} size={15} weight={500} color="#c4c4c4" />
-        )}
         <View style={{flexDirection: 'row', alignItems: 'flex-start'}}>
           <LocationIcon />
           <Space marginHorizontal={1} />
@@ -95,45 +92,21 @@ const ProfileGym = ({user, navigation}: any) => {
           }}>
           <Text title={user.plan} size={10} weight={600} color="#FFF" />
         </View>
-        <Space marginVertical={10} />
       </View>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-around',
-          width: '95%',
-        }}>
-        <View style={{flexDirection: 'column', alignItems: 'center'}}>
-          <Text title="78" weight={900} size={22} color="#090A0A" />
-          <Text title="Total" weight={500} size={14} color="#FF6859" />
-        </View>
+      <Space marginVertical={15} />
+      {!!gym && (
         <View
           style={{
-            height: 50,
-            width: 2,
-            backgroundColor: '#dedede',
-            borderRadius: 2,
-          }}
-        />
-        <View style={{flexDirection: 'column', alignItems: 'center'}}>
-          <Text title="8" weight={900} size={22} color="#090A0A" />
-          <Text title="Treinadores" weight={500} size={14} color="#FF6859" />
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-around',
+            width: '100%',
+          }}>
+          <CardMini avatar={gym.avatar} name={gym.name} />
+          <CardMini avatar={gym.avatar} name={gym.name} />
         </View>
-        <View
-          style={{
-            height: 50,
-            width: 2,
-            backgroundColor: '#dedede',
-            borderRadius: 2,
-          }}
-        />
-        <View style={{flexDirection: 'column', alignItems: 'center'}}>
-          <Text title="70" weight={900} size={22} color="#090A0A" />
-          <Text title="Alunos" weight={500} size={14} color="#FF6859" />
-        </View>
-      </View>
-      <Space marginVertical={20} />
+      )}
+      <Space marginVertical={30} />
       <View style={{width: '90%'}}>
         <TouchableOpacity
           style={{
@@ -141,9 +114,9 @@ const ProfileGym = ({user, navigation}: any) => {
             alignItems: 'center',
             justifyContent: 'space-between',
           }}
-          onPress={() => setState('common')}>
+          onPress={() => {}}>
           <Text
-            title="Alunos"
+            title="Convidar amigos"
             size={18}
             weight={600}
             color="#090a0a"
@@ -161,24 +134,19 @@ const ProfileGym = ({user, navigation}: any) => {
             alignItems: 'center',
             justifyContent: 'space-between',
           }}
-          onPress={() => setState('trainner')}>
+          onPress={() => {}}>
           <Text
-            title="Treinadores"
+            title="Desvincular da academia"
             size={18}
             weight={600}
             color="#090a0a"
             style={{marginLeft: 5}}
           />
-          <PlayIcon />
+          <CloseIcon />
         </TouchableOpacity>
         <LineGray width="100%" />
       </View>
-      <Space marginVertical={20} />
-      <View style={{width: '90%'}}>
-        <Label title="Engajamento da academia" color="#d2d3d7" />
-      </View>
-      <BarChart />
-      <Space marginVertical={20} />
+      <Space marginVertical={60} />
       <View style={{width: '90%', alignItems: 'center'}}>
         <Button
           title="Editar Dados"
@@ -200,4 +168,4 @@ const ProfileGym = ({user, navigation}: any) => {
   );
 };
 
-export default ProfileGym;
+export default ProfileCommon;

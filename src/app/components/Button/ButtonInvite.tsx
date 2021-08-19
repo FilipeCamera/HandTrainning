@@ -30,22 +30,21 @@ const ButtonInvite = ({
 }: ButtonProps) => {
   const [send, setSend] = useState(false);
   const {sendInvite} = useInvites();
-  const {verifyUserAssociate, verifyUserIsGym} = useVerification();
-  const [status, setStatus] = useState(false);
+  const {verifyUserAssociate, verifyUserIsType} = useVerification();
   const verify = async ({user, uid}: any) => {
-    await verifyUserIsGym(user, uid, {
+    return await verifyUserIsType(user, uid, {
       onComplete: async (error: any) => {
         if (error) {
           showMessage({type: 'warning', message: error});
-          setStatus(false);
+          return false;
         } else {
           await verifyUserAssociate(uid, {
             onComplete: (error: any) => {
               if (error) {
                 showMessage({type: 'warning', message: error});
-                setStatus(false);
+                return false;
               } else {
-                setStatus(true);
+                return true;
               }
             },
             onFail: error => {
@@ -59,8 +58,8 @@ const ButtonInvite = ({
   };
 
   const handleInviteSend = async (to, from) => {
-    await verify({user: to, uid: from});
-    console.log('status:', status);
+    const status = await verify({user: to, uid: from});
+    console.log(status);
     if (status) {
       sendInvite(to.uid, from, {
         onComplete: () => {

@@ -83,6 +83,7 @@ const Register = ({navigation}: any) => {
     const user = {
       uid: uid,
       email: email,
+      completeRegister: false,
       createdAt: firestore.FieldValue.serverTimestamp(),
     };
     firestore()
