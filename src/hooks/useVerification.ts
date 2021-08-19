@@ -7,7 +7,7 @@ const useVerification = () => {
       .where('uid', '==', uid)
       .get()
       .then(querySnapshot => {
-        const user = querySnapshot.docs.map(user => user.data());
+        const user = querySnapshot.docs.map(users => users.data());
         if (user[0].type === 'trainner') {
           if (user[0].userAssociate) {
             if (user[0].userAssociate.length > 2) {
