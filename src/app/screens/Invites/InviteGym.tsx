@@ -23,31 +23,81 @@ const InviteGym = ({auth}: any) => {
   const [usersSearch, setUsersSearch] = useState<any>([]);
   const [users, setUsers] = useState<any>([]);
   const [invites, setInvites] = useState<any>([]);
+  const [countTrainner, setCountTrainner] = useState(0);
+  const [countCommon, setCountCommon] = useState(0);
+  const [notAddTrainner, setNotAddTrainer] = useState(false);
+  const [notAddCommon, setNotAddCommon] = useState(false);
 
   useEffect(() => {
     getInvites(auth.uid, {
-      onComplete: invites => {
+      onComplete: (invites: any) => {
         if (invites) {
           setInvites(invites);
         }
       },
-      onFail: error => console.log(error),
+      onFail: (error: any) => console.log(error),
     });
     getUsers({
-      onComplete: users => {
+      onComplete: (users: any) => {
         setUsers(users);
       },
-      onFail: error => console.log(error),
+      onFail: (error: any) => console.log(error),
     });
   }, []);
+
+  useEffect(() => {
+    firestore()
+      .collection('users')
+      .where('userAssociate', 'array-contains', auth.uid)
+      .get()
+      .then(querySnapshot => {
+        const data = querySnapshot.docs.map(doc => doc.data());
+        data.map(item => {
+          if (item.type === 'trainner') {
+            setCountTrainner(countTrainner + 1);
+          } else if (countTrainner >= auth.limitTrainner) {
+            setNotAddTrainer(true);
+          }
+        });
+      });
+    firestore()
+      .collection('users')
+      .where('userAssociate', '==', auth.uid)
+      .get()
+      .then(querySnapshot => {
+        const data = querySnapshot.docs.map(doc => doc.data());
+        data.map(item => {
+          if (item.type === 'common') {
+            setCountCommon(countCommon + 1);
+          } else if (countCommon >= auth.limitCommon) {
+            setNotAddCommon(true);
+          }
+        });
+      });
+  }, []);
+
   const verify = async ({user, uid}: any) => {
+    if (notAddCommon) {
+      showMessage({
+        type: 'danger',
+        message: 'Usuário já chegou no limite de alunos.',
+      });
+      return false;
+    }
+    if (notAddTrainner) {
+      showMessage({
+        type: 'danger',
+        message: 'Usuário já chegou no limite de treinadores.',
+      });
+      return false;
+    }
     const result = await verifyUserIsType(user, uid, {
       onComplete: (error: any) => {
         if (error) {
           showMessage({type: 'warning', message: error});
         }
       },
-      onFail: error => console.log(error),
+      onFail: (error: any) => console.log(error),
     });
     const result2 = await verifyUserAssociate(uid, {
       onComplete: (error: any) => {
@@ -55,7 +105,7 @@ const InviteGym = ({auth}: any) => {
           showMessage({type: 'warning', message: error});
         }
       },
-      onFail: error => {
+      onFail: (error: any) => {
         console.log(error);
       },
     });
@@ -80,10 +130,10 @@ const InviteGym = ({auth}: any) => {
       return await acceptedInvite(invite, state, {
         onComplete: async (status: boolean) => {
           if (!status) {
-            setUsers(users.filter(user => user.uid !== uid));
+            setUsers(users.filter((user: any) => user.uid !== uid));
           }
         },
-        onFail: error => {
+        onFail: (error: any) => {
           console.log(error);
         },
       });
@@ -123,12 +173,10 @@ const InviteGym = ({auth}: any) => {
             });
           }
         },
-        onFail: error => {
+        onFail: (error: any) => {
           console.log(error);
         },
       });
-    } else {
-      return;
     }
   };
 

@@ -19,9 +19,16 @@ interface StepProps {
   dados: any;
   setDados: any;
   navigation: any;
+  user: any;
 }
 
-const Step4 = ({backStateChange, dados, setDados, navigation}: StepProps) => {
+const Step4 = ({
+  backStateChange,
+  dados,
+  setDados,
+  navigation,
+  user,
+}: StepProps) => {
   const [complete, setComplete] = useState(false);
   const [errors, setErrors] = useState({
     name: '',
@@ -148,6 +155,12 @@ const Step4 = ({backStateChange, dados, setDados, navigation}: StepProps) => {
         .update(dados)
         .then(res => {
           userPersist(dados);
+          if (dados.type === 'gym') {
+            firestore()
+              .collection('statistic')
+              .doc(user.uid)
+              .set({total: 0, trainner: 0, common: 0, data: []});
+          }
           showMessage({
             type: 'success',
             message: 'Cadastro completo!',

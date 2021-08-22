@@ -22,6 +22,7 @@ const Onboarding = ({navigation}: any) => {
           dados={dados}
           setDados={setDados}
           navigation={navigation}
+          user={user}
         />
       </>
     );

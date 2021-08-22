@@ -1,6 +1,8 @@
 import {firestore} from 'firebase';
+import {useSelector} from 'react-redux';
 
 const useVerification = () => {
+  const auth = useSelector((state: any) => state.auth.user);
   const verifyUserAssociate = async (uid: any, {onComplete, onFail}: any) => {
     const status = await firestore()
       .collection('users')
@@ -15,6 +17,13 @@ const useVerification = () => {
               onComplete(error);
               return false;
             }
+            user[0].userAssociate.map(associate => {
+              if (associate === auth.uid) {
+                const error = 'Usuário já é associado a sua academia';
+                onComplete(error);
+                return false;
+              }
+            });
           } else {
             onComplete(false);
             return true;
