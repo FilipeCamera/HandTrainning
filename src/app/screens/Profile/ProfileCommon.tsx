@@ -32,9 +32,6 @@ const ProfileCommon = ({user, navigation}: any) => {
           });
       });
   }, []);
-  useEffect(() => {
-    console.log(gym);
-  }, [gym]);
   return (
     <ProfileContainer
       contentContainerStyle={{

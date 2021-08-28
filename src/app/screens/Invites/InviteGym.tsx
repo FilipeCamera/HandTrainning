@@ -232,7 +232,7 @@ const InviteGym = ({auth}: any) => {
                 elevation: 5,
               }}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <View style={{width: 60, height: 60, borderRadius: 30}}>
+                <View style={{width: 50, height: 50, borderRadius: 25}}>
                   <Image
                     source={{uri: userInvite.avatar}}
                     style={{width: '100%', height: '100%', borderRadius: 999}}
@@ -246,7 +246,7 @@ const InviteGym = ({auth}: any) => {
                   }}>
                   <Text
                     title={userInvite.name}
-                    size={16}
+                    size={14}
                     weight={600}
                     color="#090A0A"
                   />
@@ -258,7 +258,7 @@ const InviteGym = ({auth}: any) => {
                         ? 'Treinador(a)'
                         : 'Academia'
                     }
-                    size={14}
+                    size={13}
                     weight={500}
                     color="#090A0A"
                   />
@@ -310,7 +310,7 @@ const InviteGym = ({auth}: any) => {
                     elevation: 5,
                   }}>
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <View style={{width: 60, height: 60, borderRadius: 30}}>
+                    <View style={{width: 50, height: 50, borderRadius: 25}}>
                       <Image
                         source={{uri: userInvite.avatar}}
                         style={{
@@ -328,7 +328,7 @@ const InviteGym = ({auth}: any) => {
                       }}>
                       <Text
                         title={userInvite.name}
-                        size={16}
+                        size={14}
                         weight={600}
                         color="#090A0A"
                       />
@@ -338,7 +338,7 @@ const InviteGym = ({auth}: any) => {
                             ? 'Aluno(a)'
                             : 'Treinador(a)'
                         }
-                        size={14}
+                        size={12}
                         weight={500}
                         color="#090A0A"
                       />
@@ -354,7 +354,7 @@ const InviteGym = ({auth}: any) => {
                     <ButtonMiniRed
                       title="Aceitar"
                       weight={600}
-                      size={13}
+                      size={11}
                       color="#FFF"
                       onPress={() =>
                         handleAcceptOrRecused({
@@ -367,7 +367,7 @@ const InviteGym = ({auth}: any) => {
                     <ButtonText
                       title="Recusar"
                       weight={400}
-                      size={12}
+                      size={11}
                       color="#FF6859"
                       onPress={() =>
                         handleAcceptOrRecused({
@@ -414,7 +414,7 @@ const InviteGym = ({auth}: any) => {
                     elevation: 5,
                   }}>
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <View style={{width: 60, height: 60, borderRadius: 30}}>
+                    <View style={{width: 50, height: 50, borderRadius: 25}}>
                       <Image
                         source={{uri: userInvite.avatar}}
                         style={{
@@ -432,7 +432,7 @@ const InviteGym = ({auth}: any) => {
                       }}>
                       <Text
                         title={userInvite.name}
-                        size={16}
+                        size={14}
                         weight={600}
                         color="#090A0A"
                       />
@@ -442,7 +442,7 @@ const InviteGym = ({auth}: any) => {
                             ? 'Aluno(a)'
                             : 'Treinador(a)'
                         }
-                        size={14}
+                        size={12}
                         weight={500}
                         color="#090A0A"
                       />
@@ -458,7 +458,7 @@ const InviteGym = ({auth}: any) => {
                     <ButtonMiniRed
                       title="Aceitar"
                       weight={600}
-                      size={13}
+                      size={11}
                       color="#FFF"
                       onPress={() =>
                         handleAcceptOrRecused({
@@ -471,7 +471,7 @@ const InviteGym = ({auth}: any) => {
                     <ButtonText
                       title="Recusar"
                       weight={400}
-                      size={12}
+                      size={11}
                       color="#FF6859"
                       onPress={() =>
                         handleAcceptOrRecused({

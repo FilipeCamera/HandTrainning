@@ -34,7 +34,7 @@ const CardStatus = () => {
           <View>
             <Text
               title="Ganhos de usuários"
-              size={15}
+              size={14}
               weight={600}
               color="#fff"
             />
@@ -45,7 +45,7 @@ const CardStatus = () => {
               alignItems: 'center',
               justifyContent: 'flex-start',
             }}>
-            <Text title="16" size={25} weight={500} color="#FFF" />
+            <Text title="16" size={22} weight={500} color="#FFF" />
             <UpIcon />
           </View>
         </View>
@@ -69,7 +69,7 @@ const CardStatus = () => {
           <View>
             <Text
               title="Usuários desvinculados"
-              size={15}
+              size={14}
               weight={600}
               color="#662924"
             />
@@ -80,7 +80,7 @@ const CardStatus = () => {
               alignItems: 'center',
               justifyContent: 'flex-start',
             }}>
-            <Text title="12" size={25} weight={500} color="#662924" />
+            <Text title="12" size={22} weight={500} color="#662924" />
             <DownIcon />
           </View>
         </View>

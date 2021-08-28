@@ -74,8 +74,9 @@ const CarouselComponent = () => {
           position: 'absolute',
           bottom: 16,
           left: 16,
+          width: '90%',
         }}>
-        <Text title={item.title} size={16} weight={500} color="#FFF" />
+        <Text title={item.title} size={14} weight={500} color="#FFF" />
         <Text title={item.desc} size={12} weight={400} color="#FFF" />
       </View>
     </View>

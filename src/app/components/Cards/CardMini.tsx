@@ -6,8 +6,8 @@ import {styles} from '../Board/styles';
 
 const CardMini = ({avatar, name}: any) => {
   return (
-    <CardMiniStyle style={styles.shadow}>
-      <View style={{width: 50, height: 50, borderRadius: 25}}>
+    <CardMiniStyle>
+      <View style={{width: 40, height: 40, borderRadius: 20, marginRight: 12}}>
         <Image
           source={{uri: avatar}}
           style={{width: '100%', height: '100%', borderRadius: 9999}}

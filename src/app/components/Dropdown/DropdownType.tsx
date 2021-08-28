@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 
 import DropDownPicker from 'react-native-dropdown-picker';
+import {RFValue} from 'react-native-responsive-fontsize';
 
 interface DropDownProps {
   value: string | null;
@@ -21,8 +22,9 @@ const DropdownType = ({value, onValue, error}: DropDownProps) => {
       placeholderStyle={{
         color: error !== '' ? '#FF6859' : '#999999',
         fontFamily: 'Poppins-Regular',
+        fontSize: RFValue(15),
       }}
-      textStyle={{fontFamily: 'Poppins-Regular'}}
+      textStyle={{fontFamily: 'Poppins-Regular', fontSize: RFValue(15)}}
       listMode="SCROLLVIEW"
       style={{
         backgroundColor: error !== '' ? 'rgba(255, 104, 89, 0.15)' : '#f1f4fa',

@@ -94,7 +94,7 @@ const CardCommon = () => {
                     alignItems: 'center',
                     marginTop: 5,
                   }}>
-                  <View style={{width: 60, height: 60, borderRadius: 30}}>
+                  <View style={{width: 50, height: 50, borderRadius: 25}}>
                     <Image
                       source={{
                         uri: 'https://images.unsplash.com/photo-1626806810916-f895a624c6f0?ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0fHx8ZW58MHx8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
@@ -120,14 +120,14 @@ const CardCommon = () => {
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <Text
                       title="Nome:"
-                      size={14}
+                      size={13}
                       weight={600}
                       color="#090A0A"
                     />
                     <Space marginHorizontal={2.5} />
                     <Text
                       title={user.name}
-                      size={14}
+                      size={13}
                       weight={500}
                       color="#090A0A"
                     />
@@ -135,14 +135,14 @@ const CardCommon = () => {
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <Text
                       title="Formação:"
-                      size={14}
+                      size={13}
                       weight={600}
                       color="#090A0A"
                     />
                     <Space marginHorizontal={2.5} />
                     <Text
                       title={user.name}
-                      size={14}
+                      size={13}
                       weight={500}
                       color="#090A0A"
                     />
@@ -150,14 +150,14 @@ const CardCommon = () => {
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <Text
                       title="Experiência:"
-                      size={14}
+                      size={13}
                       weight={600}
                       color="#090A0A"
                     />
                     <Space marginHorizontal={2.5} />
                     <Text
                       title={user.name}
-                      size={14}
+                      size={13}
                       weight={500}
                       color="#090A0A"
                     />
@@ -213,14 +213,14 @@ const CardCommon = () => {
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
                       <Text
                         title="Nome:"
-                        size={14}
+                        size={13}
                         weight={600}
                         color="#090A0A"
                       />
                       <Space marginHorizontal={2.5} />
                       <Text
                         title={user.name}
-                        size={14}
+                        size={13}
                         weight={500}
                         color="#090A0A"
                       />
@@ -228,14 +228,14 @@ const CardCommon = () => {
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
                       <Text
                         title="Formação:"
-                        size={14}
+                        size={13}
                         weight={600}
                         color="#090A0A"
                       />
                       <Space marginHorizontal={2.5} />
                       <Text
                         title={user.name}
-                        size={14}
+                        size={13}
                         weight={500}
                         color="#090A0A"
                       />
@@ -243,14 +243,14 @@ const CardCommon = () => {
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
                       <Text
                         title="Experiência:"
-                        size={14}
+                        size={13}
                         weight={600}
                         color="#090A0A"
                       />
                       <Space marginHorizontal={2.5} />
                       <Text
                         title={user.name}
-                        size={14}
+                        size={13}
                         weight={500}
                         color="#090A0A"
                       />
@@ -311,7 +311,7 @@ const CardCommon = () => {
               alignItems: 'center',
               justifyContent: 'center',
               padding: 16,
-              marginTop: 30,
+              marginTop: 20,
             }}>
             <Text
               title="Você não possui um treino"

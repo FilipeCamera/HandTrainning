@@ -60,7 +60,7 @@ const InviteTrainner = ({auth}: any) => {
                 elevation: 5,
               }}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <View style={{width: 60, height: 60, borderRadius: 30}}>
+                <View style={{width: 50, height: 50, borderRadius: 25}}>
                   <Image
                     source={{uri: userInvite.avatar}}
                     style={{width: '100%', height: '100%', borderRadius: 999}}
@@ -74,7 +74,7 @@ const InviteTrainner = ({auth}: any) => {
                   }}>
                   <Text
                     title={userInvite.name}
-                    size={16}
+                    size={14}
                     weight={600}
                     color="#090A0A"
                   />
@@ -86,7 +86,7 @@ const InviteTrainner = ({auth}: any) => {
                         ? 'Treinador(a)'
                         : 'Academia'
                     }
-                    size={14}
+                    size={12}
                     weight={500}
                     color="#090A0A"
                   />

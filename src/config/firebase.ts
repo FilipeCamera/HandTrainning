@@ -16,10 +16,8 @@ const credentials = {
   measurementId: 'G-YPX61V53L4',
 };
 
-if (firebase.app.length === 0) {
+if (firebase.apps.length === 0) {
   firebase.initializeApp(credentials);
-} else {
-  firebase.app();
 }
 
 export {firebase, firestore, messaging, message, storage, auth};

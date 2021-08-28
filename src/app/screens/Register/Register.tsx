@@ -9,7 +9,7 @@ import {
   Text,
 } from 'components';
 import React, {useState} from 'react';
-import {View} from 'react-native';
+import {Platform, View} from 'react-native';
 
 import Line from 'assets/svg/Line.svg';
 
@@ -184,15 +184,17 @@ const Register = ({navigation}: any) => {
           size={15}
           notShadow
         />
-        <Button
-          apple
-          title="sign up with Apple"
-          border
-          color="#090A0A"
-          weight={500}
-          size={15}
-          notShadow
-        />
+        {Platform.OS === 'ios' && (
+          <Button
+            apple
+            title="sign up with Apple"
+            border
+            color="#090A0A"
+            weight={500}
+            size={15}
+            notShadow
+          />
+        )}
         <Button
           facebook
           title="sign up with Facebook"

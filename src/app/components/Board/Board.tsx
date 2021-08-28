@@ -17,7 +17,7 @@ const Board = ({title}: BoardProps) => {
   return (
     <BoardStyle style={styles.shadow}>
       <Row noMargin>
-        <Text title={title} size={20} weight={600} color="#090A0A" />
+        <Text title={title} size={18} weight={600} color="#090A0A" />
         <ButtonText
           title="Visualizar todos"
           size={12}

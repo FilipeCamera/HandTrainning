@@ -3,6 +3,7 @@ import {TextInput} from 'react-native-gesture-handler';
 import {Text} from 'components';
 import {InputStyle} from './styles';
 import {View} from 'react-native';
+import {RFValue} from 'react-native-responsive-fontsize';
 
 interface InputProps {
   value: string;
@@ -35,7 +36,7 @@ const Input = ({
         <TextInput
           style={{
             fontFamily: 'Poppins-Regular',
-            fontSize: 15,
+            fontSize: RFValue(15),
             width: '100%',
             height: slogan ? 80 : 56,
           }}

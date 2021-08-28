@@ -3,6 +3,7 @@ import React from 'react';
 import SearchIcon from 'assets/svg/search.svg';
 import {TextInput} from 'react-native';
 import {SearchStyle} from './styles';
+import {RFValue} from 'react-native-responsive-fontsize';
 
 interface SearchProps {
   user: string;
@@ -17,7 +18,12 @@ const Search = ({user, onSearch}: SearchProps) => {
         value={user}
         onChangeText={e => onSearch(e)}
         placeholder="Pesquisar por..."
-        style={{fontFamily: 'Poppins-Medium', color: '#858C94', flex: 1}}
+        style={{
+          fontFamily: 'Poppins-Medium',
+          fontSize: RFValue(15),
+          color: '#858C94',
+          flex: 1,
+        }}
       />
     </SearchStyle>
   );

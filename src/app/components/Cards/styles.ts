@@ -59,6 +59,7 @@ export const CardMiniStyle = styled.View`
   padding: 8px 16px;
   border-radius: 20px;
   background: #fff;
+  elevation: 4;
 `;
 
 export const styles = StyleSheet.create({
