@@ -34,7 +34,7 @@ const CardStatus = () => {
           <View>
             <Text
               title="Ganhos de usuários"
-              size={14}
+              size={15}
               weight={600}
               color="#fff"
             />
@@ -69,7 +69,7 @@ const CardStatus = () => {
           <View>
             <Text
               title="Usuários desvinculados"
-              size={14}
+              size={15}
               weight={600}
               color="#662924"
             />

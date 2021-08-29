@@ -1,6 +1,6 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import React from 'react';
-import {Exercise, Home, Invites, Profile} from 'screens';
+import {Exercise, Home, Invites, Profile, Posts} from 'screens';
 
 import HomeIcon from 'assets/svg/home_icon.svg';
 import HomeIconSelected from 'assets/svg/home_icon_selected.svg';
@@ -58,7 +58,7 @@ const GymNavigator = () => {
       />
       <Tab.Screen
         name="Post"
-        component={Home}
+        component={Posts}
         options={{
           unmountOnBlur: true,
           tabBarLabel: '',

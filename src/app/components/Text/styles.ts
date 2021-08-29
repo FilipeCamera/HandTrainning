@@ -2,6 +2,10 @@ import styled from 'styled-components/native';
 
 import {RFValue} from 'react-native-responsive-fontsize';
 
+import {Dimensions} from 'react-native';
+
+const {width} = Dimensions.get('screen');
+
 const family = {
   300: 'Poppins-Thin',
   400: 'Poppins-Regular',
@@ -19,7 +23,7 @@ interface TextProps {
 }
 export const TextStyle = styled.Text<TextProps>`
   font-size: ${(props: any) =>
-    `${RFValue(props.size)}px` || `${RFValue(14)}px`};
+    `${RFValue(props.size, width < 420 ? 560 : 640)}px` || `${RFValue(14)}px`};
   font-family: ${(props: TextProps) => family[props.weight || 400]};
   color: ${(props: any) => props.color || '#000'};
   ${(props: any) => (props.center ? 'text-align: center' : '')};

@@ -90,7 +90,7 @@ const DataTrainner = ({dados, setDados, errors}: DataProps) => {
         }}>
         <Input
           placeholder="Cidade"
-          width="65%"
+          width="60%"
           value={city}
           city
           onText={setCity}

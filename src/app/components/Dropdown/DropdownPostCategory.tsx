@@ -1,7 +1,6 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 
 import DropDownPicker from 'react-native-dropdown-picker';
-import axios from 'axios';
 import {RFValue} from 'react-native-responsive-fontsize';
 
 interface DropDownProps {
@@ -10,43 +9,39 @@ interface DropDownProps {
   error: any;
 }
 
-const DropdownUF = ({value, onValue, error}: DropDownProps) => {
+const DropdownCategoryType = ({value, onValue, error}: DropDownProps) => {
   const [open, setOpen] = useState(false);
-  const [items, setItems] = useState<any>([]);
-  useEffect(() => {
-    axios
-      .get('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
-      .then(response => {
-        const data = response.data;
-        let list = [];
-        data.map(item => {
-          list.push({label: item.sigla, value: item.sigla});
-        });
-        setItems(list);
-      });
-  }, []);
+  const [items, setItems] = useState<any>([
+    {value: 'warning', label: 'Aviso'},
+    {value: 'posts', label: 'Publicação'},
+  ]);
+
   return (
     <DropDownPicker
-      placeholder="Estado"
+      placeholder="Selecione um tipo"
       placeholderStyle={{
-        color: error !== '' ? '#FF6859' : '#1C2439',
+        color: error !== '' ? '#FF6859' : '#999999',
         fontFamily: 'Poppins-Regular',
+        fontSize: RFValue(15),
       }}
       textStyle={{fontFamily: 'Poppins-Regular', fontSize: RFValue(15)}}
       listMode="SCROLLVIEW"
       style={{
         backgroundColor: error !== '' ? 'rgba(255, 104, 89, 0.15)' : '#f1f4fa',
         borderRadius: 10,
+        width: '95%',
+        alignSelf: 'center',
         borderWidth: error !== '' ? 1 : 0,
         borderColor: '#FF6859',
-        width: 115,
         height: 56,
       }}
       dropDownContainerStyle={{
         backgroundColor: '#f1f4fa',
         borderRadius: 10,
+        width: '95%',
+        alignSelf: 'center',
         borderWidth: 0,
-        width: 115,
+        paddingVertical: 5,
         marginTop: 5,
         elevation: 1,
       }}
@@ -61,4 +56,4 @@ const DropdownUF = ({value, onValue, error}: DropDownProps) => {
   );
 };
 
-export default DropdownUF;
+export default DropdownCategoryType;

@@ -117,7 +117,7 @@ const DataCommon = ({dados, setDados, errors}: DataProps) => {
         <Input
           city
           placeholder="Cidade"
-          width="65%"
+          width="60%"
           value={city}
           onText={setCity}
           error={errors.city}

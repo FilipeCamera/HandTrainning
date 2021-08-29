@@ -1,5 +1,5 @@
 import {
-  Button,
+  ButtonRed,
   DropdownCategories,
   DropdownType,
   Input,
@@ -61,13 +61,7 @@ const CreateExercise = ({goBack}: CreateExerciseProps) => {
       />
       <Input placeholder="Nome do exercício" />
 
-      <Button
-        title="Criar exercício"
-        size={15}
-        weight={500}
-        color="#FFF"
-        background="#FF6859"
-      />
+      <ButtonRed title="Criar exercício" size={15} weight={500} color="#FFF" />
     </ExerciseStyle>
   );
 };

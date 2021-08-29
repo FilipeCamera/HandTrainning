@@ -15,6 +15,7 @@ import com.horcrux.svg.SvgPackage;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import com.zoontek.rnpermissions.RNPermissionsPackage;
+import com.reactcommunity.rndatetimepicker.RNDateTimePickerPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 
 public class MainApplication extends Application implements ReactApplication {

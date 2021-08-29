@@ -12,7 +12,11 @@ interface TextProps {
 }
 
 const Text = ({title, ...props}: TextProps) => {
-  return <TextStyle {...props}>{title}</TextStyle>;
+  return (
+    <TextStyle {...props} adjustsFontSizeToFit>
+      {title}
+    </TextStyle>
+  );
 };
 
 export default Text;

@@ -25,6 +25,7 @@ import {
   DropdownGender,
   DropdownCategories,
   DropdownType,
+  DropdownCategoryType,
 } from './Dropdown';
 import {SimpleHeader, Header} from './Header';
 import Input from './Input';
@@ -34,6 +35,7 @@ import Scroll from './Scroll';
 import Search from './Search';
 import Space from './Space';
 import Text from './Text';
+import DateTime from './DateTime';
 
 export {
   Button,
@@ -70,4 +72,6 @@ export {
   DropdownCategories,
   DropdownType,
   CardMini,
+  DropdownCategoryType,
+  DateTime,
 };

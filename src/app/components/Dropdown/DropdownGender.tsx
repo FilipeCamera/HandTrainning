@@ -38,6 +38,7 @@ const DropdownGender = ({value, onValue, error}: DropDownProps) => {
         borderRadius: 10,
         borderWidth: 0,
         paddingVertical: 5,
+        marginTop: 5,
       }}
       scrollViewProps={{showsVerticalScrollIndicator: false}}
       open={open}

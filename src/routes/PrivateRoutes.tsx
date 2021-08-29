@@ -27,7 +27,9 @@ export default () => {
 
   return (
     <Navigator
-      initialRouteName={user.completeRegister ? 'Dashboard' : 'Onboarding'}
+      initialRouteName={
+        user.completeRegister === true ? 'Dashboard' : 'Onboarding'
+      }
       headerMode="none">
       {routes.map(({name, component}) => (
         <Screen key={name} name={name as any} component={component} />
