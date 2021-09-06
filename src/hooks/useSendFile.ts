@@ -23,7 +23,6 @@ const useSendFile = () => {
           .catch((error: any) => {
             // console.log("erro on get url", error);
             onFail(error);
-            // return error
           });
       },
     );

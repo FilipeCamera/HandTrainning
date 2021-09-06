@@ -36,6 +36,7 @@ import Search from './Search';
 import Space from './Space';
 import Text from './Text';
 import DateTime from './DateTime';
+import BoxUpload from './BoxUpload';
 
 export {
   Button,
@@ -74,4 +75,5 @@ export {
   CardMini,
   DropdownCategoryType,
   DateTime,
+  BoxUpload,
 };
