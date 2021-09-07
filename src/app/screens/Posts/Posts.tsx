@@ -1,4 +1,5 @@
 import {
+  BoxUpload,
   ButtonRed,
   DateTime,
   DropdownCategoryType,
@@ -13,10 +14,104 @@ import {View} from 'react-native';
 import Line from 'assets/svg/Line.svg';
 
 import {PostsStyle} from './styles';
+import {fieldValidate} from 'validation';
+import {firestore} from 'firebase';
+import {showMessage} from 'react-native-flash-message';
+import {useSelector} from 'react-redux';
 
 const Posts = () => {
+  const user = useSelector((state: any) => state.auth.user);
   const [type, setType] = useState('');
-  const [errors, setErrors] = useState({type: ''});
+  const [image, setImage] = useState('');
+  const [title, setTitle] = useState('');
+  const [desc, setDesc] = useState('');
+  const [emphasi, setEmphasi] = useState('');
+  const [initial, setInitial] = useState('');
+  const [finallized, setFinallized] = useState('');
+  const [errors, setErrors] = useState({
+    type: '',
+    title: '',
+    desc: '',
+    initial: '',
+    finallized: '',
+  });
+
+  const verify = () => {
+    const titleVerified = fieldValidate(title);
+    const descVerified = fieldValidate(desc);
+    const finallizedVerified = fieldValidate(finallized);
+
+    setErrors({
+      ...errors,
+      title: titleVerified.error,
+      desc: descVerified.error,
+      finallized: finallizedVerified.error,
+    });
+
+    if (
+      !titleVerified.value &&
+      !descVerified.value &&
+      !finallizedVerified.value
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  const handleCreatePost = () => {
+    const verified = verify();
+
+    if (verified) {
+      let data: any;
+      if (type === 'posts') {
+        data = {
+          gym: user.uid,
+          title: title,
+          desc: desc,
+          emphasi: emphasi,
+          initial: initial,
+          finallized: finallized,
+          image: image,
+          createdAt: firestore.FieldValue.serverTimestamp(),
+        };
+      }
+      if (type === 'warning') {
+        data = {
+          gym: user.uid,
+          title: title,
+          desc: desc,
+          initial: initial,
+          finallized: finallized,
+          createdAt: firestore.FieldValue.serverTimestamp(),
+        };
+      }
+      firestore()
+        .collection(`${type}`)
+        .doc()
+        .set(data)
+        .then(() => {
+          showMessage({
+            type: 'success',
+            message: 'Sucesso',
+            description: 'Postagem criada.',
+          });
+          setType('');
+          setDesc('');
+          setTitle('');
+          setImage('');
+          setInitial('');
+          setFinallized('');
+          setEmphasi('');
+        })
+        .catch(error =>
+          showMessage({
+            type: 'danger',
+            message: 'Erro',
+            description: 'Problema ao criar a postagem',
+          }),
+        );
+    }
+  };
   return (
     <PostsStyle
       contentContainerStyle={{
@@ -36,8 +131,18 @@ const Posts = () => {
       <Space marginVertical={4} />
       {type === 'warning' && (
         <>
-          <Input placeholder="Título" />
-          <Input placeholder="Descrição" />
+          <Input
+            placeholder="Título"
+            value={title}
+            onText={e => setTitle(e)}
+            error={errors.title}
+          />
+          <Input
+            placeholder="Descrição"
+            value={desc}
+            onText={e => setDesc(e)}
+            error={errors.desc}
+          />
           <Space marginVertical={20} />
           <View
             style={{
@@ -51,16 +156,40 @@ const Posts = () => {
             <Line width="100px" />
           </View>
           <Space marginVertical={8} />
-          <DateTime />
+          <DateTime
+            setFinallized={setFinallized}
+            setInitial={setInitial}
+            error={errors.finallized}
+          />
           <Space marginVertical={30} />
-          <ButtonRed title="Postar" color="#fff" size={15} weight={500} />
+          <ButtonRed
+            title="Postar"
+            color="#fff"
+            size={15}
+            weight={500}
+            onPress={handleCreatePost}
+          />
         </>
       )}
       {type === 'posts' && (
         <>
-          <Input placeholder="Título" />
-          <Input placeholder="Destaque" />
-          <Input placeholder="Descrição" />
+          <Input
+            placeholder="Título"
+            value={title}
+            onText={e => setTitle(e)}
+            error={errors.title}
+          />
+          <Input
+            placeholder="Destaque"
+            value={emphasi}
+            onText={e => setEmphasi(e)}
+          />
+          <Input
+            placeholder="Descrição"
+            value={desc}
+            onText={e => setDesc(e)}
+            error={errors.desc}
+          />
           <Space marginVertical={20} />
           <View
             style={{
@@ -74,9 +203,21 @@ const Posts = () => {
             <Line width="100px" />
           </View>
           <Space marginVertical={8} />
-          <DateTime />
+          <DateTime
+            setFinallized={setFinallized}
+            setInitial={setInitial}
+            error={errors.finallized}
+          />
           <Space marginVertical={30} />
-          <ButtonRed title="Postar" color="#fff" size={15} weight={500} />
+          <BoxUpload setUrl={setImage} />
+          <Space marginVertical={40} />
+          <ButtonRed
+            title="Postar"
+            color="#fff"
+            size={15}
+            weight={500}
+            onPress={handleCreatePost}
+          />
         </>
       )}
     </PostsStyle>
