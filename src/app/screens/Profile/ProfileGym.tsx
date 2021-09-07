@@ -10,7 +10,7 @@ import {TouchableOpacity, View} from 'react-native';
 import {BarChart, Button, Label, Space, Text} from 'components';
 import {Image} from 'react-native';
 import {Logout} from 'functions';
-import ProfileGymStateScreen from './ProfileGymState/ProfileGymStateScreen';
+import ProfileGymStateScreen from './ProfileGymState';
 
 const ProfileGym = ({user, navigation}: any) => {
   const [state, setState] = useState('');

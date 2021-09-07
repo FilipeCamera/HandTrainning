@@ -16,6 +16,15 @@ const Exercise = () => {
   const [categories, setCategories] = useState<any>([]);
   const [categoExer, setCatego] = useState('');
 
+  const handleSelect = index => {
+    categories.map((item, catIndex) => {
+      if (catIndex === index) {
+        return (item.selected = true);
+      }
+      return (item.selected = false);
+    });
+  };
+
   useEffect(() => {
     firestore()
       .collection('exercises')
@@ -66,37 +75,44 @@ const Exercise = () => {
       />
 
       {exercises.length !== 0 && categories.length !== 0 && (
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{alignItems: 'center'}}>
-          {categories.map((category: any, index: any) => {
-            return (
-              <TouchableOpacity
-                key={category.name}
-                style={{
-                  backgroundColor: categories[index].selected
-                    ? '#DCFFB2'
-                    : '#E0E1E5',
-                  paddingVertical: 8,
-                  paddingHorizontal: 12,
-                  borderRadius: 8,
-                  marginHorizontal: 8,
-                }}
-                onPress={() => {
-                  setCatego(category.value);
-                }}>
-                <Text
-                  title={category.name}
-                  size={12}
-                  weight={500}
-                  color={categories[index].selected ? '#34A853' : '#454459'}
-                />
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
+        <View style={{height: 50}}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{
+              alignItems: 'center',
+              flexGrow: 1,
+            }}>
+            {categories.map((category: any, index: any) => {
+              return (
+                <TouchableOpacity
+                  key={category.name}
+                  style={{
+                    backgroundColor: categories[index].selected
+                      ? '#DCFFB2'
+                      : '#E0E1E5',
+                    paddingVertical: 8,
+                    paddingHorizontal: 12,
+                    borderRadius: 8,
+                    marginHorizontal: 8,
+                  }}
+                  onPress={() => {
+                    setCatego(category.value);
+                    handleSelect(index);
+                  }}>
+                  <Text
+                    title={category.name}
+                    size={12}
+                    weight={500}
+                    color={categories[index].selected ? '#34A853' : '#454459'}
+                  />
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        </View>
       )}
+      <Space marginVertical={20} />
       {exercises.length !== 0 &&
         exercises.map(exercise => {
           if (exercise.category === categoExer) {
@@ -135,6 +151,17 @@ const Exercise = () => {
               </View>
             );
           }
+          return (
+            <View
+              style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+              <Text
+                title="Nenhum exercício encontrado."
+                size={15}
+                weight={500}
+                color="#d2d3d7"
+              />
+            </View>
+          );
         })}
       {exercises.length === 0 && (
         <View
