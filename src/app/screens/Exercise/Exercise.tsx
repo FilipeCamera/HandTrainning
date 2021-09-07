@@ -24,7 +24,6 @@ const Exercise = () => {
       return (item.selected = false);
     });
   };
-
   useEffect(() => {
     firestore()
       .collection('exercises')
@@ -34,6 +33,8 @@ const Exercise = () => {
         const list = querySnapshot.docs.map(doc => doc.data());
         setExercises(list);
       });
+  }, [exercises]);
+  useEffect(() => {
     firestore()
       .collection('categories')
       .get()
@@ -50,6 +51,7 @@ const Exercise = () => {
         });
         array[0].selected = true;
         setCategories(array);
+        setCatego(array[0].value);
       });
   }, []);
 
@@ -117,7 +119,7 @@ const Exercise = () => {
         exercises.map(exercise => {
           if (exercise.category === categoExer) {
             return (
-              <View style={{width: '100%'}}>
+              <View key={exercise.name} style={{width: '100%'}}>
                 <View
                   style={{
                     flexDirection: 'row',
@@ -151,17 +153,6 @@ const Exercise = () => {
               </View>
             );
           }
-          return (
-            <View
-              style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-              <Text
-                title="Nenhum exercício encontrado."
-                size={15}
-                weight={500}
-                color="#d2d3d7"
-              />
-            </View>
-          );
         })}
       {exercises.length === 0 && (
         <View

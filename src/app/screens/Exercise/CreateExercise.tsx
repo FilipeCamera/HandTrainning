@@ -117,11 +117,13 @@ const CreateExercise = ({goBack, user}: CreateExerciseProps) => {
         error={errors.category}
       />
       <Space marginVertical={4} />
-      <DropdownType
-        value={type}
-        onValue={(e: any) => setType(e)}
-        error={errors.type}
-      />
+      {category.length !== 0 && (
+        <DropdownType
+          value={type}
+          onValue={(e: any) => setType(e)}
+          error={errors.type}
+        />
+      )}
       <Input
         placeholder="Nome do exercício"
         value={name}
