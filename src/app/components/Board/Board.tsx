@@ -1,14 +1,20 @@
 import React, {useState} from 'react';
 
-import {Row, Text, ButtonText} from 'components';
+import {Row, Text, ButtonText, Space} from 'components';
 import {BoardStyle, ButtonTap, styles} from './styles';
-import {View} from 'react-native';
+import {Image, View} from 'react-native';
+import moment from 'moment';
+import {firestore} from 'firebase';
 
 interface BoardProps {
   title: string;
+  data: any;
 }
 
-const Board = ({title}: BoardProps) => {
+const Board = ({title, data}: BoardProps) => {
+  const date = new Date(
+    firestore.Timestamp.now().seconds * 1000,
+  ).toLocaleDateString();
   const [active, setActive] = useState({
     today: true,
     week: false,
@@ -58,6 +64,126 @@ const Board = ({title}: BoardProps) => {
           />
         </ButtonTap>
       </View>
+      <Space marginVertical={10} />
+      {!!data &&
+        data.map((item, index) => {
+          if (index >= 3) {
+            return;
+          }
+          if (
+            active.today &&
+            moment(date).isSame(
+              moment(item.initial.seconds * 1000).format('MM/DD/YY'),
+            )
+          ) {
+            return (
+              <View
+                key={item.name}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  marginBottom: 16,
+                }}>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  {!!item.image && (
+                    <View style={{width: 60, height: 60, borderRadius: 20}}>
+                      <Image
+                        source={{uri: item.image}}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          borderRadius: 20,
+                        }}
+                      />
+                    </View>
+                  )}
+                  {!!item.image && <Space marginHorizontal={8} />}
+                  <Text
+                    title={item.title}
+                    size={12}
+                    weight={500}
+                    color="#090a0a"
+                  />
+                </View>
+                {moment(date).isAfter(
+                  moment(item.finallized.seconds * 1000).format('MM/DD/YY'),
+                ) && (
+                  <View
+                    style={{
+                      backgroundColor: '#DCFFB2',
+                      paddingVertical: 4,
+                      paddingHorizontal: 8,
+                      borderRadius: 8,
+                    }}>
+                    <Text
+                      title="Finalizado"
+                      weight={500}
+                      size={10}
+                      color="#4CAF50"
+                    />
+                  </View>
+                )}
+              </View>
+            );
+          }
+          if (
+            active.week &&
+            moment(date).isAfter(
+              moment(item.initial.seconds * 1000).format('MM/DD/YY'),
+            )
+          ) {
+            return (
+              <View
+                key={item.name}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  marginBottom: 16,
+                }}>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  {!!item.image && (
+                    <View style={{width: 60, height: 60, borderRadius: 20}}>
+                      <Image
+                        source={{uri: item.image}}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          borderRadius: 20,
+                        }}
+                      />
+                    </View>
+                  )}
+                  {!!item.image && <Space marginHorizontal={8} />}
+                  <Text
+                    title={item.title}
+                    size={12}
+                    weight={500}
+                    color="#090a0a"
+                  />
+                </View>
+                {moment(item.finallized).format('DD/MM/YYYY') <=
+                  moment(Date.now()).format('DD/MM/YYYY') && (
+                  <View
+                    style={{
+                      backgroundColor: '#DCFFB2',
+                      paddingVertical: 4,
+                      paddingHorizontal: 8,
+                      borderRadius: 8,
+                    }}>
+                    <Text
+                      title="Finalizado"
+                      weight={500}
+                      size={10}
+                      color="#4CAF50"
+                    />
+                  </View>
+                )}
+              </View>
+            );
+          }
+        })}
     </BoardStyle>
   );
 };
