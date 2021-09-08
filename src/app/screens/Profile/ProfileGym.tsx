@@ -133,7 +133,7 @@ const ProfileGym = ({user, navigation}: any) => {
           <Text title="Alunos" weight={500} size={14} color="#FF6859" />
         </View>
       </View>
-      <Space marginVertical={20} />
+      <Space marginVertical={30} />
       <View style={{width: '90%'}}>
         <TouchableOpacity
           style={{
@@ -173,7 +173,7 @@ const ProfileGym = ({user, navigation}: any) => {
         </TouchableOpacity>
         <LineGray width="100%" />
       </View>
-      <Space marginVertical={20} />
+      <Space marginVertical={40} />
       <View style={{width: '90%'}}>
         <Label title="Engajamento da academia" color="#d2d3d7" />
       </View>

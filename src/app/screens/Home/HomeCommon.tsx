@@ -4,7 +4,7 @@ import React from 'react';
 
 import {HomeStyle} from './styles';
 
-const HomeCommon = () => {
+const HomeCommon = (navigation: any) => {
   return (
     <HomeStyle
       contentContainerStyle={{

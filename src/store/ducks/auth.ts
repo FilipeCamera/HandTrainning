@@ -27,6 +27,7 @@ const initialState: any = {
     limitGym: undefined,
     limitCommon: undefined,
     limitTrainner: undefined,
+    userAssociate: undefined,
     completeRegister: undefined,
   },
 };

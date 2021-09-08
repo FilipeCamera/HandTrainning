@@ -27,6 +27,7 @@ const userPersist = (user: any) => {
     limitGym: user.limitGym,
     limitCommon: user.limitCommon,
     limitTrainner: user.limitTrainner,
+    userAssociate: user.userAssociate,
     completeRegister: user.completeRegister,
   });
 };

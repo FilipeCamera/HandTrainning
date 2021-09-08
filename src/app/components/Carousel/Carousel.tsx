@@ -1,41 +1,28 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {View, Dimensions, Image} from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import {Text} from 'components';
 import {styles} from './styles';
+import {firestore} from 'firebase';
+import {useSelector} from 'react-redux';
 
 const CarouselComponent = () => {
+  const user = useSelector((state: any) => state.auth.user);
   const carouselRef = useRef(null);
   const {width} = Dimensions.get('screen');
-  const data = [
-    {
-      title: 'Viagem para Morro do São Paulo',
-      desc: 'Viagem de ida e volta, com tudo incluso',
-      featured: 'R$ 100,00',
-      image:
-        'https://vemvoar.voeazul.com.br/wp-content/uploads/2020/12/Morro-de-Sao-Paulo8-1536x864.jpg',
-    },
-    {
-      title: 'Viagem para Morro do São Paulo',
-      desc: 'Viagem de ida e volta, com tudo incluso',
-      featured: 'R$ 100,00',
-    },
-    {
-      title: 'Viagem para Morro do São Paulo',
-      desc: 'Viagem de ida e volta, com tudo incluso',
-      featured: 'R$ 100,00',
-    },
-    {
-      title: 'Viagem para Morro do São Paulo',
-      desc: 'Viagem de ida e volta, com tudo incluso',
-      featured: 'R$ 100,00',
-    },
-    {
-      title: 'Viagem para Morro do São Paulo',
-      desc: 'Viagem de ida e volta, com tudo incluso',
-      featured: 'R$ 100,00',
-    },
-  ];
+  const [data, setData] = useState<any[]>([]);
+
+  useEffect(() => {
+    firestore()
+      .collection('posts')
+      .where('gym', '==', user.userAssociate)
+      .get()
+      .then(querySnapshot => {
+        const list = querySnapshot.docs.map(doc => doc.data());
+        setData(list);
+      })
+      .catch(error => {});
+  }, []);
 
   const _renderItem = ({item}: any) => (
     <View
@@ -55,18 +42,20 @@ const CarouselComponent = () => {
           style={{width: '100%', height: '100%', borderRadius: 20}}
         />
       )}
-      <View
-        style={{
-          position: 'absolute',
-          top: 16,
-          right: 16,
-          backgroundColor: '#34A853',
-          borderRadius: 8,
-          paddingHorizontal: 8,
-          paddingVertical: 2,
-        }}>
-        <Text title={item.featured} size={15} weight={600} color="#FFF" />
-      </View>
+      {!!item.emphasi && (
+        <View
+          style={{
+            position: 'absolute',
+            top: 16,
+            right: 16,
+            backgroundColor: '#34A853',
+            borderRadius: 8,
+            paddingHorizontal: 8,
+            paddingVertical: 2,
+          }}>
+          <Text title={item.emphasi} size={15} weight={600} color="#FFF" />
+        </View>
+      )}
       <View
         style={{
           flexDirection: 'column',
@@ -83,23 +72,25 @@ const CarouselComponent = () => {
   );
   return (
     <>
-      <Carousel
-        slideStyle={{backgroundColor: '#fff', paddingVertical: 16}}
-        autoplay={true}
-        horizontal={true}
-        autoplayDelay={1000}
-        autoplayInterval={5000}
-        loop={true}
-        layout="default"
-        data={data}
-        ref={carouselRef}
-        renderItem={_renderItem}
-        sliderWidth={width}
-        itemWidth={width - 60}
-        lockScrollWhileSnapping={true}
-        enableMomentum={false}
-        enableSnap={false}
-      />
+      {data.length !== 0 ? (
+        <Carousel
+          slideStyle={{backgroundColor: '#fff', paddingVertical: 16}}
+          autoplay={true}
+          horizontal={true}
+          autoplayDelay={1000}
+          autoplayInterval={5000}
+          loop={true}
+          layout="default"
+          data={data}
+          ref={carouselRef}
+          renderItem={_renderItem}
+          sliderWidth={width}
+          itemWidth={width - 60}
+          lockScrollWhileSnapping={true}
+          enableMomentum={false}
+          enableSnap={false}
+        />
+      ) : null}
     </>
   );
 };
