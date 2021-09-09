@@ -9,16 +9,16 @@ import {firestore} from 'firebase';
 interface BoardProps {
   title: string;
   data: any;
+  visualPress: () => any;
 }
 
-const Board = ({title, data}: BoardProps) => {
+const Board = ({title, data, visualPress}: BoardProps) => {
   const date = new Date(
     firestore.Timestamp.now().seconds * 1000,
   ).toLocaleDateString();
   const [active, setActive] = useState({
     today: true,
     week: false,
-    month: false,
   });
   return (
     <BoardStyle style={styles.shadow}>
@@ -29,13 +29,13 @@ const Board = ({title, data}: BoardProps) => {
           size={12}
           weight={500}
           color="#FF6859"
-          onPress={() => {}}
+          onPress={visualPress}
         />
       </Row>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
         <ButtonTap
           active={active.today}
-          onPress={() => setActive({today: true, week: false, month: false})}>
+          onPress={() => setActive({today: true, week: false})}>
           <Text
             title="Hoje"
             size={13}
@@ -45,22 +45,12 @@ const Board = ({title, data}: BoardProps) => {
         </ButtonTap>
         <ButtonTap
           active={active.week}
-          onPress={() => setActive({today: false, week: true, month: false})}>
+          onPress={() => setActive({today: false, week: true})}>
           <Text
-            title="1 Semana"
+            title="Semana"
             size={13}
             weight={500}
             color={active.week ? '#FF6859' : '#C4C4C4'}
-          />
-        </ButtonTap>
-        <ButtonTap
-          active={active.month}
-          onPress={() => setActive({today: false, week: false, month: true})}>
-          <Text
-            title="1 Mês"
-            size={13}
-            weight={500}
-            color={active.month ? '#FF6859' : '#C4C4C4'}
           />
         </ButtonTap>
       </View>

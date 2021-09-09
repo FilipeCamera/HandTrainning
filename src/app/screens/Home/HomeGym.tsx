@@ -9,12 +9,14 @@ import {
 import {firestore} from 'firebase';
 import React, {useState, useEffect} from 'react';
 import {useSelector} from 'react-redux';
+import HomeStateGym from './HomeStateGym';
 import {HomeStyle} from './styles';
 
 const HomeGym = ({navigation}: any) => {
   const user = useSelector((state: any) => state.auth.user);
   const [warnings, setWarnings] = useState<any[]>([]);
   const [posts, setPosts] = useState<any[]>([]);
+  const [state, setState] = useState('');
 
   useEffect(() => {
     firestore()
@@ -36,6 +38,25 @@ const HomeGym = ({navigation}: any) => {
       })
       .catch(error => {});
   }, []);
+
+  if (state === 'warnings') {
+    return (
+      <HomeStateGym
+        title="Avisos"
+        data={warnings}
+        onBack={() => setState('')}
+      />
+    );
+  }
+  if (state === 'posts') {
+    return (
+      <HomeStateGym
+        title="Postagens"
+        data={posts}
+        onBack={() => setState('')}
+      />
+    );
+  }
   return (
     <HomeStyle
       contentContainerStyle={{
@@ -51,8 +72,16 @@ const HomeGym = ({navigation}: any) => {
         <CardTrainnerStatus />
         <CardStatus />
       </Row>
-      <Board title="Mural de Avisos" data={warnings} />
-      <Board title="Mural de Post" data={posts} />
+      <Board
+        title="Mural de Avisos"
+        data={warnings}
+        visualPress={() => setState('warnings')}
+      />
+      <Board
+        title="Mural de Post"
+        data={posts}
+        visualPress={() => setState('posts')}
+      />
     </HomeStyle>
   );
 };
