@@ -11,8 +11,9 @@ import {
 import {firestore} from 'firebase';
 import {useGetUser, useInvites, useVerification} from 'hooks';
 import React, {useState, useEffect} from 'react';
-import {Image, View} from 'react-native';
+import {Image, TouchableOpacity, View} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
+import InviteProfile from './InviteProfile';
 import {InvitesStyle} from './styles';
 
 const InviteGym = ({auth}: any) => {
@@ -20,6 +21,8 @@ const InviteGym = ({auth}: any) => {
   const {getInvites, acceptedInvite} = useInvites();
   const {verifyUserAssociate, verifyUserIsType} = useVerification();
   const [userSearch, setUserSearch] = useState('');
+  const [profile, setProfile] = useState('');
+  const [user, setUser] = useState<any>();
   const [usersSearch, setUsersSearch] = useState<any>([]);
   const [users, setUsers] = useState<any>([]);
   const [invites, setInvites] = useState<any>([]);
@@ -179,7 +182,9 @@ const InviteGym = ({auth}: any) => {
       });
     }
   };
-
+  if (profile === 'profile') {
+    return <InviteProfile profile={user} onBack={setProfile} />;
+  }
   return (
     <InvitesStyle
       contentContainerStyle={{
@@ -210,7 +215,7 @@ const InviteGym = ({auth}: any) => {
       {usersSearch.length !== 0 &&
         usersSearch.map((userInvite: any) => {
           return (
-            <View
+            <TouchableOpacity
               key={userInvite.uid}
               style={{
                 width: '100%',
@@ -230,6 +235,10 @@ const InviteGym = ({auth}: any) => {
                 shadowRadius: 3.84,
 
                 elevation: 5,
+              }}
+              onPress={() => {
+                setUser(userInvite);
+                setProfile('profile');
               }}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <View style={{width: 50, height: 50, borderRadius: 25}}>
@@ -275,7 +284,7 @@ const InviteGym = ({auth}: any) => {
                   from={userInvite.uid}
                 />
               </View>
-            </View>
+            </TouchableOpacity>
           );
         })}
       <Space marginVertical={5} />

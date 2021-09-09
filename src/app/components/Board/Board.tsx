@@ -68,7 +68,7 @@ const Board = ({title, data, visualPress}: BoardProps) => {
           ) {
             return (
               <View
-                key={item.name}
+                key={item.title}
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
@@ -125,7 +125,7 @@ const Board = ({title, data, visualPress}: BoardProps) => {
           ) {
             return (
               <View
-                key={item.name}
+                key={item.title}
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',

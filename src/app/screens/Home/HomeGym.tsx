@@ -44,7 +44,9 @@ const HomeGym = ({navigation}: any) => {
       <HomeStateGym
         title="Avisos"
         data={warnings}
-        onBack={() => setState('')}
+        onBack={setState}
+        setData={setWarnings}
+        type="warning"
       />
     );
   }
@@ -53,7 +55,9 @@ const HomeGym = ({navigation}: any) => {
       <HomeStateGym
         title="Postagens"
         data={posts}
-        onBack={() => setState('')}
+        onBack={setState}
+        setData={setPosts}
+        type="posts"
       />
     );
   }

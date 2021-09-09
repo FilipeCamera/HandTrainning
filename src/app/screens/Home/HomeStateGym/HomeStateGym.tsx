@@ -1,26 +1,51 @@
 import {ButtonText, SimpleHeader, Space, Text} from 'components';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {BackHandler, Image, View} from 'react-native';
 import {CardStyle, HomeStateStyle} from './styles';
 
 import GranLine from 'assets/svg/LineGran.svg';
 import moment from 'moment';
+import {firestore} from 'firebase';
 
 interface HomeStateGymProps {
   title: string;
-  onBack: () => any;
+  onBack: any;
   data: any[];
+  type: string;
+  setData: any;
 }
 
-const HomeStateGym = ({title, onBack, data}: HomeStateGymProps) => {
+const HomeStateGym = ({
+  title,
+  onBack,
+  data,
+  type,
+  setData,
+}: HomeStateGymProps) => {
+  const backChange = () => {
+    onBack('');
+    return true;
+  };
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
-      onBack,
+      backChange,
     );
     return () => backHandler.remove();
   }, []);
 
+  const handleDelete = (type: any, title: any, index: number) => {
+    firestore()
+      .collection(`${type}`)
+      .where('title', '==', title)
+      .get()
+      .then(querySnapshot => {
+        const doc = querySnapshot.docs.map(doc => doc.id);
+        firestore().collection(`${type}`).doc(doc[0]).delete();
+        data.splice(index, 1);
+      })
+      .catch(error => {});
+  };
   return (
     <HomeStateStyle
       contentContainerStyle={{
@@ -40,9 +65,9 @@ const HomeStateGym = ({title, onBack, data}: HomeStateGymProps) => {
       />
       <Space marginVertical={8} />
       {!!data &&
-        data.map(item => {
+        data.map((item, index) => {
           return (
-            <CardStyle key={item.uid}>
+            <CardStyle key={item.title}>
               <Space marginVertical={8} />
               <View
                 style={{
@@ -127,6 +152,7 @@ const HomeStateGym = ({title, onBack, data}: HomeStateGymProps) => {
                   size={12}
                   weight={500}
                   color="#FF6859"
+                  onPress={() => handleDelete(type, item.title, index)}
                 />
               </View>
               <GranLine width="100%" />
