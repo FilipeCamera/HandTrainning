@@ -146,12 +146,14 @@ const Board = ({title, data, visualPress}: BoardProps) => {
                     </View>
                   )}
                   {!!item.image && <Space marginHorizontal={8} />}
-                  <Text
-                    title={item.title}
-                    size={12}
-                    weight={500}
-                    color="#090a0a"
-                  />
+                  <View style={{width: 140}}>
+                    <Text
+                      title={item.title}
+                      size={12}
+                      weight={500}
+                      color="#090a0a"
+                    />
+                  </View>
                 </View>
                 {moment(item.finallized).format('DD/MM/YYYY') <=
                   moment(Date.now()).format('DD/MM/YYYY') && (

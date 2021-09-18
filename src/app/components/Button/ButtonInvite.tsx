@@ -38,7 +38,7 @@ const ButtonInvite = ({
           showMessage({type: 'warning', message: error});
           return false;
         } else {
-          await verifyUserAssociate(uid, {
+          return await verifyUserAssociate(uid, {
             onComplete: (error: any) => {
               if (error) {
                 showMessage({type: 'warning', message: error});

@@ -119,38 +119,41 @@ const Exercise = () => {
         exercises.map(exercise => {
           if (exercise.category === categoExer) {
             return (
-              <View key={exercise.name} style={{width: '100%'}}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    paddingHorizontal: 8,
-                  }}>
-                  <Text
-                    title={exercise.name}
-                    size={15}
-                    weight={600}
-                    color="#090a0a"
-                  />
-                  <TouchableOpacity
+              <>
+                <View key={exercise.name} style={{width: '100%'}}>
+                  <View
                     style={{
-                      backgroundColor: '#FFE1DE',
-                      paddingHorizontal: 12,
-                      paddingVertical: 5,
-                      borderRadius: 8,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      paddingHorizontal: 8,
                     }}>
                     <Text
-                      title="Excluir"
-                      size={12}
-                      weight={500}
-                      color="#CC5347"
+                      title={exercise.name}
+                      size={15}
+                      weight={600}
+                      color="#090a0a"
                     />
-                  </TouchableOpacity>
+                    <TouchableOpacity
+                      style={{
+                        backgroundColor: '#FFE1DE',
+                        paddingHorizontal: 12,
+                        paddingVertical: 5,
+                        borderRadius: 8,
+                      }}>
+                      <Text
+                        title="Excluir"
+                        size={12}
+                        weight={500}
+                        color="#CC5347"
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  <Space marginVertical={2} />
+                  <LineIcon width="100%" />
                 </View>
-                <Space marginVertical={2} />
-                <LineIcon width="100%" />
-              </View>
+                <Space marginVertical={8} />
+              </>
             );
           }
         })}

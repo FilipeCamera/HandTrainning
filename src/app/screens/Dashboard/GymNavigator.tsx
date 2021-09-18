@@ -36,7 +36,6 @@ const GymNavigator = () => {
         name="Home"
         component={Home}
         options={{
-          unmountOnBlur: true,
           tabBarLabel: ({color}) => (
             <Text title="Home" size={12} weight={500} color={color} />
           ),
@@ -48,7 +47,6 @@ const GymNavigator = () => {
         name="Exercise"
         component={Exercise}
         options={{
-          unmountOnBlur: true,
           tabBarLabel: ({color}) => (
             <Text title="Exercícios" size={12} weight={500} color={color} />
           ),
@@ -60,7 +58,6 @@ const GymNavigator = () => {
         name="Post"
         component={Posts}
         options={{
-          unmountOnBlur: true,
           tabBarLabel: '',
           tabBarIcon: ({focused}) => (
             <View
@@ -82,7 +79,6 @@ const GymNavigator = () => {
         name="Invites"
         component={Invites}
         options={{
-          unmountOnBlur: true,
           tabBarLabel: ({color}) => (
             <Text title="Convites" size={12} weight={500} color={color} />
           ),
@@ -94,7 +90,6 @@ const GymNavigator = () => {
         name="Profile"
         component={Profile}
         options={{
-          unmountOnBlur: true,
           tabBarLabel: ({color}) => (
             <Text title="Perfil" size={12} weight={500} color={color} />
           ),

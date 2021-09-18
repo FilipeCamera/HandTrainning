@@ -6,3 +6,8 @@ export const InvitesStyle = styled.ScrollView`
   background: #fff;
   padding-top: ${getStatusBarHeight()}px;
 `;
+
+export const InvitesProfileStyle = styled.ScrollView`
+  flex: 1;
+  background: #fff;
+`;

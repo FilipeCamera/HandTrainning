@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Image, View, TouchableOpacity, BackHandler} from 'react-native';
-import {InvitesStyle} from './styles';
+import {InvitesProfileStyle, InvitesStyle} from './styles';
 
 import BackRedHeader from 'assets/svg/RedTopBack.svg';
 import LocationIcon from 'assets/svg/locationIcon.svg';
@@ -19,7 +19,7 @@ const InviteProfile = ({profile, onBack, auth}: InviteProfileProps) => {
   useEffect(() => {
     firestore()
       .collection('users')
-      .where('uid', '==', profile.userAssociate)
+      .where('uid', '==', profile.userAssociate || profile.uid)
       .get()
       .then(querySnapshot => {
         const dados = querySnapshot.docs.map(doc => doc.data());
@@ -40,11 +40,12 @@ const InviteProfile = ({profile, onBack, auth}: InviteProfileProps) => {
     return () => backHandler.remove();
   }, []);
   return (
-    <InvitesStyle
+    <InvitesProfileStyle
       contentContainerStyle={{
         flexGrow: 1,
         alignItems: 'center',
         width: '100%',
+        paddingBottom: 25,
       }}
       showsVerticalScrollIndicator={false}>
       <View style={{width: '100%', height: 200}}>
@@ -54,7 +55,7 @@ const InviteProfile = ({profile, onBack, auth}: InviteProfileProps) => {
           style={{position: 'absolute', top: 0}}
         />
         <TouchableOpacity
-          style={{position: 'absolute', top: 25, left: 25}}
+          style={{position: 'absolute', top: 30, left: 25}}
           onPress={() => onBack('')}>
           <BackIcon />
         </TouchableOpacity>
@@ -172,6 +173,7 @@ const InviteProfile = ({profile, onBack, auth}: InviteProfileProps) => {
               </View>
             </View>
           </View>
+          <Space marginVertical={70} />
           {!profile.userAssociate && (
             <View style={{height: 56, width: '90%'}}>
               <ButtonInvite
@@ -187,7 +189,7 @@ const InviteProfile = ({profile, onBack, auth}: InviteProfileProps) => {
           )}
         </>
       )}
-    </InvitesStyle>
+    </InvitesProfileStyle>
   );
 };
 
