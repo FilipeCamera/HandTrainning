@@ -8,3 +8,4 @@ export {default as Exercise} from './Exercise';
 export {default as Invites} from './Invites';
 export {default as Profile} from './Profile';
 export {default as Posts} from './Posts';
+export {default as Trainning} from './Trainning';

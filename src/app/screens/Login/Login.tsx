@@ -19,6 +19,7 @@ import {showMessage} from 'react-native-flash-message';
 import {auth} from 'firebase';
 import {userPersist} from 'functions';
 import {useGetUser} from 'hooks';
+import Colors from '@styles';
 
 const Login = ({navigation}: any) => {
   const [email, setEmail] = useState('');
@@ -119,15 +120,15 @@ const Login = ({navigation}: any) => {
             title="Esqueceu a senha?"
             weight={600}
             size={13}
-            color="#FF6859"
+            color={Colors.red}
           />
         </View>
         <Space marginVertical={20} />
         <ButtonRed
           title="Acessar"
-          background="#FF6859"
+          background={Colors.red}
           size={15}
-          color="#fff"
+          color={Colors.textColorWhite}
           weight={500}
           onPress={() => signIn()}
         />
@@ -137,14 +138,14 @@ const Login = ({navigation}: any) => {
             title="Não possui uma conta?"
             size={15}
             weight={400}
-            color="#4C5673"
+            color={Colors.textColorRXC}
           />
           <Space marginHorizontal={2} />
           <ButtonText
             title="Cadastre-se"
             size={15}
             weight={600}
-            color="#FF6859"
+            color={Colors.red}
             onPress={() => navigation.navigate('Register')}
           />
         </View>
@@ -157,7 +158,12 @@ const Login = ({navigation}: any) => {
             width: '95%',
           }}>
           <Line width="120px" />
-          <Text title="ou" size={18} weight={500} color="#090A0A" />
+          <Text
+            title="ou"
+            size={18}
+            weight={500}
+            color={Colors.textColorBlack}
+          />
           <Line width="120px" />
         </View>
         <Space marginVertical={16} />
@@ -165,7 +171,7 @@ const Login = ({navigation}: any) => {
           google
           title="sign in with Google"
           border
-          color="#090A0A"
+          color={Colors.textColorBlack}
           weight={500}
           size={15}
           notShadow
@@ -175,7 +181,7 @@ const Login = ({navigation}: any) => {
             apple
             title="sign in with Apple"
             border
-            color="#090A0A"
+            color={Colors.textColorBlack}
             weight={500}
             size={15}
             notShadow
@@ -185,7 +191,7 @@ const Login = ({navigation}: any) => {
           facebook
           title="sign in with Facebook"
           border
-          color="#090A0A"
+          color={Colors.textColorBlack}
           weight={500}
           size={15}
           notShadow

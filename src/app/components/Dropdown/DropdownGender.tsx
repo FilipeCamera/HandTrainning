@@ -1,7 +1,8 @@
+import normalize from '@normalize';
+import Colors from '@styles';
 import React, {useState} from 'react';
 
 import DropDownPicker from 'react-native-dropdown-picker';
-import {RFValue} from 'react-native-responsive-fontsize';
 
 interface DropDownProps {
   value: string | null;
@@ -20,21 +21,21 @@ const DropdownGender = ({value, onValue, error}: DropDownProps) => {
     <DropDownPicker
       placeholder="Sexo"
       placeholderStyle={{
-        color: error !== '' ? '#FF6859' : '#1C2439',
+        color: error !== '' ? Colors.red : Colors.inputColorText,
         fontFamily: 'Poppins-Regular',
-        fontSize: RFValue(15),
+        fontSize: normalize(15),
       }}
-      textStyle={{fontFamily: 'Poppins-Regular', fontSize: RFValue(15)}}
+      textStyle={{fontFamily: 'Poppins-Regular', fontSize: normalize(15)}}
       listMode="SCROLLVIEW"
       style={{
-        backgroundColor: error !== '' ? 'rgba(255, 104, 89, 0.15)' : '#f1f4fa',
+        backgroundColor: error !== '' ? Colors.redOpacity : Colors.inputBack,
         borderRadius: 10,
         borderWidth: error !== '' ? 1 : 0,
-        borderColor: '#FF6859',
+        borderColor: Colors.red,
         height: 56,
       }}
       dropDownContainerStyle={{
-        backgroundColor: '#f1f4fa',
+        backgroundColor: Colors.inputBack,
         borderRadius: 10,
         borderWidth: 0,
         paddingVertical: 5,

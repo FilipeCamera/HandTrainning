@@ -1,21 +1,6 @@
 import styled from 'styled-components/native';
 
-import {RFValue} from 'react-native-responsive-fontsize';
-
-import {Platform, Dimensions, PixelRatio} from 'react-native';
-
-const {width, height} = Dimensions.get('window');
-
-const scale = width / 320;
-
-const normalize = (size: number) => {
-  const newSize = size * scale;
-  if (Platform.OS === 'ios') {
-    return Math.round(PixelRatio.roundToNearestPixel(newSize));
-  } else {
-    return Math.round(PixelRatio.roundToNearestPixel(newSize)) - 5;
-  }
-};
+import normalize from '@normalize';
 
 const family = {
   300: 'Poppins-Thin',

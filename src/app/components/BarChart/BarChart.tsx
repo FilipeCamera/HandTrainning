@@ -7,6 +7,7 @@ import {
   BarLineRedLight,
   LinerCircle,
 } from './styles';
+import Colors from '@styles';
 
 const BarChart = () => {
   const currentDate = Date.now();
@@ -60,7 +61,11 @@ const BarChart = () => {
               title={item.label}
               size={12}
               weight={item.date === currentDate ? 900 : 500}
-              color={item.date === currentDate ? '#454459' : '#A2A2AC'}
+              color={
+                item.date === currentDate
+                  ? Colors.textColorRX
+                  : Colors.textGrayMedium
+              }
             />
             {item.date === currentDate ? <LinerCircle /> : null}
           </View>

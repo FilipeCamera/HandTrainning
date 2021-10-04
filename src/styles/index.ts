@@ -1,3 +1,3 @@
-import VictoryTheme from './VictoryTheme';
+import Colors from './Colors';
 
-export default VictoryTheme;
+export default Colors;

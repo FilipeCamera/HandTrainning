@@ -2,6 +2,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import styled from 'styled-components/native';
 import {Dimensions} from 'react-native';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
+import Colors from '@styles';
 const {width, height} = Dimensions.get('screen');
 
 interface AbsoluteProps {
@@ -12,7 +13,7 @@ interface AbsoluteProps {
 }
 
 export const Background = styled(LinearGradient).attrs({
-  colors: ['#FF6859', '#B2483E'],
+  colors: [Colors.red, Colors.redDark],
   start: {x: 0, y: 0},
   end: {x: 0, y: 1},
 })`

@@ -11,6 +11,7 @@ import UpIcon from 'assets/svg/Up.svg';
 import {CardStatusStyle, CardBoxTwoStyle, CardBoxStyle} from './styles';
 import {View} from 'react-native';
 import {Text} from 'components';
+import Colors from '@styles';
 
 const CardStatus = () => {
   return (
@@ -36,7 +37,7 @@ const CardStatus = () => {
               title="Ganhos de usuários"
               size={15}
               weight={600}
-              color="#fff"
+              color={Colors.textColorWhite}
             />
           </View>
           <View
@@ -45,7 +46,12 @@ const CardStatus = () => {
               alignItems: 'center',
               justifyContent: 'flex-start',
             }}>
-            <Text title="16" size={22} weight={500} color="#FFF" />
+            <Text
+              title="16"
+              size={22}
+              weight={500}
+              color={Colors.textColorWhite}
+            />
             <UpIcon />
           </View>
         </View>
@@ -71,7 +77,7 @@ const CardStatus = () => {
               title="Usuários desvinculados"
               size={15}
               weight={600}
-              color="#662924"
+              color={Colors.redBrown}
             />
           </View>
           <View
@@ -80,7 +86,7 @@ const CardStatus = () => {
               alignItems: 'center',
               justifyContent: 'flex-start',
             }}>
-            <Text title="12" size={22} weight={500} color="#662924" />
+            <Text title="12" size={22} weight={500} color={Colors.redBrown} />
             <DownIcon />
           </View>
         </View>

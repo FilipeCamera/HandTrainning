@@ -1,6 +1,6 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import React from 'react';
-import {Home, Invites, Profile} from 'screens';
+import {Home, Invites, Profile, Trainning} from 'screens';
 
 import HomeIcon from 'assets/svg/home_icon.svg';
 import HomeIconSelected from 'assets/svg/home_icon_selected.svg';
@@ -11,6 +11,7 @@ import WeightIconSelected from 'assets/svg/weight_icon_selected.svg';
 import ProfileIcon from 'assets/svg/profile_icon.svg';
 import ProfileIconSelected from 'assets/svg/profile_icon_selected.svg';
 import {Text} from 'components';
+import Colors from '@styles';
 
 const Tab = createBottomTabNavigator();
 
@@ -19,8 +20,8 @@ const CommonNavigator = () => {
     <Tab.Navigator
       initialRouteName="Home"
       tabBarOptions={{
-        activeTintColor: '#090A09',
-        inactiveTintColor: '#A3A3A3',
+        activeTintColor: Colors.textColorBlack,
+        inactiveTintColor: Colors.gray,
         style: {
           borderTopColor: 'transparent',
           height: 70,
@@ -43,8 +44,8 @@ const CommonNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Training"
-        component={Home}
+        name="Trainning"
+        component={Trainning}
         options={{
           unmountOnBlur: true,
           tabBarLabel: ({color}) => (

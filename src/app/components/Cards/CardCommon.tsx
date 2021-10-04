@@ -264,13 +264,12 @@ const CardCommon = () => {
           <View
             style={{
               position: 'absolute',
-              bottom: 0,
+              bottom: 10,
               alignSelf: 'center',
-              marginVertical: 8,
             }}>
             <ButtonText
               title="Visualizar treino"
-              size={12}
+              size={14}
               weight={500}
               color="#FF6859"
             />
@@ -320,9 +319,11 @@ const CardCommon = () => {
               color="#A3A3A3"
             />
             <Notify style={{marginVertical: 40}} />
+          </View>
+          <View style={{position: 'absolute', bottom: 10, alignSelf: 'center'}}>
             <ButtonText
               title="Solicitar novo treino"
-              size={12}
+              size={14}
               weight={500}
               color="#FF6859"
               onPress={() => setTrainning(true)}

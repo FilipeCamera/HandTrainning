@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 
 import {Background} from './styles';
 
@@ -8,6 +8,7 @@ import LogoText from 'assets/svg/LogoText.svg';
 import Runner from 'assets/svg/Runner.svg';
 import {Button, Scroll} from 'components';
 import {View} from 'react-native';
+import Colors from '@styles';
 
 const Initial = ({navigation}: any) => {
   const {width, height} = Dimensions.get('screen');
@@ -31,7 +32,7 @@ const Initial = ({navigation}: any) => {
           title="Começar"
           weight={500}
           size={16}
-          background="#090A0A"
+          background={Colors.textColorBlack}
           color="#FFF"
           onPress={() => navigation.navigate('Register')}
         />
@@ -39,7 +40,7 @@ const Initial = ({navigation}: any) => {
           title="Já tenho uma conta"
           weight={500}
           size={16}
-          color="#090A0A"
+          color={Colors.textColorBlack}
           onPress={() => navigation.navigate('Login')}
         />
       </Scroll>

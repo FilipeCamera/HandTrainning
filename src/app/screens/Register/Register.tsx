@@ -19,6 +19,7 @@ import {firestore, auth} from 'firebase';
 import {userPersist} from 'functions';
 import {emailValidate, fieldPass, equalsPassword} from 'validation';
 import {showMessage} from 'react-native-flash-message';
+import Colors from '@styles';
 
 const Register = ({navigation}: any) => {
   const [email, setEmail] = useState('');
@@ -129,7 +130,7 @@ const Register = ({navigation}: any) => {
         <Space marginVertical={20} />
         <ButtonRed
           title="Cadastrar"
-          background="#FF6859"
+          background={Colors.red}
           size={15}
           color="#fff"
           weight={500}
@@ -151,14 +152,14 @@ const Register = ({navigation}: any) => {
             title="Já possui uma conta?"
             size={15}
             weight={400}
-            color="#4C5673"
+            color={Colors.textColorRXC}
           />
           <Space marginHorizontal={2} />
           <ButtonText
             title="Faça o login"
             size={15}
             weight={600}
-            color="#FF6859"
+            color={Colors.red}
             onPress={() => navigation.navigate('Login')}
           />
         </View>
@@ -171,7 +172,12 @@ const Register = ({navigation}: any) => {
             width: '95%',
           }}>
           <Line width="120px" />
-          <Text title="ou" size={18} weight={500} color="#090A0A" />
+          <Text
+            title="ou"
+            size={18}
+            weight={500}
+            color={Colors.textColorBlack}
+          />
           <Line width="120px" />
         </View>
         <Space marginVertical={16} />
@@ -179,7 +185,7 @@ const Register = ({navigation}: any) => {
           google
           title="sign up with Google"
           border
-          color="#090A0A"
+          color={Colors.textColorBlack}
           weight={500}
           size={15}
           notShadow
@@ -189,7 +195,7 @@ const Register = ({navigation}: any) => {
             apple
             title="sign up with Apple"
             border
-            color="#090A0A"
+            color={Colors.textColorBlack}
             weight={500}
             size={15}
             notShadow
@@ -199,7 +205,7 @@ const Register = ({navigation}: any) => {
           facebook
           title="sign up with Facebook"
           border
-          color="#090A0A"
+          color={Colors.textColorBlack}
           weight={500}
           size={15}
           notShadow

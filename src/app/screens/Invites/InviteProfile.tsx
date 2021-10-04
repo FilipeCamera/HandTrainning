@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {Image, View, TouchableOpacity, BackHandler} from 'react-native';
-import {InvitesProfileStyle, InvitesStyle} from './styles';
+import {InvitesProfileStyle} from './styles';
 
 import BackRedHeader from 'assets/svg/RedTopBack.svg';
 import LocationIcon from 'assets/svg/locationIcon.svg';
 import BackIcon from 'assets/svg/arrowBackWhite.svg';
 import {ButtonInvite, Space, Text} from 'components';
 import {firestore} from 'firebase';
+import Colors from '@styles';
 
 interface InviteProfileProps {
   profile: any;
@@ -23,7 +24,6 @@ const InviteProfile = ({profile, onBack, auth}: InviteProfileProps) => {
       .get()
       .then(querySnapshot => {
         const dados = querySnapshot.docs.map(doc => doc.data());
-        console.log(dados);
         setData(dados);
       })
       .catch(error => {});
@@ -65,7 +65,7 @@ const InviteProfile = ({profile, onBack, auth}: InviteProfileProps) => {
             height: 150,
             borderRadius: 75,
             borderWidth: 5,
-            borderColor: '#FFF',
+            borderColor: Colors.background,
             position: 'absolute',
             bottom: 0,
             alignSelf: 'center',
@@ -77,7 +77,12 @@ const InviteProfile = ({profile, onBack, auth}: InviteProfileProps) => {
         </View>
       </View>
       <View style={{alignItems: 'center'}}>
-        <Text title={profile.name} size={22} weight={600} color="#090A0A" />
+        <Text
+          title={profile.name}
+          size={22}
+          weight={600}
+          color={Colors.textColorBlack}
+        />
         <View style={{flexDirection: 'row', alignItems: 'flex-start'}}>
           <LocationIcon />
           <Space marginHorizontal={1} />
@@ -85,7 +90,7 @@ const InviteProfile = ({profile, onBack, auth}: InviteProfileProps) => {
             title={`${profile.city}, ${profile.uf}`}
             size={15}
             weight={500}
-            color="#c4c4c4"
+            color={Colors.grayMediumLight}
           />
         </View>
         <Space marginVertical={5} />
@@ -96,24 +101,29 @@ const InviteProfile = ({profile, onBack, auth}: InviteProfileProps) => {
             borderRadius: 13,
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: '#FF6859',
+            backgroundColor: Colors.red,
           }}>
           <Text
             title={
               profile.type === 'common'
-                ? 'aluno(a)'
+                ? 'aluno'
                 : profile.type === 'trainner'
-                ? 'treinador(a)'
+                ? 'treinador'
                 : 'academia'
             }
             size={10}
             weight={600}
-            color="#FFF"
+            color={Colors.textColorWhite}
           />
         </View>
         <Space marginVertical={5} />
         {!!profile.slogan && (
-          <Text title={profile.slogan} size={15} weight={400} color="#c4c4c4" />
+          <Text
+            title={profile.slogan}
+            size={15}
+            weight={400}
+            color={Colors.grayMediumLight}
+          />
         )}
       </View>
       <Space marginVertical={25} />
@@ -122,7 +132,7 @@ const InviteProfile = ({profile, onBack, auth}: InviteProfileProps) => {
           <View
             style={{
               width: '90%',
-              backgroundColor: '#fff',
+              backgroundColor: Colors.background,
               padding: 16,
               borderRadius: 10,
               flexDirection: 'row',
@@ -156,36 +166,38 @@ const InviteProfile = ({profile, onBack, auth}: InviteProfileProps) => {
                   title={data[0].name}
                   size={14}
                   weight={600}
-                  color="#090A0A"
+                  color={Colors.textColorBlack}
                 />
                 <Text
                   title={
                     data[0].type === 'common'
-                      ? 'Aluno(a)'
+                      ? 'Aluno'
                       : data[0].type === 'trainner'
-                      ? 'Treinador(a)'
+                      ? 'Treinador'
                       : 'Academia'
                   }
                   size={13}
                   weight={500}
-                  color="#090A0A"
+                  color={Colors.textColorBlack}
                 />
               </View>
             </View>
           </View>
-          <Space marginVertical={70} />
           {!profile.userAssociate && (
-            <View style={{height: 56, width: '90%'}}>
-              <ButtonInvite
-                title="Enviar convite"
-                sendTitle="Convite enviado"
-                size={15}
-                weight={500}
-                color="#fff"
-                to={auth}
-                from={profile.uid}
-              />
-            </View>
+            <>
+              <Space marginVertical={70} />
+              <View style={{height: 56, width: '90%'}}>
+                <ButtonInvite
+                  title="Enviar convite"
+                  sendTitle="Convite enviado"
+                  size={15}
+                  weight={500}
+                  color="#fff"
+                  to={auth}
+                  from={profile.uid}
+                />
+              </View>
+            </>
           )}
         </>
       )}

@@ -20,7 +20,7 @@ import Routes from 'routes';
 import FlashMessage from 'react-native-flash-message';
 import {useGetUser} from 'hooks';
 import SplashScreen from 'react-native-splash-screen';
-import {RFValue} from 'react-native-responsive-fontsize';
+import normalize from '@normalize';
 
 const App = () => {
   const {getUserLogged, getUser} = useGetUser();
@@ -69,8 +69,8 @@ const App = () => {
           statusBarHeight={30}
           position="top"
           duration={5000}
-          titleStyle={{fontFamily: 'Poppins-Medium', fontSize: RFValue(15)}}
-          textStyle={{fontFamily: 'Poppins-Medium', fontSize: RFValue(15)}}
+          titleStyle={{fontFamily: 'Poppins-Medium', fontSize: normalize(16)}}
+          textStyle={{fontFamily: 'Poppins-Medium', fontSize: normalize(16)}}
         />
       </PersistGate>
     </Provider>

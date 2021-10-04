@@ -2,7 +2,8 @@ import React, {useState, useEffect} from 'react';
 
 import DropDownPicker from 'react-native-dropdown-picker';
 import axios from 'axios';
-import {RFValue} from 'react-native-responsive-fontsize';
+import Colors from '@styles';
+import normalize from '@normalize';
 
 interface DropDownProps {
   value: string | null;
@@ -29,21 +30,21 @@ const DropdownUF = ({value, onValue, error}: DropDownProps) => {
     <DropDownPicker
       placeholder="Estado"
       placeholderStyle={{
-        color: error !== '' ? '#FF6859' : '#1C2439',
+        color: error !== '' ? Colors.red : Colors.inputColorText,
         fontFamily: 'Poppins-Regular',
       }}
-      textStyle={{fontFamily: 'Poppins-Regular', fontSize: RFValue(15)}}
+      textStyle={{fontFamily: 'Poppins-Regular', fontSize: normalize(15)}}
       listMode="SCROLLVIEW"
       style={{
-        backgroundColor: error !== '' ? 'rgba(255, 104, 89, 0.15)' : '#f1f4fa',
+        backgroundColor: error !== '' ? Colors.redOpacity : Colors.inputBack,
         borderRadius: 10,
         borderWidth: error !== '' ? 1 : 0,
-        borderColor: '#FF6859',
+        borderColor: Colors.red,
         width: 115,
         height: 56,
       }}
       dropDownContainerStyle={{
-        backgroundColor: '#f1f4fa',
+        backgroundColor: Colors.inputBack,
         borderRadius: 10,
         borderWidth: 0,
         width: 115,

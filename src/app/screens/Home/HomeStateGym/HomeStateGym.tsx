@@ -6,6 +6,7 @@ import {CardStyle, HomeStateStyle} from './styles';
 import GranLine from 'assets/svg/LineGran.svg';
 import moment from 'moment';
 import {firestore} from 'firebase';
+import Colors from '@styles';
 
 interface HomeStateGymProps {
   title: string;
@@ -61,7 +62,7 @@ const HomeStateGym = ({
         onBack={onBack}
         size={18}
         weight={600}
-        color="#090a0a"
+        color={Colors.textColorBlack}
       />
       <Space marginVertical={8} />
       {!!data &&
@@ -88,13 +89,13 @@ const HomeStateGym = ({
                     title={item.title}
                     weight={600}
                     size={15}
-                    color="#090a0a"
+                    color={Colors.textColorBlack}
                   />
                   <Text
                     title={item.desc}
                     weight={400}
                     size={12}
-                    color="#1C2439"
+                    color={Colors.inputColorText}
                   />
                   {!!item.emphasi && (
                     <View
@@ -107,11 +108,11 @@ const HomeStateGym = ({
                         title={item.emphasi}
                         weight={500}
                         size={12}
-                        color="#1C2439"
+                        color={Colors.inputColorText}
                       />
                       <View
                         style={{
-                          backgroundColor: '#D2D3D7',
+                          backgroundColor: Colors.grayLight,
                           paddingVertical: 2,
                           paddingHorizontal: 8,
                           borderRadius: 8,
@@ -120,7 +121,7 @@ const HomeStateGym = ({
                           title={moment(item.initial).format('DD/MM')}
                           weight={600}
                           size={12}
-                          color="#454459"
+                          color={Colors.textColorRX}
                         />
                       </View>
                     </View>
@@ -130,7 +131,7 @@ const HomeStateGym = ({
                   {!item.emphasi && (
                     <View
                       style={{
-                        backgroundColor: '#D2D3D7',
+                        backgroundColor: Colors.grayLight,
                         paddingVertical: 2,
                         paddingHorizontal: 8,
                         borderRadius: 8,
@@ -139,7 +140,7 @@ const HomeStateGym = ({
                         title={moment(item.initial).format('DD/MM')}
                         weight={600}
                         size={12}
-                        color="#454459"
+                        color={Colors.textColorRX}
                       />
                     </View>
                   )}
@@ -151,7 +152,7 @@ const HomeStateGym = ({
                   title="apagar"
                   size={12}
                   weight={500}
-                  color="#FF6859"
+                  color={Colors.red}
                   onPress={() => handleDelete(type, item.title, index)}
                 />
               </View>

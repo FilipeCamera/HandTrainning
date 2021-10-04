@@ -4,6 +4,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import {View, TouchableOpacity} from 'react-native';
 import {Text} from 'components';
 import Moment from 'moment';
+import Colors from '@styles';
 
 interface DateTimeProps {
   setFinallized: any;
@@ -39,7 +40,7 @@ const DateTime = ({setFinallized, setInitial, error}: DateTimeProps) => {
           <View
             style={{
               padding: 12,
-              backgroundColor: '#F1F4FA',
+              backgroundColor: Colors.inputBack,
               borderRadius: 8,
               width: '45%',
               alignItems: 'center',
@@ -49,16 +50,16 @@ const DateTime = ({setFinallized, setInitial, error}: DateTimeProps) => {
               title={Moment(Date.now()).format('DD/MM/YYYY')}
               size={15}
               weight={400}
-              color="#090A0A"
+              color={Colors.textColorBlack}
             />
           </View>
           <TouchableOpacity
             onPress={() => setShow(!show)}
             style={{
               padding: 12,
-              backgroundColor: error ? 'rgba(255, 104, 89, 0.15)' : '#F1F4FA',
+              backgroundColor: error ? Colors.redOpacity : Colors.inputBack,
               borderRadius: 8,
-              borderColor: error ? '#FF6859' : '##F1F4FA',
+              borderColor: error ? Colors.red : Colors.inputBack,
               borderWidth: error ? 1 : 0,
               width: '45%',
               alignItems: 'center',
@@ -68,7 +69,7 @@ const DateTime = ({setFinallized, setInitial, error}: DateTimeProps) => {
               title="Até"
               size={15}
               weight={400}
-              color={error ? '#ff6859' : '#090A0A'}
+              color={error ? Colors.red : Colors.textColorBlack}
             />
           </TouchableOpacity>
         </View>
@@ -84,7 +85,7 @@ const DateTime = ({setFinallized, setInitial, error}: DateTimeProps) => {
           <View
             style={{
               padding: 12,
-              backgroundColor: '#F1F4FA',
+              backgroundColor: Colors.inputBack,
               borderRadius: 8,
               width: '45%',
               alignItems: 'center',
@@ -94,13 +95,13 @@ const DateTime = ({setFinallized, setInitial, error}: DateTimeProps) => {
               title={Moment(Date.now()).format('DD/MM/YYYY')}
               size={15}
               weight={400}
-              color="#090A0A"
+              color={Colors.textColorBlack}
             />
           </View>
           <TouchableOpacity
             style={{
               padding: 12,
-              backgroundColor: '#F1F4FA',
+              backgroundColor: Colors.inputBack,
               borderRadius: 8,
               width: '45%',
               alignItems: 'center',
@@ -111,7 +112,7 @@ const DateTime = ({setFinallized, setInitial, error}: DateTimeProps) => {
               title={Moment(date).format('DD/MM/YYYY')}
               size={15}
               weight={400}
-              color="#090A0A"
+              color={Colors.textColorBlack}
             />
           </TouchableOpacity>
         </View>

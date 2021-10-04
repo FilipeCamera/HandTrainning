@@ -5,6 +5,7 @@ import {HeaderStyle, ButtonAlert} from './styles';
 import Alert from 'assets/svg/bell-outline.svg';
 import {Text} from 'components';
 import {useSelector} from 'react-redux';
+import Colors from '@styles';
 
 const Header = () => {
   const user = useSelector((state: any) => state.auth.user);
@@ -19,12 +20,17 @@ const Header = () => {
           />
         </View>
         <View style={{flexDirection: 'column', marginLeft: 8}}>
-          <Text title={user.name} size={16} weight={600} color="#090A0A" />
+          <Text
+            title={user.name}
+            size={16}
+            weight={600}
+            color={Colors.textColorBlack}
+          />
           <Text
             title={user.type === 'gym' ? user.cnpj : user.slogan}
             size={12}
             weight={600}
-            color="#c4c4c4"
+            color={Colors.grayMediumLight}
           />
         </View>
       </View>

@@ -3,7 +3,8 @@ import {TextInput} from 'react-native-gesture-handler';
 import {Text} from 'components';
 import {InputStyle} from './styles';
 import {View} from 'react-native';
-import {RFValue} from 'react-native-responsive-fontsize';
+import normalize from '@normalize';
+import Colors from '@styles';
 
 interface InputProps {
   value: string;
@@ -36,7 +37,7 @@ const Input = ({
         <TextInput
           style={{
             fontFamily: 'Poppins-Regular',
-            fontSize: RFValue(15),
+            fontSize: normalize(15),
             width: '100%',
             height: slogan ? 80 : 56,
           }}
@@ -47,7 +48,7 @@ const Input = ({
           maxLength={250}
           autoCapitalize="none"
           secureTextEntry={password}
-          placeholderTextColor={!error ? '#1C2439' : '#FF6859'}
+          placeholderTextColor={!error ? Colors.textColorRX : Colors.red}
           keyboardType={numeric ? 'numeric' : 'default'}
         />
       </InputStyle>
@@ -57,7 +58,7 @@ const Input = ({
             width: '90%',
             marginBottom: 10,
           }}>
-          <Text title={error} size={12} weight={500} color="#FF6859" />
+          <Text title={error} size={12} weight={500} color={Colors.red} />
         </View>
       )}
     </>

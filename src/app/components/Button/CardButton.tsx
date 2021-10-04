@@ -1,3 +1,4 @@
+import Colors from '@styles';
 import {Text} from 'components';
 import React from 'react';
 import {View} from 'react-native';
@@ -13,10 +14,23 @@ const CardButton = ({title, desc, onPress}: CardButtonProps) => {
   return (
     <CardButtonStyle onPress={onPress}>
       <CardButtonContainer>
-        {!!title && <Text title={title} weight={600} size={20} color="#fff" />}
+        {!!title && (
+          <Text
+            title={title}
+            weight={600}
+            size={20}
+            color={Colors.textColorWhite}
+          />
+        )}
         {!!desc && (
           <View style={{width: '90%'}}>
-            <Text title={desc} weight={400} size={12} color="#fff" center />
+            <Text
+              title={desc}
+              weight={400}
+              size={12}
+              color={Colors.textColorWhite}
+              center
+            />
           </View>
         )}
       </CardButtonContainer>

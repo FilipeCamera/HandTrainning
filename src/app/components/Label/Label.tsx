@@ -4,6 +4,7 @@ import {LabelStyle} from './styles';
 
 import LineGran from 'assets/svg/LineGran.svg';
 import {View} from 'react-native';
+import Colors from '@styles';
 
 const Label = ({title, color}: any) => {
   return (
@@ -13,7 +14,7 @@ const Label = ({title, color}: any) => {
           title={title}
           weight={500}
           size={18}
-          color={color ? color : '#090A0A'}
+          color={color ? color : Colors.textColorBlack}
         />
       </View>
       <LineGran width="100%" />

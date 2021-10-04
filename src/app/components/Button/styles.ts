@@ -1,3 +1,4 @@
+import Colors from '@styles';
 import {Dimensions, StyleSheet} from 'react-native';
 import styled from 'styled-components/native';
 
@@ -18,8 +19,9 @@ export const ButtonStyle = styled.TouchableOpacity`
   align-items: center;
   justify-content: center;
   border-radius: 8px;
-  background: ${(props: any) => props.background || '#fff'};
-  ${(props: any) => (props.border ? 'border: 1px solid #dedede' : '')}
+  background: ${(props: any) => props.background || Colors.background};
+  ${(props: any) =>
+    props.border ? `border: 1px solid ${Colors.lightGray}` : ''}
 `;
 
 export const ButtonRedStyle = styled.TouchableOpacity`
@@ -28,13 +30,13 @@ export const ButtonRedStyle = styled.TouchableOpacity`
   justify-content: center;
   height: 56px;
   border-radius: 8px;
-  background: #ff6859;
+  background: ${Colors.red};
 `;
 
 export const ButtonInviteStyle = styled.TouchableOpacity<ButtonInviteProps>`
   align-items: center;
   justify-content: center;
-  background: ${(props: any) => (props.background ? '#a3a3a3' : '#ff6859')};
+  background: ${(props: any) => (props.background ? Colors.gray : Colors.red)};
   flex-direction: row;
   align-items: center;
   flex: 1;
@@ -49,7 +51,7 @@ export const CardButtonStyle = styled.TouchableOpacity`
 `;
 
 export const CircleButtonStyle = styled.TouchableOpacity`
-  background: #fff;
+  background: ${Colors.background};
   width: 50px;
   height: 50px;
   border-radius: 25px;
@@ -84,7 +86,7 @@ export const ButtonIcon = styled.View`
 `;
 
 export const ButtonMiniRedStyle = styled.TouchableOpacity`
-  background: #ff6859;
+  background: ${Colors.red};
   border-radius: 5px;
   padding: 4px 8px;
 `;

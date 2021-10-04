@@ -29,6 +29,7 @@ const plugins = [
         '@mask': './src/utils/mask',
         hooks: './src/hooks',
         '@styles': './src/styles',
+        '@normalize': './src/utils/font',
       },
     },
   ],

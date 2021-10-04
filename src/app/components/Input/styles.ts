@@ -1,3 +1,4 @@
+import Colors from '@styles';
 import styled from 'styled-components/native';
 
 interface InputProps {
@@ -11,13 +12,13 @@ export const InputStyle = styled.View<InputProps>`
   border-radius: 10px;
   margin: 8px 0;
   background: ${(props: any) =>
-    props.error ? 'rgba(255, 104, 89, 0.15)' : '#f1f4fa'};
+    props.error ? Colors.redOpacity : Colors.inputBack};
   padding: 0 8px;
   font-size: 15px;
-  ${(props: any) => (props.error ? 'border: 1px solid #FF6859' : '')}
+  ${(props: any) => (props.error ? `border: 1px solid ${Colors.red}` : '')}
   font-family: 'Poppins-Regular';
   flex-direction: row;
   align-items: ${(props: any) => (props.slogan ? 'flex-start' : 'center')};
-  color: #1c2439;
+  color: ${Colors.inputColorText};
   width: ${(props: any) => (props.width ? props.width : '95%')};
 `;

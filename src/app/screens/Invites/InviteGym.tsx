@@ -1,3 +1,4 @@
+import Colors from '@styles';
 import {
   ButtonInvite,
   ButtonMiniRed,
@@ -219,14 +220,14 @@ const InviteGym = ({auth}: any) => {
               key={userInvite.uid}
               style={{
                 width: '100%',
-                backgroundColor: '#fff',
+                backgroundColor: Colors.background,
                 padding: 16,
                 borderRadius: 10,
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 marginVertical: 8,
-                shadowColor: '#1C2439',
+                shadowColor: Colors.inputColorText,
                 shadowOffset: {
                   width: 0,
                   height: 2,
@@ -257,7 +258,7 @@ const InviteGym = ({auth}: any) => {
                     title={userInvite.name}
                     size={14}
                     weight={600}
-                    color="#090A0A"
+                    color={Colors.textColorBlack}
                   />
                   <Text
                     title={
@@ -269,7 +270,7 @@ const InviteGym = ({auth}: any) => {
                     }
                     size={13}
                     weight={500}
-                    color="#090A0A"
+                    color={Colors.textColorBlack}
                   />
                 </View>
               </View>
@@ -279,7 +280,7 @@ const InviteGym = ({auth}: any) => {
                   sendTitle="Convite enviado"
                   size={10}
                   weight={600}
-                  color="#fff"
+                  color={Colors.textColorWhite}
                   to={auth}
                   from={userInvite.uid}
                 />
@@ -301,14 +302,14 @@ const InviteGym = ({auth}: any) => {
                   key={userInvite.uid}
                   style={{
                     width: '100%',
-                    backgroundColor: '#fff',
+                    backgroundColor: Colors.background,
                     padding: 16,
                     borderRadius: 10,
                     flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     marginVertical: 8,
-                    shadowColor: '#1C2439',
+                    shadowColor: Colors.inputColorText,
                     shadowOffset: {
                       width: 0,
                       height: 2,
@@ -339,7 +340,7 @@ const InviteGym = ({auth}: any) => {
                         title={userInvite.name}
                         size={14}
                         weight={600}
-                        color="#090A0A"
+                        color={Colors.textColorBlack}
                       />
                       <Text
                         title={
@@ -349,7 +350,7 @@ const InviteGym = ({auth}: any) => {
                         }
                         size={12}
                         weight={500}
-                        color="#090A0A"
+                        color={Colors.textColorBlack}
                       />
                     </View>
                   </View>
@@ -364,7 +365,7 @@ const InviteGym = ({auth}: any) => {
                       title="Aceitar"
                       weight={600}
                       size={11}
-                      color="#FFF"
+                      color={Colors.textColorWhite}
                       onPress={() =>
                         handleAcceptOrRecused({
                           state: true,
@@ -377,7 +378,7 @@ const InviteGym = ({auth}: any) => {
                       title="Recusar"
                       weight={400}
                       size={11}
-                      color="#FF6859"
+                      color={Colors.red}
                       onPress={() =>
                         handleAcceptOrRecused({
                           state: false,
@@ -405,14 +406,14 @@ const InviteGym = ({auth}: any) => {
                   key={userInvite.uid}
                   style={{
                     width: '100%',
-                    backgroundColor: '#fff',
+                    backgroundColor: Colors.background,
                     padding: 16,
                     borderRadius: 10,
                     flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     marginVertical: 8,
-                    shadowColor: '#1C2439',
+                    shadowColor: Colors.inputColorText,
                     shadowOffset: {
                       width: 0,
                       height: 2,
@@ -443,7 +444,7 @@ const InviteGym = ({auth}: any) => {
                         title={userInvite.name}
                         size={14}
                         weight={600}
-                        color="#090A0A"
+                        color={Colors.textColorBlack}
                       />
                       <Text
                         title={
@@ -453,7 +454,7 @@ const InviteGym = ({auth}: any) => {
                         }
                         size={12}
                         weight={500}
-                        color="#090A0A"
+                        color={Colors.textColorBlack}
                       />
                     </View>
                   </View>
@@ -468,7 +469,7 @@ const InviteGym = ({auth}: any) => {
                       title="Aceitar"
                       weight={600}
                       size={11}
-                      color="#FFF"
+                      color={Colors.textColorWhite}
                       onPress={() =>
                         handleAcceptOrRecused({
                           state: true,
@@ -481,7 +482,7 @@ const InviteGym = ({auth}: any) => {
                       title="Recusar"
                       weight={400}
                       size={11}
-                      color="#FF6859"
+                      color={Colors.red}
                       onPress={() =>
                         handleAcceptOrRecused({
                           state: false,

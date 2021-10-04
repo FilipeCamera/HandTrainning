@@ -1,4 +1,4 @@
-import {Button, SimpleHeader, Space, Text} from 'components';
+import {SimpleHeader, Space, Text} from 'components';
 import React, {useState, useEffect} from 'react';
 import {View, ScrollView, TouchableOpacity} from 'react-native';
 import {ExerciseStyle} from './styles';
@@ -8,6 +8,7 @@ import LineIcon from 'assets/svg/LineGran.svg';
 import CreateExercise from './CreateExercise';
 import {firestore} from 'firebase';
 import {useSelector} from 'react-redux';
+import Colors from '@styles';
 
 const Exercise = () => {
   const user = useSelector((state: any) => state.auth.user);
@@ -70,7 +71,7 @@ const Exercise = () => {
       <SimpleHeader
         add
         title="Exercícios"
-        color="#090A0A"
+        color={Colors.textColorBlack}
         size={20}
         weight={500}
         onAdd={() => setCreate(true)}
@@ -91,8 +92,8 @@ const Exercise = () => {
                   key={category.name}
                   style={{
                     backgroundColor: categories[index].selected
-                      ? '#DCFFB2'
-                      : '#E0E1E5',
+                      ? Colors.redMedium
+                      : Colors.grayLight,
                     paddingVertical: 8,
                     paddingHorizontal: 12,
                     borderRadius: 8,
@@ -106,7 +107,11 @@ const Exercise = () => {
                     title={category.name}
                     size={12}
                     weight={500}
-                    color={categories[index].selected ? '#34A853' : '#454459'}
+                    color={
+                      categories[index].selected
+                        ? Colors.textColorWhite
+                        : Colors.textColorRX
+                    }
                   />
                 </TouchableOpacity>
               );
@@ -132,7 +137,7 @@ const Exercise = () => {
                       title={exercise.name}
                       size={15}
                       weight={600}
-                      color="#090a0a"
+                      color={Colors.textColorBlack}
                     />
                     <TouchableOpacity
                       style={{
@@ -145,7 +150,7 @@ const Exercise = () => {
                         title="Excluir"
                         size={12}
                         weight={500}
-                        color="#CC5347"
+                        color={Colors.redMedium}
                       />
                     </TouchableOpacity>
                   </View>
