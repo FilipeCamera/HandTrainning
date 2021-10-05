@@ -1,6 +1,7 @@
 const Colors = {
   background: '#fff',
   backgroundMedium: '#f6f9ff',
+  backgroundLight: '#f1f4fa',
   textColorBlack: '#090a0a',
   textColorFullBlack: '#000',
   textColorWhite: '#fff',
@@ -25,6 +26,8 @@ const Colors = {
   green: '#4caf50',
   greenMediumLight: '#34A853',
   lightGreen: '#dcffb2',
+  orange: '#E56000',
+  textWhiteLight: '#E6EAF2',
 };
 
 export default Colors;

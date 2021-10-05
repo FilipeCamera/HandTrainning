@@ -20,6 +20,7 @@ import Routes from 'routes';
 import FlashMessage from 'react-native-flash-message';
 import {useGetUser} from 'hooks';
 import SplashScreen from 'react-native-splash-screen';
+import {Provider as PaperProvider} from 'react-native-paper';
 import normalize from '@normalize';
 
 const App = () => {
@@ -54,25 +55,27 @@ const App = () => {
   };
   return (
     <Provider store={store}>
-      <PersistGate loading={null} persistor={persist}>
-        <SafeAreaView style={{flex: 1}}>
-          <StatusBar
-            translucent={true}
-            barStyle="dark-content"
-            backgroundColor="rgba(0,0,0, 0)"
+      <PaperProvider>
+        <PersistGate loading={null} persistor={persist}>
+          <SafeAreaView style={{flex: 1}}>
+            <StatusBar
+              translucent={true}
+              barStyle="dark-content"
+              backgroundColor="rgba(0,0,0, 0)"
+            />
+            <NavigationContainer>
+              <Routes />
+            </NavigationContainer>
+          </SafeAreaView>
+          <FlashMessage
+            statusBarHeight={30}
+            position="top"
+            duration={5000}
+            titleStyle={{fontFamily: 'Poppins-Medium', fontSize: normalize(16)}}
+            textStyle={{fontFamily: 'Poppins-Medium', fontSize: normalize(16)}}
           />
-          <NavigationContainer>
-            <Routes />
-          </NavigationContainer>
-        </SafeAreaView>
-        <FlashMessage
-          statusBarHeight={30}
-          position="top"
-          duration={5000}
-          titleStyle={{fontFamily: 'Poppins-Medium', fontSize: normalize(16)}}
-          textStyle={{fontFamily: 'Poppins-Medium', fontSize: normalize(16)}}
-        />
-      </PersistGate>
+        </PersistGate>
+      </PaperProvider>
     </Provider>
   );
 };

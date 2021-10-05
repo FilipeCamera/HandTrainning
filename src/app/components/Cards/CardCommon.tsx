@@ -14,10 +14,17 @@ import Clock from 'assets/svg/clock.svg';
 import {styles} from '../Board/styles';
 import {useSelector} from 'react-redux';
 import {ButtonText, Space, Text} from 'components';
+import Colors from '@styles';
 
-const CardCommon = () => {
+interface CardCommonProps {
+  navigation: any;
+  setVisible: any;
+}
+
+const CardCommon = ({navigation, setVisible}: CardCommonProps) => {
   const user = useSelector((state: any) => state.auth.user);
   const [trainning, setTrainning] = useState(false);
+
   return (
     <>
       {!!trainning && (
@@ -38,7 +45,12 @@ const CardCommon = () => {
               paddingTop: 10,
               paddingHorizontal: 20,
             }}>
-            <Text title="29d 12:25:59" weight={600} size={10} color="#fff" />
+            <Text
+              title="29d 12:25:59"
+              weight={600}
+              size={10}
+              color={Colors.textColorWhite}
+            />
             <Clock style={{marginLeft: 5}} />
           </View>
           <View
@@ -59,7 +71,7 @@ const CardCommon = () => {
                 title="Seu Treino"
                 size={30}
                 weight={700}
-                color="#FFF"
+                color={Colors.textColorWhite}
                 style={{width: 130}}
               />
             </View>
@@ -74,7 +86,7 @@ const CardCommon = () => {
                 title="9.5"
                 size={12}
                 weight={700}
-                color="#E56000"
+                color={Colors.orange}
                 style={{position: 'absolute', bottom: 10}}
               />
             </View>
@@ -86,7 +98,7 @@ const CardCommon = () => {
                   title="Treinador"
                   size={16}
                   weight={600}
-                  color="#090A0A"
+                  color={Colors.textColorBlack}
                 />
                 <View
                   style={{
@@ -109,7 +121,7 @@ const CardCommon = () => {
                   <TouchableOpacity
                     style={{
                       marginLeft: 10,
-                      backgroundColor: '#F1F4FA',
+                      backgroundColor: Colors.backgroundLight,
                       padding: 8,
                       borderRadius: 9999,
                     }}>
@@ -122,14 +134,14 @@ const CardCommon = () => {
                       title="Nome:"
                       size={13}
                       weight={600}
-                      color="#090A0A"
+                      color={Colors.textColorBlack}
                     />
                     <Space marginHorizontal={2.5} />
                     <Text
                       title={user.name}
                       size={13}
                       weight={500}
-                      color="#090A0A"
+                      color={Colors.textColorBlack}
                     />
                   </View>
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -137,14 +149,14 @@ const CardCommon = () => {
                       title="Formação:"
                       size={13}
                       weight={600}
-                      color="#090A0A"
+                      color={Colors.textColorBlack}
                     />
                     <Space marginHorizontal={2.5} />
                     <Text
                       title={user.name}
                       size={13}
                       weight={500}
-                      color="#090A0A"
+                      color={Colors.textColorBlack}
                     />
                   </View>
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -152,14 +164,14 @@ const CardCommon = () => {
                       title="Experiência:"
                       size={13}
                       weight={600}
-                      color="#090A0A"
+                      color={Colors.textColorBlack}
                     />
                     <Space marginHorizontal={2.5} />
                     <Text
                       title={user.name}
                       size={13}
                       weight={500}
-                      color="#090A0A"
+                      color={Colors.textColorBlack}
                     />
                   </View>
                 </View>
@@ -173,7 +185,7 @@ const CardCommon = () => {
                   title="Treinador"
                   size={16}
                   weight={600}
-                  color="#090A0A"
+                  color={Colors.textColorBlack}
                 />
                 <View
                   style={{
@@ -202,7 +214,7 @@ const CardCommon = () => {
                     <TouchableOpacity
                       style={{
                         marginLeft: 10,
-                        backgroundColor: '#F1F4FA',
+                        backgroundColor: Colors.backgroundLight,
                         padding: 8,
                         borderRadius: 9999,
                       }}>
@@ -215,14 +227,14 @@ const CardCommon = () => {
                         title="Nome:"
                         size={13}
                         weight={600}
-                        color="#090A0A"
+                        color={Colors.textColorBlack}
                       />
                       <Space marginHorizontal={2.5} />
                       <Text
                         title={user.name}
                         size={13}
                         weight={500}
-                        color="#090A0A"
+                        color={Colors.textColorBlack}
                       />
                     </View>
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -230,14 +242,14 @@ const CardCommon = () => {
                         title="Formação:"
                         size={13}
                         weight={600}
-                        color="#090A0A"
+                        color={Colors.textColorBlack}
                       />
                       <Space marginHorizontal={2.5} />
                       <Text
                         title={user.name}
                         size={13}
                         weight={500}
-                        color="#090A0A"
+                        color={Colors.textColorBlack}
                       />
                     </View>
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -245,14 +257,14 @@ const CardCommon = () => {
                         title="Experiência:"
                         size={13}
                         weight={600}
-                        color="#090A0A"
+                        color={Colors.textColorBlack}
                       />
                       <Space marginHorizontal={2.5} />
                       <Text
                         title={user.name}
                         size={13}
                         weight={500}
-                        color="#090A0A"
+                        color={Colors.textColorBlack}
                       />
                     </View>
                   </View>
@@ -271,7 +283,8 @@ const CardCommon = () => {
               title="Visualizar treino"
               size={14}
               weight={500}
-              color="#FF6859"
+              color={Colors.red}
+              onPress={() => navigation.navigate('Trainning')}
             />
           </View>
         </CardCommonStyle>
@@ -299,7 +312,7 @@ const CardCommon = () => {
                 title="Seu Treino"
                 size={30}
                 weight={700}
-                color="#FFF"
+                color={Colors.textColorWhite}
                 style={{width: 130}}
               />
             </View>
@@ -316,7 +329,7 @@ const CardCommon = () => {
               title="Você não possui um treino"
               weight={600}
               size={15}
-              color="#A3A3A3"
+              color={Colors.gray}
             />
             <Notify style={{marginVertical: 40}} />
           </View>
@@ -325,8 +338,8 @@ const CardCommon = () => {
               title="Solicitar novo treino"
               size={14}
               weight={500}
-              color="#FF6859"
-              onPress={() => setTrainning(true)}
+              color={Colors.red}
+              onPress={() => setVisible(true)}
             />
           </View>
         </CardCommonStyle>

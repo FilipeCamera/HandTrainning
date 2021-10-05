@@ -11,7 +11,7 @@ import {
 import {firestore} from 'firebase';
 import {useGetUser, useInvites} from 'hooks';
 import React, {useState, useEffect} from 'react';
-import {Image, View} from 'react-native';
+import {ActivityIndicator, Image, View} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
 import {InvitesStyle} from './styles';
 
@@ -27,6 +27,7 @@ const InviteCommon = ({auth}: any) => {
   const [users, setUsers] = useState<any>([]);
   const [invites, setInvites] = useState<any>([]);
   const [associated, setAssociated] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     firestore()
@@ -38,6 +39,7 @@ const InviteCommon = ({auth}: any) => {
 
         if (userAssociate) {
           setAssociated(true);
+          setLoading(false);
         }
       });
   }, []);
@@ -47,6 +49,7 @@ const InviteCommon = ({auth}: any) => {
       onComplete: (invite: any) => {
         if (invite) {
           setInvites(invite);
+          setLoading(false);
         }
       },
       onFail: (error: any) => console.log(error),
@@ -133,7 +136,12 @@ const InviteCommon = ({auth}: any) => {
       }}
       showsVerticalScrollIndicator={false}>
       <Header />
-      {!!associated && (
+      {!!loading && (
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+          <ActivityIndicator size="large" color={Colors.red} />
+        </View>
+      )}
+      {!loading && !!associated && (
         <View
           style={{
             flex: 1,
@@ -148,12 +156,12 @@ const InviteCommon = ({auth}: any) => {
             title="Você já é associado a uma academia ou treinador!"
             size={15}
             weight={500}
-            color={Colors.lightGray}
+            color={Colors.grayMediumLight}
             center
           />
         </View>
       )}
-      {!associated && (
+      {!loading && !associated && (
         <Search
           user={userSearch}
           onSearch={e => {
@@ -172,7 +180,8 @@ const InviteCommon = ({auth}: any) => {
           }}
         />
       )}
-      {!associated &&
+      {!loading &&
+        !associated &&
         usersSearch.length !== 0 &&
         usersSearch.map((userInvite: any) => {
           return (
@@ -245,7 +254,9 @@ const InviteCommon = ({auth}: any) => {
           );
         })}
       <Space marginVertical={5} />
-      {!associated && usersSearch.length === 0 && <Label title="Academias" />}
+      {!loading && !associated && usersSearch.length === 0 && (
+        <Label title="Academias" />
+      )}
       <Space marginVertical={5} />
       {!associated &&
         usersSearch.length === 0 &&
@@ -352,11 +363,13 @@ const InviteCommon = ({auth}: any) => {
           }
         })}
       <Space marginVertical={20} />
-      {!associated && usersSearch.length === 0 && auth.plan !== 'basic' && (
-        <Label title="Treinadores" />
-      )}
+      {!loading &&
+        !associated &&
+        usersSearch.length === 0 &&
+        auth.plan !== 'basic' && <Label title="Treinadores" />}
       <Space marginVertical={5} />
-      {!associated &&
+      {!loading &&
+        !associated &&
         usersSearch.length === 0 &&
         auth.plan !== 'basic' &&
         users.map(userInvite => {

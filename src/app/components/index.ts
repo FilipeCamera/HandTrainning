@@ -37,6 +37,7 @@ import Space from './Space';
 import Text from './Text';
 import DateTime from './DateTime';
 import BoxUpload from './BoxUpload';
+import Modal from './Modal';
 
 export {
   Button,
@@ -76,4 +77,5 @@ export {
   DropdownCategoryType,
   DateTime,
   BoxUpload,
+  Modal,
 };
