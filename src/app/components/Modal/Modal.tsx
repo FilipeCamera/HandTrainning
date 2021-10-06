@@ -1,13 +1,18 @@
 import Colors from '@styles';
-import {Button, Label, Space, Text} from 'components';
+import {Button, Label, Space, Text, SelectProfileCheck} from 'components';
 import React from 'react';
-import {Image, View, TouchableOpacity} from 'react-native';
+import {ActivityIndicator, View} from 'react-native';
 
-import {Checkbox, Modal, Portal} from 'react-native-paper';
+import {Modal, Portal} from 'react-native-paper';
+
+import SucessIcon from 'assets/svg/sucessIcon.svg';
 
 interface ModalProps {
   visible: boolean;
   setVisible: any;
+  setTrainner: any;
+  loading: boolean;
+  send: boolean;
   title: string;
   trainners: any[];
   onFunction: () => any;
@@ -17,6 +22,9 @@ const Modals = ({
   visible,
   setVisible,
   title,
+  loading,
+  send,
+  setTrainner,
   onFunction,
   trainners,
 }: ModalProps) => {
@@ -28,64 +36,76 @@ const Modals = ({
         contentContainerStyle={{
           backgroundColor: Colors.background,
           padding: 16,
-          marginHorizontal: 24,
+          margin: 24,
           borderRadius: 20,
           alignItems: 'center',
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
+          flex: 1,
         }}>
-        <Label title={title} color={Colors.textColorBlack} size={15} center />
-        <Space marginVertical={20} />
-        {!!trainners &&
-          trainners.length !== 0 &&
-          trainners.map(trainner => (
-            <TouchableOpacity
-              key={trainner.uid}
-              style={{
-                elevation: 5,
-                backgroundColor: Colors.background,
-                padding: 8,
-                borderRadius: 8,
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                width: '95%',
-              }}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <View style={{width: 50, height: 50, borderRadius: 25}}>
-                  <Image
-                    source={{uri: trainner.avatar}}
-                    style={{width: '100%', height: '100%', borderRadius: 9999}}
-                  />
-                </View>
-                <Space marginHorizontal={4} />
-                <View>
-                  <Text
-                    title={trainner.name}
-                    size={14}
-                    weight={500}
-                    color={Colors.textColorBlack}
-                  />
-                  <Text
-                    title="Treinador"
-                    size={12}
-                    weight={400}
-                    color={Colors.textColorBlack}
-                  />
-                </View>
-              </View>
-              <Checkbox status="checked" color={Colors.green} />
-            </TouchableOpacity>
-          ))}
-        {!!trainners && trainners.length !== 0 && (
+        {!loading && !send && (
           <>
-            <Space marginVertical={20} />
-            <Button
-              title="Enviar solicitação"
-              weight={500}
-              size={14}
-              color={Colors.textColorWhite}
-              background={Colors.red}
+            <Space marginVertical={8} />
+            <Label
+              title={title}
+              color={Colors.textColorBlack}
+              size={15}
+              center
             />
+            <Space marginVertical={20} />
+            {!!trainners &&
+              trainners.length !== 0 &&
+              trainners.map(trainner => (
+                <SelectProfileCheck
+                  key={trainner.uid}
+                  profile={trainner}
+                  onFunction={() => setTrainner(trainner.uid)}
+                />
+              ))}
+            {!!trainners && trainners.length !== 0 && (
+              <View
+                style={{
+                  position: 'absolute',
+                  bottom: 25,
+                  width: '100%',
+                  alignItems: 'center',
+                }}>
+                <Button
+                  title="Enviar solicitação"
+                  weight={500}
+                  size={14}
+                  color={Colors.textColorWhite}
+                  background={Colors.red}
+                  onPress={onFunction}
+                  notShadow
+                />
+              </View>
+            )}
           </>
+        )}
+        {!!loading && !send && (
+          <View
+            style={{
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <ActivityIndicator size="large" color={Colors.red} />
+          </View>
+        )}
+        {!!send && (
+          <View
+            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            <SucessIcon />
+            <Space marginVertical={8} />
+            <Text
+              title="Solicitação enviada com sucesso!"
+              weight={500}
+              size={16}
+              color={Colors.green}
+              center
+            />
+          </View>
         )}
       </Modal>
     </Portal>

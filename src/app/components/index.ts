@@ -18,7 +18,7 @@ import {
   CardMini,
 } from './Cards';
 import Carousel from './Carousel';
-import Check from './CheckBox';
+import Check, {SelectProfileCheck} from './CheckBox';
 import {DataTrainner, DataCommon, DataGym} from './Data';
 import {
   DropdownUF,
@@ -78,4 +78,5 @@ export {
   DateTime,
   BoxUpload,
   Modal,
+  SelectProfileCheck,
 };

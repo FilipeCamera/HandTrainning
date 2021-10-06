@@ -9,7 +9,10 @@ import {HomeStyle} from './styles';
 const HomeCommon = ({navigation}: any) => {
   const user = useSelector((state: any) => state.auth.user);
   const [visible, setVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [send, setSend] = useState(false);
   const [trainners, setTrainners] = useState<any[]>([]);
+  const [trainner, setTrainner] = useState<any>();
   useEffect(() => {
     firestore()
       .collection('users')
@@ -22,6 +25,27 @@ const HomeCommon = ({navigation}: any) => {
       })
       .catch(error => {});
   }, []);
+
+  const handleRequestTrainner = () => {
+    setLoading(!loading);
+    const data = {
+      commonId: user.uid,
+      trainnerId: trainner,
+      title: 'Novo treino',
+      desc: 'Solicitação de novo treino',
+      createdAt: firestore.FieldValue.serverTimestamp(),
+    };
+
+    firestore()
+      .collection('requests')
+      .doc()
+      .set(data)
+      .then(res => {
+        setLoading(!loading);
+        setSend(!send);
+      })
+      .catch(err => console.log(err));
+  };
 
   return (
     <HomeStyle
@@ -36,11 +60,20 @@ const HomeCommon = ({navigation}: any) => {
         visible={visible}
         setVisible={setVisible}
         trainners={trainners}
+        loading={loading}
+        send={send}
+        setTrainner={setTrainner}
         title="Escolha um novo treinador"
+        onFunction={() => handleRequestTrainner()}
       />
       <Header />
       <Carousel />
-      <CardCommon navigation={navigation} setVisible={setVisible} />
+      <CardCommon
+        navigation={navigation}
+        setVisible={setVisible}
+        setSend={setSend}
+        setLoading={setLoading}
+      />
     </HomeStyle>
   );
 };

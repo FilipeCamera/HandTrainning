@@ -19,9 +19,16 @@ import Colors from '@styles';
 interface CardCommonProps {
   navigation: any;
   setVisible: any;
+  setSend: any;
+  setLoading: any;
 }
 
-const CardCommon = ({navigation, setVisible}: CardCommonProps) => {
+const CardCommon = ({
+  navigation,
+  setVisible,
+  setSend,
+  setLoading,
+}: CardCommonProps) => {
   const user = useSelector((state: any) => state.auth.user);
   const [trainning, setTrainning] = useState(false);
 
@@ -339,7 +346,11 @@ const CardCommon = ({navigation, setVisible}: CardCommonProps) => {
               size={14}
               weight={500}
               color={Colors.red}
-              onPress={() => setVisible(true)}
+              onPress={() => {
+                setVisible(true);
+                setLoading(false);
+                setSend(false);
+              }}
             />
           </View>
         </CardCommonStyle>

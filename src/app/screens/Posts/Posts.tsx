@@ -18,6 +18,7 @@ import {fieldValidate} from 'validation';
 import {firestore} from 'firebase';
 import {showMessage} from 'react-native-flash-message';
 import {useSelector} from 'react-redux';
+import Colors from '@styles';
 
 const Posts = () => {
   const user = useSelector((state: any) => state.auth.user);
@@ -121,7 +122,12 @@ const Posts = () => {
         width: '100%',
       }}
       showsVerticalScrollIndicator={false}>
-      <SimpleHeader title="Postagem" color="#090A0A" size={20} weight={500} />
+      <SimpleHeader
+        title="Postagem"
+        color={Colors.textColorBlack}
+        size={20}
+        weight={500}
+      />
       <Space marginVertical={20} />
       <DropdownCategoryType
         value={type}
@@ -152,7 +158,12 @@ const Posts = () => {
               width: '95%',
             }}>
             <Line width="100px" />
-            <Text title="duração" size={16} weight={500} color="#D3D3D3" />
+            <Text
+              title="duração"
+              size={16}
+              weight={500}
+              color={Colors.lightGray}
+            />
             <Line width="100px" />
           </View>
           <Space marginVertical={8} />
@@ -164,7 +175,7 @@ const Posts = () => {
           <Space marginVertical={30} />
           <ButtonRed
             title="Postar"
-            color="#fff"
+            color={Colors.background}
             size={15}
             weight={500}
             onPress={handleCreatePost}
@@ -199,7 +210,12 @@ const Posts = () => {
               width: '95%',
             }}>
             <Line width="100px" />
-            <Text title="duração" size={16} weight={500} color="#D3D3D3" />
+            <Text
+              title="duração"
+              size={16}
+              weight={500}
+              color={Colors.lightGray}
+            />
             <Line width="100px" />
           </View>
           <Space marginVertical={8} />
@@ -213,7 +229,7 @@ const Posts = () => {
           <Space marginVertical={40} />
           <ButtonRed
             title="Postar"
-            color="#fff"
+            color={Colors.background}
             size={15}
             weight={500}
             onPress={handleCreatePost}
