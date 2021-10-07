@@ -7,7 +7,13 @@ import {Text} from 'components';
 import {useSelector} from 'react-redux';
 import Colors from '@styles';
 
-const Header = () => {
+interface HeaderProps {
+  requests: number;
+  warnings: number;
+  setWarReq: () => any;
+}
+
+const Header = ({requests, warnings, setWarReq}: HeaderProps) => {
   const user = useSelector((state: any) => state.auth.user);
 
   return (
@@ -35,7 +41,36 @@ const Header = () => {
         </View>
       </View>
       <View>
-        <ButtonAlert>
+        <ButtonAlert onPress={setWarReq}>
+          {(!!warnings || !!requests) && (
+            <View
+              style={{
+                backgroundColor: Colors.red,
+                borderRadius: 8,
+                width: 16,
+                height: 16,
+                alignItems: 'center',
+                justifyContent: 'center',
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                elevation: 1,
+              }}>
+              <Text
+                title={
+                  requests
+                    ? requests
+                    : warnings
+                    ? warnings
+                    : requests + warnings
+                }
+                size={12}
+                weight={600}
+                color={Colors.textColorWhite}
+                center
+              />
+            </View>
+          )}
           <Alert />
         </ButtonAlert>
       </View>

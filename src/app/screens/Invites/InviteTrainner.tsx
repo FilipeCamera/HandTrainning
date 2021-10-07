@@ -1,13 +1,22 @@
+import Colors from '@styles';
 import {ButtonInvite, Header, Label, Search, Space, Text} from 'components';
 import {useGetUser} from 'hooks';
 import React, {useState, useEffect} from 'react';
-import {Image, View} from 'react-native';
+import {Image, TouchableOpacity, View} from 'react-native';
+import InviteProfile from './InviteProfile';
 import {InvitesStyle} from './styles';
 
 const InviteTrainner = ({auth}: any) => {
   const {searchUser} = useGetUser();
   const [userSearch, setUserSearch] = useState('');
   const [usersSearch, setUsersSearch] = useState<any>([]);
+  const [profile, setProfile] = useState('');
+  const [user, setUser] = useState<any>();
+
+  if (profile === 'profile') {
+    return <InviteProfile profile={user} onBack={setProfile} />;
+  }
+
   return (
     <InvitesStyle
       contentContainerStyle={{
@@ -38,18 +47,18 @@ const InviteTrainner = ({auth}: any) => {
       {usersSearch.length !== 0 &&
         usersSearch.map((userInvite: any) => {
           return (
-            <View
+            <TouchableOpacity
               key={userInvite.uid}
               style={{
                 width: '100%',
-                backgroundColor: '#fff',
+                backgroundColor: Colors.background,
                 padding: 16,
                 borderRadius: 10,
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 marginVertical: 8,
-                shadowColor: '#1C2439',
+                shadowColor: Colors.inputColorText,
                 shadowOffset: {
                   width: 0,
                   height: 2,
@@ -58,6 +67,10 @@ const InviteTrainner = ({auth}: any) => {
                 shadowRadius: 3.84,
 
                 elevation: 5,
+              }}
+              onPress={() => {
+                setUser(userInvite);
+                setProfile('profile');
               }}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <View style={{width: 50, height: 50, borderRadius: 25}}>
@@ -76,7 +89,7 @@ const InviteTrainner = ({auth}: any) => {
                     title={userInvite.name}
                     size={14}
                     weight={600}
-                    color="#090A0A"
+                    color={Colors.textColorBlack}
                   />
                   <Text
                     title={
@@ -86,9 +99,9 @@ const InviteTrainner = ({auth}: any) => {
                         ? 'Treinador(a)'
                         : 'Academia'
                     }
-                    size={12}
+                    size={13}
                     weight={500}
-                    color="#090A0A"
+                    color={Colors.textColorBlack}
                   />
                 </View>
               </View>
@@ -98,17 +111,17 @@ const InviteTrainner = ({auth}: any) => {
                   sendTitle="Convite enviado"
                   size={10}
                   weight={600}
-                  color="#fff"
+                  color={Colors.textColorWhite}
                   to={auth}
                   from={userInvite.uid}
                 />
               </View>
-            </View>
+            </TouchableOpacity>
           );
         })}
       <Space marginVertical={5} />
       {usersSearch.length === 0 && <Label title="Academias" />}
-      <Space marginVertical={5} />
+      <Space marginVertical={20} />
       {usersSearch.length === 0 && <Label title="Alunos" />}
     </InvitesStyle>
   );

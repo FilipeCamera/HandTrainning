@@ -18,15 +18,44 @@ const InviteProfile = ({profile, onBack, auth}: InviteProfileProps) => {
   const [data, setData] = useState<any[]>();
 
   useEffect(() => {
-    firestore()
-      .collection('users')
-      .where('uid', '==', profile.userAssociate || profile.uid)
-      .get()
-      .then(querySnapshot => {
-        const dados = querySnapshot.docs.map(doc => doc.data());
-        setData(dados);
-      })
-      .catch(error => {});
+    if (profile.type === 'gym') {
+      firestore()
+        .collection('users')
+        .where('type', '==', 'trainner')
+        .where(
+          'userAssociate',
+          'array-contains',
+          profile.userAssociate || profile.uid,
+        )
+        .get()
+        .then(querySnapshot => {
+          const dados = querySnapshot.docs.map(doc => doc.data());
+          setData(dados);
+        })
+        .catch(error => {});
+    }
+    if (profile.type === 'trainner') {
+      firestore()
+        .collection('users')
+        .where('uid', 'in', profile.userAssociate)
+        .get()
+        .then(querySnapshot => {
+          const dados = querySnapshot.docs.map(doc => doc.data());
+          setData(dados);
+        })
+        .catch(error => {});
+    }
+    if (profile.type === 'common') {
+      firestore()
+        .collection('users')
+        .where('uid', '==', profile.userAssociate)
+        .get()
+        .then(querySnapshot => {
+          const dados = querySnapshot.docs.map(doc => doc.data());
+          setData(dados);
+        })
+        .catch(error => {});
+    }
   }, []);
   const backChange = () => {
     onBack('');
@@ -127,9 +156,10 @@ const InviteProfile = ({profile, onBack, auth}: InviteProfileProps) => {
         )}
       </View>
       <Space marginVertical={25} />
-      {!!data && (
-        <>
+      {!!data &&
+        data.map(item => (
           <View
+            key={item.uid}
             style={{
               width: '90%',
               backgroundColor: Colors.background,
@@ -163,14 +193,14 @@ const InviteProfile = ({profile, onBack, auth}: InviteProfileProps) => {
                   marginLeft: 8,
                 }}>
                 <Text
-                  title={data[0].name}
+                  title={item.name}
                   size={14}
                   weight={600}
                   color={Colors.textColorBlack}
                 />
                 <Text
                   title={
-                    data[0].type === 'common'
+                    item.type === 'common'
                       ? 'Aluno'
                       : data[0].type === 'trainner'
                       ? 'Treinador'
@@ -183,22 +213,21 @@ const InviteProfile = ({profile, onBack, auth}: InviteProfileProps) => {
               </View>
             </View>
           </View>
-          {!profile.userAssociate && (
-            <>
-              <Space marginVertical={70} />
-              <View style={{height: 56, width: '90%'}}>
-                <ButtonInvite
-                  title="Enviar convite"
-                  sendTitle="Convite enviado"
-                  size={15}
-                  weight={500}
-                  color="#fff"
-                  to={auth}
-                  from={profile.uid}
-                />
-              </View>
-            </>
-          )}
+        ))}
+      {!profile.userAssociate && (
+        <>
+          <Space marginVertical={70} />
+          <View style={{height: 56, width: '90%'}}>
+            <ButtonInvite
+              title="Enviar convite"
+              sendTitle="Convite enviado"
+              size={15}
+              weight={500}
+              color="#fff"
+              to={auth}
+              from={profile.uid}
+            />
+          </View>
         </>
       )}
     </InvitesProfileStyle>

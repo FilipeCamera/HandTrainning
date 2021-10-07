@@ -3,6 +3,7 @@ import React from 'react';
 import {useSelector} from 'react-redux';
 import InviteCommon from './InviteCommon';
 import InviteGym from './InviteGym';
+import InviteTrainner from './InviteTrainner';
 
 const Invites = () => {
   const user = useSelector((state: any) => state.auth.user);
@@ -10,7 +11,7 @@ const Invites = () => {
     <>
       {user.type === 'gym' && <InviteGym auth={user} />}
       {user.type === 'common' && <InviteCommon auth={user} />}
-      {user.type === 'trainner' && <InviteGym auth={user} />}
+      {user.type === 'trainner' && <InviteTrainner auth={user} />}
     </>
   );
 };

@@ -26,7 +26,7 @@ const Trainning = () => {
             title="Opa! Você não tem um treino"
             size={15}
             weight={500}
-            color={Colors.textWhiteLight}
+            color={Colors.grayMediumLight}
             center
           />
         </View>

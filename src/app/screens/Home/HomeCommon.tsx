@@ -32,7 +32,7 @@ const HomeCommon = ({navigation}: any) => {
       commonId: user.uid,
       trainnerId: trainner,
       title: 'Novo treino',
-      desc: 'Solicitação de novo treino',
+      desc: `${user.name} solicitou um novo treino`,
       createdAt: firestore.FieldValue.serverTimestamp(),
     };
 
