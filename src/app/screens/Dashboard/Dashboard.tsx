@@ -2,7 +2,15 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Text} from 'components';
 import React from 'react';
 import {useSelector} from 'react-redux';
-import {Home, Invites, Profile, Trainning} from 'screens';
+import {
+  Exercise,
+  Home,
+  Invites,
+  Posts,
+  Profile,
+  Students,
+  Trainning,
+} from 'screens';
 
 import HomeIcon from 'assets/svg/home_icon.svg';
 import HomeIconSelected from 'assets/svg/home_icon_selected.svg';
@@ -14,8 +22,10 @@ import WeightIcon from 'assets/svg/weight_icon.svg';
 import WeightIconSelected from 'assets/svg/weight_icon_selected.svg';
 import InvitesIcon from 'assets/svg/invites_icon.svg';
 import InvitesIconSelected from 'assets/svg/invites_icon_selected.svg';
+import AddIcon from 'assets/svg/add_icon.svg';
 
 import Colors from '@styles';
+import {View} from 'react-native';
 
 const {Navigator, Screen} = createBottomTabNavigator();
 
@@ -46,6 +56,42 @@ const Dashboard = () => {
             focused ? <HomeIconSelected /> : <HomeIcon />,
         }}
       />
+      {user.type === 'gym' && (
+        <>
+          <Screen
+            name="Exercise"
+            component={Exercise}
+            options={{
+              tabBarLabel: ({color}) => (
+                <Text title="Exercícios" size={12} weight={500} color={color} />
+              ),
+              tabBarIcon: ({focused}) =>
+                focused ? <WeightIconSelected /> : <WeightIcon />,
+            }}
+          />
+          <Screen
+            name="Post"
+            component={Posts}
+            options={{
+              tabBarLabel: '',
+              tabBarIcon: ({focused}) => (
+                <View
+                  style={{
+                    backgroundColor: focused ? Colors.red : Colors.gray,
+                    width: 50,
+                    height: 50,
+                    borderRadius: 25,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginTop: 8,
+                  }}>
+                  <AddIcon />
+                </View>
+              ),
+            }}
+          />
+        </>
+      )}
       {user.type === 'common' && (
         <Screen
           name="Trainning"
@@ -63,7 +109,7 @@ const Dashboard = () => {
       {user.type === 'trainner' && (
         <Screen
           name="Commons"
-          component={Home}
+          component={Students}
           options={{
             unmountOnBlur: true,
             tabBarLabel: ({color}) => (

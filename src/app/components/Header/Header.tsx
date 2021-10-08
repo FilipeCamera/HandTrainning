@@ -57,13 +57,7 @@ const Header = ({requests, warnings, setWarReq}: HeaderProps) => {
                 elevation: 1,
               }}>
               <Text
-                title={
-                  requests
-                    ? requests
-                    : warnings
-                    ? warnings
-                    : requests + warnings
-                }
+                title={requests + warnings}
                 size={12}
                 weight={600}
                 color={Colors.textColorWhite}

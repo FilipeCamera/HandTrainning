@@ -89,6 +89,51 @@ const HomeWarReq = ({onBack, warnings, requests}: HomeWarReqProps) => {
             </View>
           );
         })}
+      {!!warnings &&
+        warnings.map((item, index) => {
+          return (
+            <View style={{width: '100%', marginVertical: 8}} key={index}>
+              <Space marginVertical={8} />
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}>
+                <View style={{width: 250}}>
+                  <Text
+                    title={item.title}
+                    weight={600}
+                    size={15}
+                    color={Colors.textColorBlack}
+                  />
+                  <Text
+                    title={item.desc}
+                    weight={400}
+                    size={12}
+                    color={Colors.inputColorText}
+                  />
+                </View>
+                <View
+                  style={{
+                    backgroundColor: Colors.grayLight,
+                    paddingVertical: 2,
+                    paddingHorizontal: 8,
+                    borderRadius: 8,
+                  }}>
+                  <Text
+                    title={moment(item.initial).format('DD/MM')}
+                    weight={600}
+                    size={12}
+                    color={Colors.textColorRX}
+                  />
+                </View>
+              </View>
+              <Space marginVertical={4} />
+              <GranLine width="100%" />
+            </View>
+          );
+        })}
     </ScrollView>
   );
 };

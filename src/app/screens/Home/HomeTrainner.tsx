@@ -8,6 +8,7 @@ import {HomeStyle} from './styles';
 const HomeTrainner = ({navigation}: any) => {
   const user = useSelector((state: any) => state.auth.user);
   const [requests, setRequests] = useState<any[]>([]);
+  const [warnings, setWarnings] = useState<any[]>([]);
   const [warReq, setWarReq] = useState(false);
   useEffect(() => {
     firestore()
@@ -19,10 +20,25 @@ const HomeTrainner = ({navigation}: any) => {
         setRequests(request);
       })
       .catch(err => {});
+    firestore()
+      .collection('warning')
+      .where('gym', 'in', user.userAssociate)
+      .get()
+      .then(querySnapshot => {
+        const warning = querySnapshot.docs.map(doc => doc.data());
+
+        setWarnings(warning);
+      });
   }, []);
 
   if (warReq === true) {
-    return <HomeWarReq requests={requests} onBack={e => setWarReq(e)} />;
+    return (
+      <HomeWarReq
+        requests={requests}
+        warnings={warnings}
+        onBack={e => setWarReq(e)}
+      />
+    );
   }
 
   return (
@@ -34,7 +50,11 @@ const HomeTrainner = ({navigation}: any) => {
         width: '100%',
       }}
       showsVerticalScrollIndicator={false}>
-      <Header requests={requests.length} setWarReq={() => setWarReq(true)} />
+      <Header
+        requests={requests.length}
+        warnings={warnings.length}
+        setWarReq={() => setWarReq(true)}
+      />
       <Carousel />
       <CardTrainner />
     </HomeStyle>
