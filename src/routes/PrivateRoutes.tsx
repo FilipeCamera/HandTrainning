@@ -3,7 +3,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {privateFeatures} from 'features';
 import {useSelector} from 'react-redux';
 
-const privateFeature = ['Dashboard', 'Onboarding'];
+const privateFeature = ['Dashboard', 'Onboarding', 'Warnings'];
 
 const routes = Object.keys(privateFeatures).map(
   (feature: keyof PrivateFeatureGroup) => {

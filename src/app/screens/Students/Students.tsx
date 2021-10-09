@@ -2,7 +2,7 @@ import {Header} from 'components';
 import React from 'react';
 import {StudentStyle} from './styles';
 
-const Students = () => {
+const Students = ({navigation}: any) => {
   return (
     <StudentStyle
       contentContainerStyle={{
@@ -12,7 +12,7 @@ const Students = () => {
         width: '100%',
       }}
       showsVerticalScrollIndicator={false}>
-      <Header />
+      <Header navigation={navigation} />
     </StudentStyle>
   );
 };

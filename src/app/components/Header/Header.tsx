@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Image} from 'react-native';
 import {HeaderStyle, ButtonAlert} from './styles';
 
@@ -6,15 +6,57 @@ import Alert from 'assets/svg/bell-outline.svg';
 import {Text} from 'components';
 import {useSelector} from 'react-redux';
 import Colors from '@styles';
+import {firestore} from 'firebase';
+import moment from 'moment';
 
 interface HeaderProps {
-  requests: number;
-  warnings: number;
-  setWarReq: () => any;
+  navigation: any;
 }
 
-const Header = ({requests, warnings, setWarReq}: HeaderProps) => {
+const Header = ({navigation}: HeaderProps) => {
   const user = useSelector((state: any) => state.auth.user);
+  const [visualized, setVisualized] = useState(false);
+  const [info, setInfo] = useState(false);
+
+  const dateNow = Date.now();
+
+  useEffect(() => {
+    firestore()
+      .collection('requests')
+      .where('trainnerId', '==', user.uid)
+      .get()
+      .then(querySnapshot => {
+        const request = querySnapshot.docs.map(doc => doc.data());
+        if (request.length !== 0) {
+          request.map(req => {
+            if (
+              req.createdAt !== dateNow &&
+              moment(dateNow).format('DD') -
+                moment.unix(req.createdAt).format('DD') <=
+                7
+            ) {
+              setInfo(true);
+            }
+          });
+        }
+      })
+      .catch(err => {});
+    firestore()
+      .collection('warning')
+      .where('gym', 'in', user.userAssociate)
+      .get()
+      .then(querySnapshot => {
+        const warnings = querySnapshot.docs.map(doc => doc.data());
+
+        if (warnings.length !== 0) {
+          warnings.map(wg => {
+            if (wg.finallized !== dateNow && wg.finallized > dateNow) {
+              setInfo(true);
+            }
+          });
+        }
+      });
+  }, []);
 
   return (
     <HeaderStyle>
@@ -41,29 +83,23 @@ const Header = ({requests, warnings, setWarReq}: HeaderProps) => {
         </View>
       </View>
       <View>
-        <ButtonAlert onPress={setWarReq}>
-          {(!!warnings || !!requests) && (
+        <ButtonAlert
+          onPress={() => navigation.navigate('Warnings', {setVisualized})}>
+          {!visualized && !!info && (
             <View
               style={{
                 backgroundColor: Colors.red,
-                borderRadius: 8,
-                width: 16,
-                height: 16,
+                borderRadius: 7,
+                width: 14,
+                height: 14,
                 alignItems: 'center',
                 justifyContent: 'center',
                 position: 'absolute',
-                top: 0,
-                right: 0,
+                top: 2,
+                right: 2,
                 elevation: 1,
-              }}>
-              <Text
-                title={requests + warnings}
-                size={12}
-                weight={600}
-                color={Colors.textColorWhite}
-                center
-              />
-            </View>
+              }}
+            />
           )}
           <Alert />
         </ButtonAlert>
