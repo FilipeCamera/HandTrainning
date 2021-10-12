@@ -7,17 +7,17 @@ import moment from 'moment';
 import Colors from '@styles';
 import {firestore} from 'firebase';
 import {useSelector} from 'react-redux';
+import {setVisualize} from 'functions';
 
-const Warnings = ({navigation, route}: any) => {
+const Warnings = ({navigation}: any) => {
   const user = useSelector((state: any) => state.auth.user);
-  const {setVisualized} = route.params;
   const [requests, setRequests] = useState<any[]>([]);
   const [warnings, setWarnings] = useState<any[]>([]);
 
   const dateNow = Date.now();
 
   useEffect(() => {
-    setVisualized(true);
+    setVisualize();
   }, []);
 
   useEffect(() => {
@@ -29,12 +29,7 @@ const Warnings = ({navigation, route}: any) => {
         const listRequest: any[] = [];
         const request = querySnapshot.docs.map(doc => doc.data());
         request.map(req => {
-          if (
-            req.createdAt !== dateNow &&
-            moment(dateNow).format('DD') -
-              moment.unix(req.createdAt).format('DD') <=
-              7
-          ) {
+          if (req.createdAt === dateNow) {
             listRequest.push(req);
           }
         });
@@ -51,9 +46,9 @@ const Warnings = ({navigation, route}: any) => {
         warning.map(wg => {
           if (wg.finallized !== dateNow && wg.finallized > dateNow) {
             listWarnings.push(wg);
-            console.log(wg);
           }
         });
+        setWarnings(listWarnings);
       });
   }, []);
 

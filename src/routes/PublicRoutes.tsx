@@ -20,7 +20,7 @@ const {Navigator, Screen} = createStackNavigator<RootStackParamList>();
 
 export default () => {
   return (
-    <Navigator initialRouteName="Initial" headerMode="none">
+    <Navigator initialRouteName="Initial" screenOptions={{headerShown: false}}>
       {routes.map(({name, component}) => (
         <Screen key={name} name={name as any} component={component} />
       ))}

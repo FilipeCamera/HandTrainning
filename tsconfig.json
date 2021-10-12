@@ -61,6 +61,12 @@
       "@actions/auth": [
         "src/store/ducks/auth.ts"
       ],
+      "@actions/visualized": [
+        "src/store/ducks/visualized.ts"
+      ],
+      "@actions/trainner": [
+        "src/store/ducks/trainner.ts"
+      ],
       "store": [
         "src/store"
       ],

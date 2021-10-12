@@ -33,16 +33,13 @@ const Dashboard = () => {
   const user = useSelector((state: any) => state.auth.user);
   return (
     <Navigator
-      tabBarOptions={{
-        activeTintColor: Colors.textColorBlack,
-        inactiveTintColor: Colors.gray,
-        style: {
-          borderTopColor: 'transparent',
+      screenOptions={{
+        headerShown: false,
+        tabBarStyle: {
           height: 60,
         },
-        tabStyle: {
-          paddingTop: 5,
-        },
+        tabBarActiveTintColor: Colors.textColorBlack,
+        tabBarInactiveTintColor: Colors.gray,
       }}
       initialRouteName="Home">
       <Screen

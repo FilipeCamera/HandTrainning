@@ -1,5 +1,12 @@
 import Colors from '@styles';
-import {Button, Label, Space, Text, SelectProfileCheck} from 'components';
+import {
+  Button,
+  Label,
+  Space,
+  Text,
+  SelectProfileCheck,
+  ButtonText,
+} from 'components';
 import React from 'react';
 import {ActivityIndicator, View} from 'react-native';
 
@@ -15,6 +22,8 @@ interface ModalProps {
   send: boolean;
   title: string;
   trainners: any[];
+  gyms: any[];
+  setGym: any;
   onFunction: () => any;
 }
 
@@ -25,8 +34,10 @@ const Modals = ({
   loading,
   send,
   setTrainner,
+  setGym,
   onFunction,
   trainners,
+  gyms,
 }: ModalProps) => {
   return (
     <Portal>
@@ -41,7 +52,6 @@ const Modals = ({
           alignItems: 'center',
           flexDirection: 'column',
           justifyContent: 'flex-start',
-          flex: 1,
         }}>
         {!loading && !send && (
           <>
@@ -52,7 +62,7 @@ const Modals = ({
               size={15}
               center
             />
-            <Space marginVertical={20} />
+            <Space marginVertical={16} />
             {!!trainners &&
               trainners.length !== 0 &&
               trainners.map(trainner => (
@@ -62,6 +72,26 @@ const Modals = ({
                   onFunction={() => setTrainner(trainner.uid)}
                 />
               ))}
+            {!!gyms &&
+              gyms.length !== 0 &&
+              gyms.map(gym => (
+                <SelectProfileCheck
+                  key={gym.uid}
+                  profile={gym}
+                  onFunction={() => setGym(gym.uid)}
+                />
+              ))}
+            {!!gyms && <Space marginVertical={20} />}
+            {!!gyms && (
+              <View>
+                <ButtonText
+                  title="Adicionar nova academia"
+                  weight={500}
+                  size={14}
+                  color={Colors.red}
+                />
+              </View>
+            )}
             {!!trainners && trainners.length !== 0 && (
               <View
                 style={{

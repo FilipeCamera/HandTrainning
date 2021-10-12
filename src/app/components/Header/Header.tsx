@@ -3,19 +3,22 @@ import {View, Image} from 'react-native';
 import {HeaderStyle, ButtonAlert} from './styles';
 
 import Alert from 'assets/svg/bell-outline.svg';
-import {Text} from 'components';
+import ArrowExchange from 'assets/svg/arrowExchange.svg';
+import {Space, Text} from 'components';
 import {useSelector} from 'react-redux';
 import Colors from '@styles';
 import {firestore} from 'firebase';
-import moment from 'moment';
+import {setNotVisualize} from 'functions';
 
 interface HeaderProps {
   navigation: any;
+  setVisible?: any;
 }
 
-const Header = ({navigation}: HeaderProps) => {
+const Header = ({navigation, setVisible}: HeaderProps) => {
   const user = useSelector((state: any) => state.auth.user);
-  const [visualized, setVisualized] = useState(false);
+  const visualized = useSelector((state: any) => state.visualized.visualized);
+
   const [info, setInfo] = useState(false);
 
   const dateNow = Date.now();
@@ -29,13 +32,9 @@ const Header = ({navigation}: HeaderProps) => {
         const request = querySnapshot.docs.map(doc => doc.data());
         if (request.length !== 0) {
           request.map(req => {
-            if (
-              req.createdAt !== dateNow &&
-              moment(dateNow).format('DD') -
-                moment.unix(req.createdAt).format('DD') <=
-                7
-            ) {
+            if (req.createdAt === dateNow) {
               setInfo(true);
+              setNotVisualize();
             }
           });
         }
@@ -52,6 +51,7 @@ const Header = ({navigation}: HeaderProps) => {
           warnings.map(wg => {
             if (wg.finallized !== dateNow && wg.finallized > dateNow) {
               setInfo(true);
+              setNotVisualize();
             }
           });
         }
@@ -82,9 +82,19 @@ const Header = ({navigation}: HeaderProps) => {
           />
         </View>
       </View>
-      <View>
-        <ButtonAlert
-          onPress={() => navigation.navigate('Warnings', {setVisualized})}>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}>
+        {user.type === 'trainner' && (
+          <ButtonAlert onPress={() => setVisible(true)}>
+            <ArrowExchange />
+          </ButtonAlert>
+        )}
+        <Space marginHorizontal={8} />
+        <ButtonAlert onPress={() => navigation.navigate('Warnings')}>
           {!visualized && !!info && (
             <View
               style={{

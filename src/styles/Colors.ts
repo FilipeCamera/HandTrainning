@@ -25,8 +25,10 @@ const Colors = {
   grayLight: '#E0E1E5',
   green: '#4caf50',
   greenMediumLight: '#34A853',
+  greenLight: '#CCFF90',
   lightGreen: '#dcffb2',
   orange: '#E56000',
+  lightOrange: '#FFDABF',
   textWhiteLight: '#E6EAF2',
 };
 

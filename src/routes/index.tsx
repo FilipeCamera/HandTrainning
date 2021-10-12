@@ -12,7 +12,7 @@ const Routes = () => {
   return (
     <Navigator
       initialRouteName={user.uid !== undefined ? 'Private' : 'Public'}
-      headerMode="none">
+      screenOptions={{headerShown: false}}>
       <Screen name="Public" component={PublicRoutes} />
       <Screen name="Private" component={PrivateRoutes} />
     </Navigator>

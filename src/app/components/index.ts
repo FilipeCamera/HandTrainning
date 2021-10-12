@@ -16,6 +16,7 @@ import {
   CardCommon,
   CardTrainner,
   CardMini,
+  Card,
 } from './Cards';
 import Carousel from './Carousel';
 import Check, {SelectProfileCheck} from './CheckBox';
@@ -79,4 +80,5 @@ export {
   BoxUpload,
   Modal,
   SelectProfileCheck,
+  Card,
 };
