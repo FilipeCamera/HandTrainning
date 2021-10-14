@@ -19,15 +19,35 @@ interface CreateTrainningProps {
 const CreateTrainning = ({setState}: CreateTrainningProps) => {
   const gym = useSelector((state: any) => state.trainner.gym);
   const [error, setError] = useState({aluno: ''});
+  const [student, setStudent] = useState('');
   const [exercises, setExercises] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
+
+  const handleSelect = index => {
+    const list = categories.map((c, i) => {
+      if (i === index) {
+        return {...c, selected: !c.selected};
+      }
+      return {...c, selected: c.selected};
+    });
+    setCategories(list);
+  };
+
   useEffect(() => {
     firestore()
       .collection('categories')
       .get()
       .then(querySnapshot => {
+        const list: any = [];
         const category = querySnapshot.docs.map(doc => doc.data());
-        setCategories(category);
+        category.map(cat => {
+          list.push({
+            label: cat.label,
+            value: cat.value,
+            selected: false,
+          });
+        });
+        setCategories(list);
       })
       .catch(err => {});
   }, []);
@@ -61,7 +81,11 @@ const CreateTrainning = ({setState}: CreateTrainningProps) => {
         onBack={() => setState('')}
       />
       <Space marginVertical={20} />
-      <DropdownStudents error={error.aluno} />
+      <DropdownStudents
+        error={error.aluno}
+        value={student}
+        onValue={setStudent}
+      />
       <Space marginVertical={25} />
       <Label
         title="Selecione as categorias"
@@ -78,7 +102,7 @@ const CreateTrainning = ({setState}: CreateTrainningProps) => {
         }}>
         {!!categories &&
           categories.length !== 0 &&
-          categories.map(category => {
+          categories.map((category, index) => {
             return (
               <TouchableOpacity
                 key={category.value}
@@ -89,20 +113,35 @@ const CreateTrainning = ({setState}: CreateTrainningProps) => {
                   flexDirection: 'row',
                   alignItems: 'center',
                   justifyContent: 'space-around',
-                  backgroundColor: Colors.backgroundLight,
+                  backgroundColor: category.selected
+                    ? Colors.red
+                    : Colors.backgroundLight,
                   marginVertical: 8,
-                }}>
+                }}
+                onPress={() => handleSelect(index)}>
                 <Text
                   title={category.label}
                   size={14}
                   weight={500}
-                  color={Colors.inputColorText}
+                  color={
+                    category.selected
+                      ? Colors.textColorWhite
+                      : Colors.inputColorText
+                  }
                 />
                 <Text
-                  title="1"
+                  title={
+                    exercises.filter(
+                      exercise => exercise.category === category.value,
+                    ).length
+                  }
                   size={14}
                   weight={500}
-                  color={Colors.inputColorText}
+                  color={
+                    category.selected
+                      ? Colors.textColorWhite
+                      : Colors.inputColorText
+                  }
                 />
               </TouchableOpacity>
             );

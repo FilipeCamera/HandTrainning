@@ -25,7 +25,7 @@ const DropdownStudents = ({value, onValue, error}: DropDownProps) => {
         .where('userAssociate', '==', gym.gym)
         .get()
         .then(res => {
-          const list = [];
+          const list: any = [];
           const item = res.docs.map(doc => doc.data());
           item.map(student => {
             list.push({value: student.uid, label: student.name});
