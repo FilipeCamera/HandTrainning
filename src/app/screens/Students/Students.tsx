@@ -1,29 +1,25 @@
 import Colors from '@styles';
-import {Card, Header, Space, Text} from 'components';
+import {Card, CarouselWarnings, Header, Space, Text} from 'components';
 import {firestore} from 'firebase';
 import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, Image, TouchableOpacity, View} from 'react-native';
 import {useSelector} from 'react-redux';
+import CreateTrainning from './CreateTrainning';
 import {StudentStyle} from './styles';
 
 const Students = ({navigation}: any) => {
+  const user = useSelector((state: any) => state.auth.user);
   const gym = useSelector((state: any) => state.trainner.gym);
+  const [state, setState] = useState('');
   const [loading, setLoading] = useState(true);
   const [profileGym, setProfileGym] = useState<any>();
-  const [items, setItems] = useState<any[]>([
-    {title: 'Criar treino', selected: true},
-    {title: 'Excluir', selected: false},
-    {title: 'Editar', selected: false},
-  ]);
-
-  const handleSelect = index => {
-    items.map((item, catIndex) => {
-      if (catIndex === index) {
-        item.selected = true;
-      }
-      item.selected = false;
-    });
-  };
+  const [buttonTitle, setButtonTitle] = useState('Criar treino');
+  const [request, setRequest] = useState<any[]>([]);
+  const items = [
+    {title: 'Criar treino'},
+    {title: 'Excluir'},
+    {title: 'Editar'},
+  ];
 
   useEffect(() => {
     firestore()
@@ -36,6 +32,22 @@ const Students = ({navigation}: any) => {
       })
       .catch(err => {});
   }, []);
+
+  useEffect(() => {
+    firestore()
+      .collection('requests')
+      .where('trainnerId', '==', user.uid)
+      .get()
+      .then(querySnapshot => {
+        const requests = querySnapshot.docs.map(doc => doc.data());
+        setRequest(requests);
+      })
+      .catch(err => {});
+  }, []);
+
+  if (state === 'Criar treino') {
+    return <CreateTrainning setState={setState} />;
+  }
   return (
     <StudentStyle
       contentContainerStyle={{
@@ -47,6 +59,7 @@ const Students = ({navigation}: any) => {
       showsVerticalScrollIndicator={false}>
       <Header navigation={navigation} />
       <Space marginVertical={20} />
+      {!!request && request.length !== 0 && <CarouselWarnings data={request} />}
       <Card>
         {!!loading && (
           <View
@@ -93,17 +106,17 @@ const Students = ({navigation}: any) => {
               {items.map((item, index) => (
                 <TouchableOpacity
                   onPress={() => {
-                    if (item.selected) {
-                      item.selected = true;
-                    } else {
-                      item.selected = false;
+                    setButtonTitle(item.title);
+                    if (item.title === 'Criar treino') {
+                      setState(item.title);
                     }
                   }}
                   key={item.title}
                   style={{
-                    backgroundColor: item.selected
-                      ? Colors.redOpacity
-                      : Colors.background,
+                    backgroundColor:
+                      item.title === buttonTitle
+                        ? Colors.redOpacity
+                        : Colors.background,
                     marginRight: 8,
                     paddingHorizontal: 8,
                     paddingVertical: 3,
@@ -115,7 +128,9 @@ const Students = ({navigation}: any) => {
                     title={item.title}
                     size={12}
                     weight={500}
-                    color={item.selected ? Colors.red : Colors.gray}
+                    color={
+                      item.title === buttonTitle ? Colors.red : Colors.gray
+                    }
                   />
                 </TouchableOpacity>
               ))}

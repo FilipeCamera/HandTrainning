@@ -3,6 +3,7 @@ import DropdownUF from './DropdownUF';
 import DropdownCategories from './DropdownCategories';
 import DropdownType from './DropdownType';
 import DropdownCategoryType from './DropdownPostCategory';
+import DropdownStudents from './DropdownStudents';
 
 export {
   DropdownUF,
@@ -10,4 +11,5 @@ export {
   DropdownCategories,
   DropdownType,
   DropdownCategoryType,
+  DropdownStudents,
 };

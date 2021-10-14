@@ -18,7 +18,7 @@ import {
   CardMini,
   Card,
 } from './Cards';
-import Carousel from './Carousel';
+import Carousel, {CarouselWarnings} from './Carousel';
 import Check, {SelectProfileCheck} from './CheckBox';
 import {DataTrainner, DataCommon, DataGym} from './Data';
 import {
@@ -27,6 +27,7 @@ import {
   DropdownCategories,
   DropdownType,
   DropdownCategoryType,
+  DropdownStudents,
 } from './Dropdown';
 import {SimpleHeader, Header} from './Header';
 import Input from './Input';
@@ -81,4 +82,6 @@ export {
   Modal,
   SelectProfileCheck,
   Card,
+  CarouselWarnings,
+  DropdownStudents,
 };
