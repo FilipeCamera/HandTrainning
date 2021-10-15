@@ -54,15 +54,19 @@ const DataCommon = ({dados, setDados, errors}: DataProps) => {
       height: height,
       weight: weight,
       problemHealth: {
-        diabete: {value: diabete},
-        lesion: {value: lesion, lesion: lesionText},
-        obesity: {value: obesity},
-        hypertension: {value: hypertension},
-        arthritis: {value: arthritis},
-        arthrosis: {value: arthritis},
-        cholesterol: {value: cholesterol},
-        cancer: {value: cancer},
-        breath: {value: breath, breath: breathText},
+        diabete: {title: 'Diabete', value: diabete},
+        lesion: {title: 'Lesão', value: lesion, desc: lesionText},
+        obesity: {title: 'Obesidade', value: obesity},
+        hypertension: {title: 'Hipertensão', value: hypertension},
+        arthritis: {title: 'Artrite', value: arthritis},
+        arthrosis: {title: 'Artrose', value: arthritis},
+        cholesterol: {title: 'Colesterol', value: cholesterol},
+        cancer: {title: 'Câncer', value: cancer},
+        breath: {
+          title: 'Problemas respiratórios',
+          value: breath,
+          desc: breathText,
+        },
       },
     });
   }, [

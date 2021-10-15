@@ -30,6 +30,8 @@ const Colors = {
   orange: '#E56000',
   lightOrange: '#FFDABF',
   textWhiteLight: '#E6EAF2',
+  blueMedium: '#BACCFD',
+  blueLight: '#EDF2FF',
 };
 
 export default Colors;

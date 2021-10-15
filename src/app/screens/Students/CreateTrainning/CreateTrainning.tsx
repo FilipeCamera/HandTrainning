@@ -10,7 +10,10 @@ import {
 import {firestore} from 'firebase';
 import React, {useEffect, useState} from 'react';
 import {ScrollView, TouchableOpacity, View} from 'react-native';
+import {showMessage} from 'react-native-flash-message';
 import {useSelector} from 'react-redux';
+import {fieldValidate} from 'validation';
+import Step1 from './Step1';
 
 interface CreateTrainningProps {
   setState: any;
@@ -19,9 +22,20 @@ interface CreateTrainningProps {
 const CreateTrainning = ({setState}: CreateTrainningProps) => {
   const gym = useSelector((state: any) => state.trainner.gym);
   const [error, setError] = useState({aluno: ''});
+  const [trainningStep, setTrainningStep] = useState('');
   const [student, setStudent] = useState('');
   const [exercises, setExercises] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
+  const [selectedCategoria, setSelectedCategoria] = useState<any[]>([]);
+
+  const verify = () => {
+    const studentsVerified = fieldValidate(student);
+    setError({aluno: studentsVerified.error});
+    if (!studentsVerified.value && selectedCategoria.length !== 0) {
+      return true;
+    }
+    return false;
+  };
 
   const handleSelect = index => {
     const list = categories.map((c, i) => {
@@ -30,7 +44,9 @@ const CreateTrainning = ({setState}: CreateTrainningProps) => {
       }
       return {...c, selected: c.selected};
     });
+    const listSelected = list.filter(l => l.selected === true);
     setCategories(list);
+    setSelectedCategoria(listSelected);
   };
 
   useEffect(() => {
@@ -63,6 +79,16 @@ const CreateTrainning = ({setState}: CreateTrainningProps) => {
       })
       .catch(err => {});
   }, []);
+
+  if (trainningStep === 'step1') {
+    return (
+      <Step1
+        setTrainningStep={setTrainningStep}
+        categorySelected={selectedCategoria}
+        commonId={student}
+      />
+    );
+  }
   return (
     <ScrollView
       contentContainerStyle={{
@@ -154,6 +180,16 @@ const CreateTrainning = ({setState}: CreateTrainningProps) => {
         size={14}
         color={Colors.textColorWhite}
         background={Colors.red}
+        onPress={() => {
+          const verified = verify();
+          if (verified) {
+            return setTrainningStep('step1');
+          }
+          return showMessage({
+            type: 'danger',
+            message: 'Precisa selecionar um aluno ou selecionar as categorias',
+          });
+        }}
       />
     </ScrollView>
   );
