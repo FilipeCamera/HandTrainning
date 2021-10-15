@@ -19,7 +19,7 @@ import Notify from 'assets/svg/Notify.svg';
 import {userPersist} from 'functions';
 import Colors from '@styles';
 
-const InviteCommon = ({auth}: any) => {
+const InviteCommon = ({auth, navigation}: any) => {
   const {searchUser, getUsers} = useGetUser();
   const {getInvites, acceptedInvite} = useInvites();
   const [userSearch, setUserSearch] = useState('');
@@ -135,7 +135,7 @@ const InviteCommon = ({auth}: any) => {
         width: '100%',
       }}
       showsVerticalScrollIndicator={false}>
-      <Header />
+      <Header navigation={navigation} />
       {!!loading && (
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
           <ActivityIndicator size="large" color={Colors.red} />

@@ -66,8 +66,8 @@ const CarouselWarnings = ({data}: CarouselWarningsProps) => {
           }}
           autoplay={true}
           horizontal={true}
-          autoplayDelay={1000}
-          autoplayInterval={5000}
+          autoplayDelay={500}
+          autoplayInterval={1500}
           loop={true}
           layout="default"
           data={data}

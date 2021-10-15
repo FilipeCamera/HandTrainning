@@ -66,7 +66,7 @@ const HomeCommon = ({navigation}: any) => {
         title="Escolha um novo treinador"
         onFunction={() => handleRequestTrainner()}
       />
-      <Header />
+      <Header navigation={navigation} />
       <Carousel />
       <CardCommon
         navigation={navigation}

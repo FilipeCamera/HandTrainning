@@ -33,6 +33,7 @@ const Dashboard = () => {
   const user = useSelector((state: any) => state.auth.user);
   return (
     <Navigator
+      initialRouteName="Home"
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
@@ -40,8 +41,7 @@ const Dashboard = () => {
         },
         tabBarActiveTintColor: Colors.textColorBlack,
         tabBarInactiveTintColor: Colors.gray,
-      }}
-      initialRouteName="Home">
+      }}>
       <Screen
         name="Home"
         component={Home}

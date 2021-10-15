@@ -9,6 +9,7 @@ import {useSelector} from 'react-redux';
 import Colors from '@styles';
 import {firestore} from 'firebase';
 import {setGymId, setNotVisualize} from 'functions';
+import moment from 'moment';
 
 interface HeaderProps {
   navigation: any;
@@ -46,7 +47,10 @@ const Header = ({navigation}: HeaderProps) => {
         const request = querySnapshot.docs.map(doc => doc.data());
         if (request.length !== 0) {
           request.map(req => {
-            if (req.createdAt === dateNow) {
+            if (
+              moment.unix(req.createdAt).format('DD/MM/YYYY') ===
+              moment(dateNow).format('DD/MM/YYYY')
+            ) {
               setInfo(true);
               setNotVisualize();
             }
@@ -54,22 +58,42 @@ const Header = ({navigation}: HeaderProps) => {
         }
       })
       .catch(err => {});
-    firestore()
-      .collection('warning')
-      .where('gym', 'in', user.userAssociate)
-      .get()
-      .then(querySnapshot => {
-        const warnings = querySnapshot.docs.map(doc => doc.data());
+    if (user.type === 'trainner') {
+      firestore()
+        .collection('warning')
+        .where('gym', 'in', user.userAssociate)
+        .get()
+        .then(querySnapshot => {
+          const warnings = querySnapshot.docs.map(doc => doc.data());
 
-        if (warnings.length !== 0) {
-          warnings.map(wg => {
-            if (wg.finallized !== dateNow && wg.finallized > dateNow) {
-              setInfo(true);
-              setNotVisualize();
-            }
-          });
-        }
-      });
+          if (warnings.length !== 0) {
+            warnings.map(wg => {
+              if (wg.finallized !== dateNow && wg.finallized > dateNow) {
+                setInfo(true);
+                setNotVisualize();
+              }
+            });
+          }
+        });
+    }
+    if (user.type === 'common') {
+      firestore()
+        .collection('warning')
+        .where('gym', '==', user.userAssociate)
+        .get()
+        .then(querySnapshot => {
+          const warnings = querySnapshot.docs.map(doc => doc.data());
+
+          if (warnings.length !== 0) {
+            warnings.map(wg => {
+              if (wg.finallized !== dateNow && wg.finallized > dateNow) {
+                setInfo(true);
+                setNotVisualize();
+              }
+            });
+          }
+        });
+    }
   }, []);
 
   return (

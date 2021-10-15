@@ -13,6 +13,9 @@ import {ActivityIndicator, View} from 'react-native';
 import {Modal, Portal} from 'react-native-paper';
 
 import SucessIcon from 'assets/svg/sucessIcon.svg';
+import {useSelector} from 'react-redux';
+import ModalCommon from './ModalCommon';
+import ModalTrainner from './ModalTrainner';
 
 interface ModalProps {
   visible: boolean;
@@ -39,106 +42,31 @@ const Modals = ({
   trainners,
   gyms,
 }: ModalProps) => {
+  const user = useSelector((state: any) => state.auth.user);
   return (
-    <Portal>
-      <Modal
-        visible={visible}
-        onDismiss={() => setVisible(false)}
-        contentContainerStyle={{
-          backgroundColor: Colors.background,
-          padding: 16,
-          margin: 24,
-          borderRadius: 20,
-          alignItems: 'center',
-          flexDirection: 'column',
-          justifyContent: 'flex-start',
-        }}>
-        {!loading && !send && (
-          <>
-            <Space marginVertical={8} />
-            <Label
-              title={title}
-              color={Colors.textColorBlack}
-              size={15}
-              center
-            />
-            <Space marginVertical={16} />
-            {!!trainners &&
-              trainners.length !== 0 &&
-              trainners.map(trainner => (
-                <SelectProfileCheck
-                  key={trainner.uid}
-                  profile={trainner}
-                  onFunction={() => setTrainner(trainner.uid)}
-                />
-              ))}
-            {!!gyms &&
-              gyms.length !== 0 &&
-              gyms.map(gym => (
-                <SelectProfileCheck
-                  key={gym.uid}
-                  profile={gym}
-                  onFunction={() => setGym(gym.uid)}
-                />
-              ))}
-            {!!gyms && <Space marginVertical={20} />}
-            {!!gyms && (
-              <View>
-                <ButtonText
-                  title="Adicionar nova academia"
-                  weight={500}
-                  size={14}
-                  color={Colors.red}
-                />
-              </View>
-            )}
-            {!!trainners && trainners.length !== 0 && (
-              <View
-                style={{
-                  position: 'absolute',
-                  bottom: 25,
-                  width: '100%',
-                  alignItems: 'center',
-                }}>
-                <Button
-                  title="Enviar solicitação"
-                  weight={500}
-                  size={14}
-                  color={Colors.textColorWhite}
-                  background={Colors.red}
-                  onPress={onFunction}
-                  notShadow
-                />
-              </View>
-            )}
-          </>
-        )}
-        {!!loading && !send && (
-          <View
-            style={{
-              flex: 1,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <ActivityIndicator size="large" color={Colors.red} />
-          </View>
-        )}
-        {!!send && (
-          <View
-            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-            <SucessIcon />
-            <Space marginVertical={8} />
-            <Text
-              title="Solicitação enviada com sucesso!"
-              weight={500}
-              size={16}
-              color={Colors.green}
-              center
-            />
-          </View>
-        )}
-      </Modal>
-    </Portal>
+    <>
+      {user.type === 'common' && (
+        <ModalCommon
+          title={title}
+          send={send}
+          setTrainner={setTrainner}
+          setVisible={setVisible}
+          trainners={trainners}
+          onFunction={onFunction}
+          visible={visible}
+          loading={loading}
+        />
+      )}
+      {user.type === 'trainner' && (
+        <ModalTrainner
+          title={title}
+          setVisible={setVisible}
+          visible={visible}
+          setGym={setGym}
+          gyms={gyms}
+        />
+      )}
+    </>
   );
 };
 

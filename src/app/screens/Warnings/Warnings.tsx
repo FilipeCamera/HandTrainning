@@ -29,27 +29,49 @@ const Warnings = ({navigation}: any) => {
         const listRequest: any[] = [];
         const request = querySnapshot.docs.map(doc => doc.data());
         request.map(req => {
-          if (req.createdAt === dateNow) {
+          if (
+            moment.unix(req.createdAt.seconds).format('DD/MM/YYYY') ===
+            moment(dateNow).format('DD/MM/YYYY')
+          ) {
             listRequest.push(req);
           }
         });
+        console.log(listRequest);
         setRequests(listRequest);
       })
       .catch(err => {});
-    firestore()
-      .collection('warning')
-      .where('gym', 'in', user.userAssociate)
-      .get()
-      .then(querySnapshot => {
-        const listWarnings: any[] = [];
-        const warning = querySnapshot.docs.map(doc => doc.data());
-        warning.map(wg => {
-          if (wg.finallized !== dateNow && wg.finallized > dateNow) {
-            listWarnings.push(wg);
-          }
+    if (user.type === 'trainner') {
+      firestore()
+        .collection('warning')
+        .where('gym', 'in', user.userAssociate)
+        .get()
+        .then(querySnapshot => {
+          const listWarnings: any[] = [];
+          const warning = querySnapshot.docs.map(doc => doc.data());
+          warning.map(wg => {
+            if (wg.finallized !== dateNow && wg.finallized > dateNow) {
+              listWarnings.push(wg);
+            }
+          });
+          setWarnings(listWarnings);
         });
-        setWarnings(listWarnings);
-      });
+    }
+    if (user.type === 'common') {
+      firestore()
+        .collection('warning')
+        .where('gym', '==', user.userAssociate)
+        .get()
+        .then(querySnapshot => {
+          const listWarnings: any[] = [];
+          const warning = querySnapshot.docs.map(doc => doc.data());
+          warning.map(wg => {
+            if (wg.finallized !== dateNow && wg.finallized > dateNow) {
+              listWarnings.push(wg);
+            }
+          });
+          setWarnings(listWarnings);
+        });
+    }
   }, []);
 
   const backChange = () => {
