@@ -19,7 +19,7 @@ import {
   Card,
 } from './Cards';
 import Carousel, {CarouselWarnings} from './Carousel';
-import Check, {SelectProfileCheck} from './CheckBox';
+import Check, {SelectProfileCheck, CheckExercise} from './CheckBox';
 import {DataTrainner, DataCommon, DataGym} from './Data';
 import {
   DropdownUF,
@@ -84,4 +84,5 @@ export {
   Card,
   CarouselWarnings,
   DropdownStudents,
+  CheckExercise,
 };

@@ -1,3 +1,5 @@
 import Check from './CheckBox';
 import SelectProfileCheck from './SelectProfileCheck';
-export {SelectProfileCheck, Check as default};
+import CheckExercise from './CheckExercise';
+
+export {SelectProfileCheck, CheckExercise, Check as default};

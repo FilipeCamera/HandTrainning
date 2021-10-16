@@ -9,11 +9,17 @@ import {
 } from 'components';
 import {firestore} from 'firebase';
 import React, {useEffect, useState} from 'react';
-import {ScrollView, TouchableOpacity, View} from 'react-native';
+import {
+  ActivityIndicator,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
 import {useSelector} from 'react-redux';
 import {fieldValidate} from 'validation';
 import Step1 from './Step1';
+import Step2 from './Step2';
 
 interface CreateTrainningProps {
   setState: any;
@@ -26,12 +32,12 @@ const CreateTrainning = ({setState}: CreateTrainningProps) => {
   const [student, setStudent] = useState('');
   const [exercises, setExercises] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
-  const [selectedCategoria, setSelectedCategoria] = useState<any[]>([]);
-
+  const [selectedCategory, setSelectedCategory] = useState<any[]>([]);
+  const [exercisesSelected, setexercisesSelected] = useState<any[]>([]);
   const verify = () => {
     const studentsVerified = fieldValidate(student);
     setError({aluno: studentsVerified.error});
-    if (!studentsVerified.value && selectedCategoria.length !== 0) {
+    if (!studentsVerified.value && selectedCategory.length !== 0) {
       return true;
     }
     return false;
@@ -46,7 +52,7 @@ const CreateTrainning = ({setState}: CreateTrainningProps) => {
     });
     const listSelected = list.filter(l => l.selected === true);
     setCategories(list);
-    setSelectedCategoria(listSelected);
+    setSelectedCategory(listSelected);
   };
 
   useEffect(() => {
@@ -80,12 +86,25 @@ const CreateTrainning = ({setState}: CreateTrainningProps) => {
       .catch(err => {});
   }, []);
 
+  if (trainningStep === 'step2') {
+    return (
+      <Step2
+        setTrainningStep={setTrainningStep}
+        categorySelected={selectedCategory}
+        commonId={student}
+        exercisesSelected={exercisesSelected}
+        setExercisesSelected={setexercisesSelected}
+      />
+    );
+  }
   if (trainningStep === 'step1') {
     return (
       <Step1
         setTrainningStep={setTrainningStep}
-        categorySelected={selectedCategoria}
+        categorySelected={selectedCategory}
         commonId={student}
+        exercisesSelected={exercisesSelected}
+        setExercisesSelected={setexercisesSelected}
       />
     );
   }
@@ -126,6 +145,12 @@ const CreateTrainning = ({setState}: CreateTrainningProps) => {
           flexWrap: 'wrap',
           justifyContent: 'space-around',
         }}>
+        {categories.length === 0 && (
+          <View
+            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            <ActivityIndicator size="large" color={Colors.red} />
+          </View>
+        )}
         {!!categories &&
           categories.length !== 0 &&
           categories.map((category, index) => {

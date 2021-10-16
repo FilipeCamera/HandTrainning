@@ -10,6 +10,7 @@ const Colors = {
   red: '#ff6859',
   redOpacity: 'rgba(255, 104, 89, 0.15)',
   lightRed: '#ffb9b9',
+  lightRed2: '#FFE1DE',
   redMedium: '#cc5347',
   redDark: '#b2483e',
   redBrown: '#662924',

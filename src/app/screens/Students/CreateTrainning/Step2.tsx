@@ -1,12 +1,5 @@
 import Colors from '@styles';
-import {
-  Button,
-  Card,
-  CheckExercise,
-  SimpleHeader,
-  Space,
-  Text,
-} from 'components';
+import {Button, Card, SimpleHeader, Space, Text} from 'components';
 import {firestore} from 'firebase';
 import React, {useEffect, useState} from 'react';
 import {
@@ -21,42 +14,29 @@ import KiloIcon from 'assets/svg/kiloIcon.svg';
 import CalendarIcon from 'assets/svg/calendarIcon.svg';
 import HeightIcon from 'assets/svg/heightIcon.svg';
 import VerticalLine from 'assets/svg/verticalLine.svg';
-import {useSelector} from 'react-redux';
 
 interface StepProps {
   categorySelected: any[];
-  setTrainningStep: any;
-  commonId: string;
   exercisesSelected: any[];
   setExercisesSelected: any;
+  setTrainningStep: any;
+  commonId: string;
 }
 
-const Step1 = ({
+const Step2 = ({
   categorySelected,
   setTrainningStep,
   commonId,
   exercisesSelected,
   setExercisesSelected,
 }: StepProps) => {
-  const gym = useSelector((state: any) => state.trainner.gym);
   const [student, setStudent] = useState<any>();
   const [category, setCategory] = useState<any[]>(categorySelected);
-  const [exercises, setExercises] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState('');
 
   useEffect(() => {
-    firestore()
-      .collection('exercises')
-      .where('gym', '==', gym.gym)
-      .get()
-      .then(querySnapshot => {
-        const exercise = querySnapshot.docs.map(doc => doc.data());
-
-        setExercises(exercise);
-      })
-      .catch(err => {});
     firestore()
       .collection('users')
       .doc(commonId)
@@ -75,14 +55,6 @@ const Step1 = ({
     setSelectedCategory(value);
   };
 
-  const handleExerciseSelect = (value, item) => {
-    console.log(value);
-    if (value === true) {
-      setExercisesSelected([...exercisesSelected, item]);
-    } else {
-      setExercisesSelected(exercisesSelected.filter(x => x !== item));
-    }
-  };
   return (
     <ScrollView
       contentContainerStyle={{
@@ -99,7 +71,7 @@ const Step1 = ({
         size={18}
         weight={500}
         color={Colors.textColorBlack}
-        onBack={() => setTrainningStep('')}
+        onBack={() => setTrainningStep('step1')}
       />
       {!!loading && (
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
@@ -126,9 +98,9 @@ const Step1 = ({
                 alignItems: 'center',
                 justifyContent: 'space-around',
               }}>
-              <View style={{height: 100}}>
+              <View>
                 <ScrollView
-                  style={{width: '100%', height: '100%'}}
+                  style={{height: 100, width: '100%'}}
                   showsVerticalScrollIndicator={false}
                   nestedScrollEnabled={true}
                   contentContainerStyle={{paddingVertical: 2}}>
@@ -311,42 +283,23 @@ const Step1 = ({
                           weight={500}
                           color={index === selected ? Colors.red : Colors.gray}
                         />
-                        <Space marginHorizontal={2.5} />
-                        <Text
-                          title={`${
-                            exercisesSelected.filter(
-                              exercise => exercise.category === category.value,
-                            ).length
-                          }/${
-                            exercises.filter(
-                              exercise => exercise.category === category.value,
-                            ).length
-                          }`}
-                          size={14}
-                          weight={500}
-                          color={index === selected ? Colors.red : Colors.gray}
-                        />
                       </TouchableOpacity>
                     );
                   })}
               </ScrollView>
             )}
             <Space marginVertical={8} />
-            {!!exercises &&
-              exercises.length !== 0 &&
-              exercises.map(exercise => {
+            {!!exercisesSelected &&
+              exercisesSelected.length !== 0 &&
+              exercisesSelected.map(exercise => {
                 if (exercise.category === selectedCategory) {
                   return (
-                    <CheckExercise
+                    <Text
                       key={exercise.name}
-                      valor={
-                        exercisesSelected.filter(x => x.name === exercise.name)
-                          .length !== 0
-                          ? true
-                          : false
-                      }
                       title={exercise.name}
-                      onFunction={e => handleExerciseSelect(e, exercise)}
+                      size={15}
+                      weight={500}
+                      color={Colors.inputColorText}
                     />
                   );
                 }
@@ -361,10 +314,10 @@ const Step1 = ({
         size={14}
         color={Colors.textColorWhite}
         background={Colors.red}
-        onPress={() => setTrainningStep('step2')}
+        onPress={() => {}}
       />
     </ScrollView>
   );
 };
 
-export default Step1;
+export default Step2;
