@@ -35,9 +35,14 @@ const Dashboard = () => {
     <Navigator
       initialRouteName="Home"
       screenOptions={{
+        tabBarHideOnKeyboard: true,
         headerShown: false,
         tabBarStyle: {
           height: 60,
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontFamily: 'Poppins-Medium',
         },
         tabBarActiveTintColor: Colors.textColorBlack,
         tabBarInactiveTintColor: Colors.gray,
@@ -46,9 +51,7 @@ const Dashboard = () => {
         name="Home"
         component={Home}
         options={{
-          tabBarLabel: ({color}) => (
-            <Text title="Home" size={12} weight={500} color={color} />
-          ),
+          tabBarLabel: 'Home',
           tabBarIcon: ({focused}) =>
             focused ? <HomeIconSelected /> : <HomeIcon />,
         }}
@@ -59,9 +62,7 @@ const Dashboard = () => {
             name="Exercise"
             component={Exercise}
             options={{
-              tabBarLabel: ({color}) => (
-                <Text title="Exercícios" size={12} weight={500} color={color} />
-              ),
+              tabBarLabel: 'Exercícios',
               tabBarIcon: ({focused}) =>
                 focused ? <WeightIconSelected /> : <WeightIcon />,
             }}
@@ -95,9 +96,7 @@ const Dashboard = () => {
           component={Trainning}
           options={{
             unmountOnBlur: true,
-            tabBarLabel: ({color}) => (
-              <Text title="Treino" size={12} weight={500} color={color} />
-            ),
+            tabBarLabel: 'Treino',
             tabBarIcon: ({focused}) =>
               focused ? <WeightIconSelected /> : <WeightIcon />,
           }}
@@ -109,9 +108,7 @@ const Dashboard = () => {
           component={Students}
           options={{
             unmountOnBlur: true,
-            tabBarLabel: ({color}) => (
-              <Text title="Alunos" size={12} weight={500} color={color} />
-            ),
+            tabBarLabel: 'Alunos',
             tabBarIcon: ({focused}) =>
               focused ? <PeopleIconSelected /> : <PeopleIcon />,
           }}
@@ -121,9 +118,7 @@ const Dashboard = () => {
         name="Invites"
         component={Invites}
         options={{
-          tabBarLabel: ({color}) => (
-            <Text title="Convites" size={12} weight={500} color={color} />
-          ),
+          tabBarLabel: 'Convites',
           tabBarIcon: ({focused}) =>
             focused ? <InvitesIconSelected /> : <InvitesIcon />,
         }}
@@ -132,9 +127,7 @@ const Dashboard = () => {
         name="Profile"
         component={Profile}
         options={{
-          tabBarLabel: ({color}) => (
-            <Text title="Perfil" size={12} weight={500} color={color} />
-          ),
+          tabBarLabel: 'Perfil',
           tabBarIcon: ({focused}) =>
             focused ? <ProfileIconSelected /> : <ProfileIcon />,
         }}

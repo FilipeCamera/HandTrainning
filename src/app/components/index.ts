@@ -30,7 +30,7 @@ import {
   DropdownStudents,
 } from './Dropdown';
 import {SimpleHeader, Header} from './Header';
-import Input from './Input';
+import Input, {InputNota} from './Input';
 import Label from './Label';
 import Row from './Row';
 import Scroll from './Scroll';
@@ -85,4 +85,5 @@ export {
   CarouselWarnings,
   DropdownStudents,
   CheckExercise,
+  InputNota,
 };

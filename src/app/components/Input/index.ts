@@ -1,3 +1,4 @@
 import Input from './Input';
+import InputNota from './inputNota';
 
-export default Input;
+export {Input as default, InputNota};

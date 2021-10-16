@@ -76,11 +76,13 @@ const Step1 = ({
   };
 
   const handleExerciseSelect = (value, item) => {
+    item.type = {weight: '', series: '', repeat: '', duration: ''};
+
     console.log(value);
     if (value === true) {
       setExercisesSelected([...exercisesSelected, item]);
     } else {
-      setExercisesSelected(exercisesSelected.filter(x => x !== item));
+      setExercisesSelected(exercisesSelected.filter(x => x.name !== item.name));
     }
   };
   return (

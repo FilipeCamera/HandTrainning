@@ -1,11 +1,12 @@
 import Colors from '@styles';
-import {Button, Card, SimpleHeader, Space, Text} from 'components';
+import {Button, Card, InputNota, SimpleHeader, Space, Text} from 'components';
 import {firestore} from 'firebase';
 import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
   Image,
   ScrollView,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -13,6 +14,11 @@ import {
 import KiloIcon from 'assets/svg/kiloIcon.svg';
 import CalendarIcon from 'assets/svg/calendarIcon.svg';
 import HeightIcon from 'assets/svg/heightIcon.svg';
+import WeightSmallIcon from 'assets/svg/weightSmallIcon.svg';
+import SerieIcon from 'assets/svg/repeatIcon.svg';
+import RepeatIcon from 'assets/svg/repeatIcon2.svg';
+import DurationIcon from 'assets/svg/durationIcon.svg';
+import InstructionIcon from 'assets/svg/instructionIcon.svg';
 import VerticalLine from 'assets/svg/verticalLine.svg';
 
 interface StepProps {
@@ -289,21 +295,147 @@ const Step2 = ({
               </ScrollView>
             )}
             <Space marginVertical={8} />
-            {!!exercisesSelected &&
-              exercisesSelected.length !== 0 &&
-              exercisesSelected.map(exercise => {
-                if (exercise.category === selectedCategory) {
-                  return (
-                    <Text
-                      key={exercise.name}
-                      title={exercise.name}
-                      size={15}
-                      weight={500}
-                      color={Colors.inputColorText}
-                    />
-                  );
-                }
-              })}
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View style={{flex: 1}}>
+                <View style={{height: 20}} />
+              </View>
+              <View
+                style={{
+                  width: 35,
+                  alignItems: 'center',
+                }}>
+                <WeightSmallIcon />
+                <Space marginVertical={1} />
+              </View>
+              <Space marginHorizontal={2} />
+              <View style={{width: 35, alignItems: 'center'}}>
+                <SerieIcon />
+                <Space marginVertical={1} />
+              </View>
+              <Space marginHorizontal={2} />
+              <View style={{width: 35, alignItems: 'center'}}>
+                <RepeatIcon />
+                <Space marginVertical={1} />
+              </View>
+              <Space marginHorizontal={2} />
+              <View style={{width: 35, alignItems: 'center'}}>
+                <DurationIcon />
+                <Space marginVertical={1} />
+              </View>
+              <Space marginHorizontal={2} />
+              <View style={{width: 35, alignItems: 'center'}}>
+                <InstructionIcon />
+                <Space marginVertical={1} />
+              </View>
+            </View>
+            <View style={{flexDirection: 'column', alignItems: 'flex-start'}}>
+              {!!exercisesSelected &&
+                exercisesSelected.length !== 0 &&
+                exercisesSelected.map((exercise, index) => {
+                  if (exercise.category === selectedCategory) {
+                    return (
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <View style={{flex: 1}}>
+                          <Text
+                            title={exercise.name}
+                            size={14}
+                            weight={500}
+                            color={Colors.inputColorText}
+                          />
+                        </View>
+                        <View
+                          style={{
+                            width: 35,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: Colors.blueMedium,
+                          }}>
+                          <InputNota
+                            value={
+                              exercise.type.weight !== ''
+                                ? exercise.type.weight
+                                : ''
+                            }
+                            placeholder="0"
+                            onText={e => (exercise.type.weight = e)}
+                          />
+                        </View>
+                        <Space marginHorizontal={2} />
+                        <View
+                          style={{
+                            width: 35,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: Colors.blueLight,
+                          }}>
+                          <InputNota
+                            value={exercise.type.series}
+                            placeholder="0"
+                            onText={e => (exercise.type.series = e)}
+                          />
+                        </View>
+                        <Space marginHorizontal={2} />
+                        <View
+                          style={{
+                            width: 35,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: Colors.blueLight,
+                          }}>
+                          <InputNota
+                            value={exercise.type.repeat}
+                            placeholder="0"
+                            onText={e => (exercise.type.repeat = e)}
+                          />
+                        </View>
+                        <Space marginHorizontal={2} />
+                        <View
+                          style={{
+                            width: 35,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: Colors.blueLight,
+                          }}>
+                          <InputNota
+                            value={exercise.type.duration}
+                            placeholder="0"
+                            onText={e => (exercise.type.duration = e)}
+                          />
+                        </View>
+                        <Space marginHorizontal={2} />
+                        <View
+                          style={{
+                            width: 35,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}>
+                          <TouchableOpacity
+                            style={{
+                              backgroundColor: Colors.lightGray,
+                              borderRadius: 5,
+                              padding: 4,
+                              width: '100%',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}>
+                            <Text
+                              title="INS"
+                              size={14}
+                              weight={600}
+                              color={Colors.inputColorText}
+                            />
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                    );
+                  }
+                })}
+            </View>
           </Card>
         </>
       )}
@@ -314,7 +446,7 @@ const Step2 = ({
         size={14}
         color={Colors.textColorWhite}
         background={Colors.red}
-        onPress={() => {}}
+        onPress={() => console.log(exercisesSelected)}
       />
     </ScrollView>
   );
