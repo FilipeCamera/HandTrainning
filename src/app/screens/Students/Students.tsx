@@ -172,13 +172,13 @@ const Students = ({navigation}: any) => {
             <Space marginVertical={10} />
             {trainnings.map(trainning => {
               return (
-                <>
+                <View key={trainning.commonId}>
                   {commons
                     .filter(common => common.uid === trainning.commonId)
                     .map(common => {
                       return (
                         <TouchableOpacity
-                          key={common.uid}
+                          key={common.name}
                           style={{
                             flexDirection: 'row',
                             alignItems: 'center',
@@ -217,7 +217,7 @@ const Students = ({navigation}: any) => {
                         </TouchableOpacity>
                       );
                     })}
-                </>
+                </View>
               );
             })}
             <Space marginVertical={8} />

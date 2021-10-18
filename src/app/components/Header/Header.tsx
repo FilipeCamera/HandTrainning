@@ -17,12 +17,16 @@ interface HeaderProps {
 
 const Header = ({navigation}: HeaderProps) => {
   const user = useSelector((state: any) => state.auth.user);
+  const gym = useSelector((state: any) => state.trainner.gym);
   const visualized = useSelector((state: any) => state.visualized.visualized);
   const [info, setInfo] = useState(false);
   const [visible, setVisible] = useState(false);
   const [gyms, setGyms] = useState<any[]>([]);
 
   useEffect(() => {
+    if (gym === undefined) {
+      setVisible(true);
+    }
     if (user.type === 'trainner') {
       firestore()
         .collection('users')
@@ -39,26 +43,26 @@ const Header = ({navigation}: HeaderProps) => {
   const dateNow = Date.now();
 
   useEffect(() => {
-    firestore()
-      .collection('requests')
-      .where('trainnerId', '==', user.uid)
-      .get()
-      .then(querySnapshot => {
-        const request = querySnapshot.docs.map(doc => doc.data());
-        if (request.length !== 0) {
-          request.map(req => {
-            if (
-              moment.unix(req.createdAt).format('DD/MM/YYYY') ===
-              moment(dateNow).format('DD/MM/YYYY')
-            ) {
-              setInfo(true);
-              setNotVisualize();
-            }
-          });
-        }
-      })
-      .catch(err => {});
     if (user.type === 'trainner') {
+      firestore()
+        .collection('requests')
+        .where('trainnerId', '==', user.uid)
+        .get()
+        .then(querySnapshot => {
+          const request = querySnapshot.docs.map(doc => doc.data());
+          if (request.length !== 0) {
+            request.map(req => {
+              if (
+                moment.unix(req.createdAt).format('DD/MM/YYYY') ===
+                moment(dateNow).format('DD/MM/YYYY')
+              ) {
+                setInfo(true);
+                setNotVisualize();
+              }
+            });
+          }
+        })
+        .catch(err => {});
       firestore()
         .collection('warning')
         .where('gym', 'in', user.userAssociate)
@@ -77,22 +81,24 @@ const Header = ({navigation}: HeaderProps) => {
         });
     }
     if (user.type === 'common') {
-      firestore()
-        .collection('warning')
-        .where('gym', '==', user.userAssociate)
-        .get()
-        .then(querySnapshot => {
-          const warnings = querySnapshot.docs.map(doc => doc.data());
+      if (user.userAssociate !== undefined) {
+        firestore()
+          .collection('warning')
+          .where('gym', '==', user.userAssociate)
+          .get()
+          .then(querySnapshot => {
+            const warnings = querySnapshot.docs.map(doc => doc.data());
 
-          if (warnings.length !== 0) {
-            warnings.map(wg => {
-              if (wg.finallized !== dateNow && wg.finallized > dateNow) {
-                setInfo(true);
-                setNotVisualize();
-              }
-            });
-          }
-        });
+            if (warnings.length !== 0) {
+              warnings.map(wg => {
+                if (wg.finallized !== dateNow && wg.finallized > dateNow) {
+                  setInfo(true);
+                  setNotVisualize();
+                }
+              });
+            }
+          });
+      }
     }
   }, []);
 
@@ -107,18 +113,14 @@ const Header = ({navigation}: HeaderProps) => {
             />
           </View>
           <View style={{flexDirection: 'column', marginLeft: 8}}>
-            <Text
-              title={user.name}
-              size={16}
-              weight={600}
-              color={Colors.textColorBlack}
-            />
-            <Text
-              title={user.type === 'gym' ? user.cnpj : user.slogan}
-              size={12}
-              weight={600}
-              color={Colors.grayMediumLight}
-            />
+            <View style={{width: 140}}>
+              <Text
+                title={user.name}
+                size={14}
+                weight={600}
+                color={Colors.textColorBlack}
+              />
+            </View>
           </View>
         </View>
         <View

@@ -12,7 +12,6 @@ import {useSelector} from 'react-redux';
 
 const CardTrainner = ({navigation}: any) => {
   const user = useSelector((state: any) => state.auth.user);
-  const gym = useSelector((state: any) => state.trainner.gym);
   const [trainnings, setTrainnings] = useState(0);
   const [requests, setRequests] = useState(0);
   const [score, setScore] = useState('');

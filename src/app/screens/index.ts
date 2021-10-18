@@ -11,3 +11,4 @@ export {default as Posts} from './Posts';
 export {default as Trainning} from './Trainning';
 export {default as Students} from './Students';
 export {default as Warnings} from './Warnings';
+export {default as Loading} from './Loading';

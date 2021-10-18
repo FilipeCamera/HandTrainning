@@ -1,9 +1,8 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {privateFeatures} from 'features';
-import {useSelector} from 'react-redux';
 
-const privateFeature = ['Dashboard', 'Onboarding', 'Warnings'];
+const privateFeature = ['Dashboard', 'Onboarding', 'Warnings', 'Loading'];
 
 const routes = Object.keys(privateFeatures).map(
   (feature: keyof PrivateFeatureGroup) => {
@@ -23,14 +22,8 @@ const routes = Object.keys(privateFeatures).map(
 const {Navigator, Screen} = createStackNavigator<RootStackParamList>();
 
 export default () => {
-  const user = useSelector((state: any) => state.auth.user);
-
   return (
-    <Navigator
-      screenOptions={{headerShown: false}}
-      initialRouteName={
-        user.completeRegister === true ? 'Dashboard' : 'Onboarding'
-      }>
+    <Navigator initialRouteName="Loading" screenOptions={{headerShown: false}}>
       {routes.map(({name, component}) => (
         <Screen key={name} name={name as any} component={component} />
       ))}

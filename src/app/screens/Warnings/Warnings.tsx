@@ -57,20 +57,22 @@ const Warnings = ({navigation}: any) => {
         });
     }
     if (user.type === 'common') {
-      firestore()
-        .collection('warning')
-        .where('gym', '==', user.userAssociate)
-        .get()
-        .then(querySnapshot => {
-          const listWarnings: any[] = [];
-          const warning = querySnapshot.docs.map(doc => doc.data());
-          warning.map(wg => {
-            if (wg.finallized !== dateNow && wg.finallized > dateNow) {
-              listWarnings.push(wg);
-            }
+      if (user.userAssociate !== undefined) {
+        firestore()
+          .collection('warning')
+          .where('gym', '==', user.userAssociate)
+          .get()
+          .then(querySnapshot => {
+            const listWarnings: any[] = [];
+            const warning = querySnapshot.docs.map(doc => doc.data());
+            warning.map(wg => {
+              if (wg.finallized !== dateNow && wg.finallized > dateNow) {
+                listWarnings.push(wg);
+              }
+            });
+            setWarnings(listWarnings);
           });
-          setWarnings(listWarnings);
-        });
+      }
     }
   }, []);
 

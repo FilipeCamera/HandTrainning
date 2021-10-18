@@ -12,6 +12,7 @@ import {Button, CardMini, Space, Text} from 'components';
 import {Image} from 'react-native';
 import {Logout} from 'functions';
 import {firestore} from 'firebase';
+import Colors from '@styles';
 
 const ProfileCommon = ({user, navigation}: any) => {
   const [gym, setGym] = useState<any>([]);
@@ -53,7 +54,7 @@ const ProfileCommon = ({user, navigation}: any) => {
             height: 150,
             borderRadius: 75,
             borderWidth: 5,
-            borderColor: '#FFF',
+            borderColor: Colors.background,
             position: 'absolute',
             bottom: 0,
             alignSelf: 'center',
@@ -66,7 +67,12 @@ const ProfileCommon = ({user, navigation}: any) => {
       </View>
       <Space marginVertical={8} />
       <View style={{alignItems: 'center'}}>
-        <Text title={user.name} size={22} weight={600} color="#090A0A" />
+        <Text
+          title={user.name}
+          size={18}
+          weight={600}
+          color={Colors.textColorBlack}
+        />
         <View style={{flexDirection: 'row', alignItems: 'flex-start'}}>
           <LocationIcon />
           <Space marginHorizontal={1} />
@@ -74,7 +80,7 @@ const ProfileCommon = ({user, navigation}: any) => {
             title={`${user.city}, ${user.uf}`}
             size={15}
             weight={500}
-            color="#c4c4c4"
+            color={Colors.grayMediumLight}
           />
         </View>
         <Space marginVertical={5} />
@@ -85,9 +91,14 @@ const ProfileCommon = ({user, navigation}: any) => {
             borderRadius: 13,
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: '#FF6859',
+            backgroundColor: Colors.red,
           }}>
-          <Text title={user.plan} size={10} weight={600} color="#FFF" />
+          <Text
+            title={user.plan}
+            size={10}
+            weight={600}
+            color={Colors.textColorWhite}
+          />
         </View>
       </View>
       <Space marginVertical={15} />
@@ -114,9 +125,9 @@ const ProfileCommon = ({user, navigation}: any) => {
           onPress={() => {}}>
           <Text
             title="Convidar amigos"
-            size={18}
+            size={17}
             weight={600}
-            color="#090a0a"
+            color={Colors.textColorBlack}
             style={{marginLeft: 5}}
           />
           <PlayIcon />
@@ -134,9 +145,9 @@ const ProfileCommon = ({user, navigation}: any) => {
           onPress={() => {}}>
           <Text
             title="Desvincular da academia"
-            size={18}
+            size={17}
             weight={600}
-            color="#090a0a"
+            color={Colors.textColorBlack}
             style={{marginLeft: 5}}
           />
           <CloseIcon />

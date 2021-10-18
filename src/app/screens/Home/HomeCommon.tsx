@@ -14,16 +14,18 @@ const HomeCommon = ({navigation}: any) => {
   const [trainners, setTrainners] = useState<any[]>([]);
   const [trainner, setTrainner] = useState<any>();
   useEffect(() => {
-    firestore()
-      .collection('users')
-      .where('type', '==', 'trainner')
-      .where('userAssociate', 'array-contains', user.userAssociate)
-      .get()
-      .then(querySnapshot => {
-        const trainner = querySnapshot.docs.map(doc => doc.data());
-        setTrainners(trainner);
-      })
-      .catch(error => {});
+    if (user.userAssociate !== undefined) {
+      firestore()
+        .collection('users')
+        .where('type', '==', 'trainner')
+        .where('userAssociate', 'array-contains', user.userAssociate)
+        .get()
+        .then(querySnapshot => {
+          const trainnerList = querySnapshot.docs.map(doc => doc.data());
+          setTrainners(trainnerList);
+        })
+        .catch(error => {});
+    }
   }, []);
 
   const handleRequestTrainner = () => {

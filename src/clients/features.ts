@@ -5,6 +5,7 @@ import {
   Onboarding,
   Dashboard,
   Warnings,
+  Loading,
 } from 'screens';
 
 const features: FeatureGroup = {
@@ -52,6 +53,10 @@ const privateFeatures: PrivateFeatureGroup = {
   Warnings: {
     enabled: true,
     component: Warnings,
+  },
+  Loading: {
+    enabled: true,
+    component: Loading,
   },
 };
 

@@ -13,15 +13,17 @@ const CarouselComponent = () => {
   const [data, setData] = useState<any[]>([]);
 
   useEffect(() => {
-    firestore()
-      .collection('posts')
-      .where('gym', '==', user.userAssociate)
-      .get()
-      .then(querySnapshot => {
-        const list = querySnapshot.docs.map(doc => doc.data());
-        setData(list);
-      })
-      .catch(error => {});
+    if (user.userAssociate !== undefined) {
+      firestore()
+        .collection('posts')
+        .where('gym', '==', user.userAssociate)
+        .get()
+        .then(querySnapshot => {
+          const list = querySnapshot.docs.map(doc => doc.data());
+          setData(list);
+        })
+        .catch(error => {});
+    }
   }, []);
 
   const _renderItem = ({item}: any) => (

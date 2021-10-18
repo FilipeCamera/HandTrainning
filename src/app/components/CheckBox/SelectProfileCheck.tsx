@@ -44,7 +44,13 @@ const SelectProfileCheck = ({profile, onFunction}: CheckBoxProps) => {
             color={Colors.textColorBlack}
           />
           <Text
-            title="Treinador"
+            title={
+              profile.type === 'gym'
+                ? 'Academia'
+                : profile.type === 'trainner'
+                ? 'Treinador'
+                : 'Aluno'
+            }
             size={12}
             weight={400}
             color={Colors.textColorBlack}
