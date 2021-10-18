@@ -54,6 +54,14 @@ const ModalCreateTrainning = ({
     commonId: commonId,
     trainning: exercisesSelected,
     expiredTrainning: expire,
+    createdAt: firestore.FieldValue.serverTimestamp(),
+  };
+  const updatedData = {
+    trainnerId: trainnerId,
+    commonId: commonId,
+    trainning: exercisesSelected,
+    expiredTrainning: expire,
+    updatedAt: firestore.FieldValue.serverTimestamp(),
   };
   const verify = () => {
     const expireVerified = fieldValidate(expire);
@@ -69,6 +77,58 @@ const ModalCreateTrainning = ({
     setDate(currentDate);
   };
 
+  const createTr = () => {
+    firestore()
+      .collection('trainnings')
+      .where('commonId', '==', commonId)
+      .get()
+      .then(querySnapshot => {
+        const trainning = querySnapshot.docs.map(doc => doc.id);
+        console.log(trainning);
+        if (trainning[0]) {
+          firestore()
+            .collection('trainnings')
+            .doc(trainning[0])
+            .update(updatedData)
+            .then(res => {
+              firestore()
+                .collection('requests')
+                .where('commonId', '==', commonId)
+                .get()
+                .then(querySnapshot => {
+                  querySnapshot.forEach(function (doc) {
+                    doc.ref.delete();
+                  });
+                  setLoading(false);
+                  setCreated(true);
+                })
+                .catch(err => {});
+            })
+            .catch(err => {});
+        } else {
+          firestore()
+            .collection('trainnings')
+            .doc()
+            .set(data)
+            .then(res => {
+              firestore()
+                .collection('requests')
+                .where('commonId', '==', commonId)
+                .get()
+                .then(querySnapshot => {
+                  querySnapshot.forEach(function (doc) {
+                    doc.ref.delete();
+                  });
+                  setLoading(false);
+                  setCreated(true);
+                })
+                .catch(err => {});
+            })
+            .catch(err => {});
+        }
+      })
+      .catch(err => {});
+  };
   return (
     <Portal>
       <Modal
@@ -167,25 +227,7 @@ const ModalCreateTrainning = ({
                 const verified = verify();
                 if (verified) {
                   setLoading(true);
-                  firestore()
-                    .collection('trainnings')
-                    .doc()
-                    .set(data)
-                    .then(res => {
-                      firestore()
-                        .collection('requests')
-                        .where('commonId', '==', commonId)
-                        .get()
-                        .then(querySnapshot => {
-                          querySnapshot.forEach(function (doc) {
-                            doc.ref.delete();
-                          });
-                          setLoading(false);
-                          setCreated(true);
-                        })
-                        .catch(err => {});
-                    })
-                    .catch(err => {});
+                  createTr();
                 } else {
                   showMessage({
                     type: 'danger',

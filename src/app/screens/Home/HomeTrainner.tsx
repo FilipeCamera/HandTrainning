@@ -18,7 +18,7 @@ const HomeTrainner = ({navigation}: any) => {
       showsVerticalScrollIndicator={false}>
       <Header navigation={navigation} />
       <Carousel />
-      <CardTrainner />
+      <CardTrainner navigation={navigation} />
     </HomeStyle>
   );
 };

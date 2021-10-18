@@ -38,6 +38,7 @@ interface StepProps {
   setExercisesSelected: any;
   setTrainningStep: any;
   commonId: string;
+  setSend: any;
 }
 
 const Step2 = ({
@@ -45,6 +46,7 @@ const Step2 = ({
   setTrainningStep,
   commonId,
   exercisesSelected,
+  setSend,
 }: StepProps) => {
   const user = useSelector((state: any) => state.auth.user);
   const [student, setStudent] = useState<any>();
@@ -55,7 +57,6 @@ const Step2 = ({
   const [visible, setVisible] = useState(false);
   const [createTrainning, setCreateTrainning] = useState(false);
   const [exercise, setExercise] = useState<any>();
-  const [send, setSend] = useState(false);
 
   useEffect(() => {
     firestore()
@@ -70,12 +71,6 @@ const Step2 = ({
 
     setSelectedCategory(category[0].value);
   }, []);
-
-  useEffect(() => {
-    if (send === true) {
-      setTrainningStep('');
-    }
-  }, [send]);
 
   const handleSelect = (index, value) => {
     setSelected(index);

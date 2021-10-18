@@ -7,14 +7,20 @@ import {useSelector} from 'react-redux';
 import CreateTrainning from './CreateTrainning';
 import {StudentStyle} from './styles';
 
+import WarningIcon from 'assets/svg/warningIcon.svg';
+import moment from 'moment';
+
 const Students = ({navigation}: any) => {
   const user = useSelector((state: any) => state.auth.user);
   const gym = useSelector((state: any) => state.trainner.gym);
   const [state, setState] = useState('');
+  const [trainnings, setTrainnings] = useState<any[]>([]);
+  const [commons, setCommons] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [profileGym, setProfileGym] = useState<any>();
   const [buttonTitle, setButtonTitle] = useState('Criar treino');
   const [request, setRequest] = useState<any[]>([]);
+  const [mode, setMode] = useState('');
   const items = [
     {title: 'Criar treino'},
     {title: 'Excluir'},
@@ -22,16 +28,39 @@ const Students = ({navigation}: any) => {
   ];
 
   useEffect(() => {
-    firestore()
-      .collection('users')
-      .doc(gym.gym)
-      .get()
-      .then(querySnapshot => {
-        setProfileGym(querySnapshot.data());
-        setLoading(false);
-      })
-      .catch(err => {});
-  }, []);
+    if (state !== '') {
+      setLoading(true);
+    } else {
+      firestore()
+        .collection('users')
+        .doc(gym.gym)
+        .get()
+        .then(querySnapshot => {
+          setProfileGym(querySnapshot.data());
+        })
+        .catch(err => {});
+      firestore()
+        .collection('users')
+        .where('type', '==', 'common')
+        .where('userAssociate', '==', gym.gym)
+        .get()
+        .then(querySnapshot => {
+          const commonsList = querySnapshot.docs.map(doc => doc.data());
+          setCommons(commonsList);
+        })
+        .catch(err => {});
+      firestore()
+        .collection('trainnings')
+        .where('trainnerId', '==', user.uid)
+        .get()
+        .then(querySnapshot => {
+          const trainningList = querySnapshot.docs.map(doc => doc.data());
+          setTrainnings(trainningList);
+          setLoading(false);
+        })
+        .catch(err => {});
+    }
+  }, [state]);
 
   useEffect(() => {
     firestore()
@@ -58,20 +87,21 @@ const Students = ({navigation}: any) => {
       }}
       showsVerticalScrollIndicator={false}>
       <Header navigation={navigation} />
-      <Space marginVertical={20} />
-      {!!request && request.length !== 0 && <CarouselWarnings data={request} />}
-      <Card>
-        {!!loading && (
-          <View
-            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-            <ActivityIndicator size="large" color={Colors.red} />
-          </View>
-        )}
-        {!loading && (
-          <>
+      {!!loading && (
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+          <ActivityIndicator size="large" color={Colors.red} />
+        </View>
+      )}
+      {!loading && (
+        <>
+          <Space marginVertical={20} />
+          {!!request && request.length !== 0 && (
+            <CarouselWarnings data={request} />
+          )}
+          <Card>
             <View style={{alignItems: 'flex-end'}}>
               <Text
-                title="Total: 0 alunos"
+                title={`Total: ${trainnings.length} alunos`}
                 weight={500}
                 size={12}
                 color={Colors.grayMediumLight}
@@ -88,7 +118,11 @@ const Students = ({navigation}: any) => {
                 }}>
                 <Image
                   source={{uri: profileGym.avatar}}
-                  style={{width: '100%', height: '100%', borderRadius: 9999}}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: 9999,
+                  }}
                 />
               </View>
               <Space marginHorizontal={4} />
@@ -97,7 +131,7 @@ const Students = ({navigation}: any) => {
                   title={profileGym.name}
                   size={14}
                   weight={500}
-                  color={Colors.inputColorText}
+                  color={Colors.textColorRX}
                 />
               </View>
             </View>
@@ -135,65 +169,83 @@ const Students = ({navigation}: any) => {
                 </TouchableOpacity>
               ))}
             </View>
-          </>
-        )}
-      </Card>
-      <Space marginVertical={20} />
-      <Card>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-around',
-          }}>
-          <View
-            style={{
-              backgroundColor: Colors.lightGreen,
-              width: 45,
-              height: 25,
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: 8,
-            }}>
-            <Text title="NTR" weight={600} color={Colors.green} size={14} />
-          </View>
-          <View style={{width: '80%'}}>
-            <Text
-              title="Solicitação de novo treino"
-              weight={500}
-              color={Colors.inputColorText}
-              size={14}
-            />
-          </View>
-        </View>
-        <Space marginVertical={8} />
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-around',
-          }}>
-          <View
-            style={{
-              width: 45,
-              height: 25,
-              borderRadius: 8,
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: Colors.lightOrange,
-            }}>
-            <Text title="DES" weight={600} color={Colors.orange} size={14} />
-          </View>
-          <View style={{width: '80%'}}>
-            <Text
-              title="O aluno não está mais vinculado a essa academia"
-              weight={500}
-              color={Colors.inputColorText}
-              size={14}
-            />
-          </View>
-        </View>
-      </Card>
+            <Space marginVertical={10} />
+            {trainnings.map(trainning => {
+              return (
+                <>
+                  {commons
+                    .filter(common => common.uid === trainning.commonId)
+                    .map(common => {
+                      return (
+                        <TouchableOpacity
+                          key={common.uid}
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            marginBottom: 16,
+                          }}>
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                            }}>
+                            <View
+                              style={{width: 28, height: 28, borderRadius: 14}}>
+                              <Image
+                                source={{uri: common.avatar}}
+                                style={{
+                                  width: '100%',
+                                  height: '100%',
+                                  borderRadius: 9999,
+                                }}
+                              />
+                            </View>
+                            <Space marginHorizontal={4} />
+                            <Text
+                              title={common.name}
+                              size={14}
+                              weight={500}
+                              color={Colors.textColorRX}
+                            />
+                          </View>
+                          {moment(Date.now()).isAfter(trainning.expiration) && (
+                            <View style={{width: 20, height: 20}}>
+                              <WarningIcon width="100%" height="100%" />
+                            </View>
+                          )}
+                        </TouchableOpacity>
+                      );
+                    })}
+                </>
+              );
+            })}
+            <Space marginVertical={8} />
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <View
+                style={{
+                  width: 15,
+                  height: 15,
+                }}>
+                <WarningIcon width="100%" height="100%" />
+              </View>
+              <Space marginHorizontal={4} />
+              <Text
+                title="O treino do aluno já se expirou"
+                size={12}
+                weight={500}
+                color={Colors.textGrayMedium}
+              />
+            </View>
+          </Card>
+          <Space marginVertical={20} />
+        </>
+      )}
     </StudentStyle>
   );
 };

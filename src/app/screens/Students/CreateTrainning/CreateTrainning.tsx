@@ -34,6 +34,7 @@ const CreateTrainning = ({setState}: CreateTrainningProps) => {
   const [categories, setCategories] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<any[]>([]);
   const [exercisesSelected, setexercisesSelected] = useState<any[]>([]);
+  const [send, setSend] = useState(false);
   const [loading, setLoading] = useState(true);
   const verify = () => {
     const studentsVerified = fieldValidate(student);
@@ -56,6 +57,11 @@ const CreateTrainning = ({setState}: CreateTrainningProps) => {
     setSelectedCategory(listSelected);
   };
 
+  useEffect(() => {
+    if (send === true) {
+      setState('');
+    }
+  }, [send]);
   useEffect(() => {
     firestore()
       .collection('categories')
@@ -96,6 +102,7 @@ const CreateTrainning = ({setState}: CreateTrainningProps) => {
         commonId={student}
         exercisesSelected={exercisesSelected}
         setExercisesSelected={setexercisesSelected}
+        setSend={setSend}
       />
     );
   }
