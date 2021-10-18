@@ -16,6 +16,7 @@ const Colors = {
   redBrown: '#662924',
   inputBack: '#f1f4fa',
   inputColorText: '#1c2439',
+  colorBackRgba: 'rgba(28, 36, 57, 0.20)',
   textColorRXC: '#4C5673',
   textColorRX: '#454459',
   textGrayMedium: '#A2A2AC',
@@ -33,6 +34,8 @@ const Colors = {
   textWhiteLight: '#E6EAF2',
   blueMedium: '#BACCFD',
   blueLight: '#EDF2FF',
+  textYellow: '#FFBB38',
+  backYellowLight: '#FFF5D9',
 };
 
 export default Colors;

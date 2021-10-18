@@ -77,8 +77,8 @@ const Step1 = ({
 
   const handleExerciseSelect = (value, item) => {
     item.type = {weight: '', series: '', repeat: '', duration: ''};
+    item.instruction = {value: '', desc: ''};
 
-    console.log(value);
     if (value === true) {
       setExercisesSelected([...exercisesSelected, item]);
     } else {
@@ -354,17 +354,17 @@ const Step1 = ({
                 }
               })}
           </Card>
+          <Space marginVertical={20} />
+          <Button
+            title="Avançar"
+            weight={500}
+            size={14}
+            color={Colors.textColorWhite}
+            background={Colors.red}
+            onPress={() => setTrainningStep('step2')}
+          />
         </>
       )}
-      <Space marginVertical={20} />
-      <Button
-        title="Avançar"
-        weight={500}
-        size={14}
-        color={Colors.textColorWhite}
-        background={Colors.red}
-        onPress={() => setTrainningStep('step2')}
-      />
     </ScrollView>
   );
 };

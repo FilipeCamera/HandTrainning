@@ -7,13 +7,14 @@ import normalize from '@normalize';
 import Colors from '@styles';
 
 interface InputProps {
-  value: string;
+  value: string | null | undefined;
   placeholder: string;
+  background: string;
   onText: (e: any) => any;
 }
 
-const InputNota = ({value, placeholder, onText}: InputProps) => {
-  const [valor, setValor] = useState<any>(value);
+const InputNota = ({value, placeholder, background, onText}: InputProps) => {
+  const [valor, setValor] = useState<any>(value || '');
   return (
     <TextInput
       style={{
@@ -21,6 +22,8 @@ const InputNota = ({value, placeholder, onText}: InputProps) => {
         fontSize: normalize(16),
         width: '100%',
         textAlign: 'center',
+        borderRadius: 8,
+        backgroundColor: valor === '' ? Colors.lightRed2 : background,
       }}
       placeholder={placeholder}
       value={valor}

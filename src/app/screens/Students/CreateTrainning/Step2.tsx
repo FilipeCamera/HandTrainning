@@ -1,5 +1,14 @@
 import Colors from '@styles';
-import {Button, Card, InputNota, SimpleHeader, Space, Text} from 'components';
+import {
+  Button,
+  Card,
+  InputNota,
+  ModalCreateTrainning,
+  ModalInstruction,
+  SimpleHeader,
+  Space,
+  Text,
+} from 'components';
 import {firestore} from 'firebase';
 import React, {useEffect, useState} from 'react';
 import {
@@ -20,6 +29,8 @@ import RepeatIcon from 'assets/svg/repeatIcon2.svg';
 import DurationIcon from 'assets/svg/durationIcon.svg';
 import InstructionIcon from 'assets/svg/instructionIcon.svg';
 import VerticalLine from 'assets/svg/verticalLine.svg';
+import {showMessage} from 'react-native-flash-message';
+import {useSelector} from 'react-redux';
 
 interface StepProps {
   categorySelected: any[];
@@ -34,13 +45,17 @@ const Step2 = ({
   setTrainningStep,
   commonId,
   exercisesSelected,
-  setExercisesSelected,
 }: StepProps) => {
+  const user = useSelector((state: any) => state.auth.user);
   const [student, setStudent] = useState<any>();
   const [category, setCategory] = useState<any[]>(categorySelected);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [visible, setVisible] = useState(false);
+  const [createTrainning, setCreateTrainning] = useState(false);
+  const [exercise, setExercise] = useState<any>();
+  const [send, setSend] = useState(false);
 
   useEffect(() => {
     firestore()
@@ -56,9 +71,31 @@ const Step2 = ({
     setSelectedCategory(category[0].value);
   }, []);
 
+  useEffect(() => {
+    if (send === true) {
+      setTrainningStep('');
+    }
+  }, [send]);
+
   const handleSelect = (index, value) => {
     setSelected(index);
     setSelectedCategory(value);
+  };
+
+  const verify = () => {
+    const test = exercisesSelected.every(function (exercise) {
+      if (
+        exercise.type.weight === '' ||
+        exercise.type.series === '' ||
+        exercise.type.repeat === '' ||
+        exercise.type.duration === ''
+      ) {
+        return false;
+      } else {
+        return true;
+      }
+    });
+    return test;
   };
 
   return (
@@ -71,6 +108,25 @@ const Step2 = ({
         backgroundColor: Colors.background,
       }}
       showsVerticalScrollIndicator={false}>
+      <ModalCreateTrainning
+        title="Finalizando treino"
+        visible={createTrainning}
+        setVisible={setCreateTrainning}
+        commonId={commonId}
+        trainnerId={user.uid}
+        setSend={setSend}
+        exercisesSelected={exercisesSelected}
+      />
+      <ModalInstruction
+        title="Criar instrução"
+        visible={visible}
+        setVisible={setVisible}
+        instruct={exercise ? exercise.instruction.value : ''}
+        onFunction={(instruction, desc) => {
+          exercise.instruction.value = instruction;
+          exercise.instruction.desc = desc;
+        }}
+      />
       <SimpleHeader
         title="Criar treino"
         back
@@ -305,40 +361,42 @@ const Step2 = ({
                   alignItems: 'center',
                 }}>
                 <WeightSmallIcon />
-                <Space marginVertical={1} />
+                <Space marginVertical={2} />
               </View>
               <Space marginHorizontal={2} />
               <View style={{width: 35, alignItems: 'center'}}>
                 <SerieIcon />
-                <Space marginVertical={1} />
+                <Space marginVertical={2} />
               </View>
               <Space marginHorizontal={2} />
               <View style={{width: 35, alignItems: 'center'}}>
                 <RepeatIcon />
-                <Space marginVertical={1} />
+                <Space marginVertical={2} />
               </View>
               <Space marginHorizontal={2} />
               <View style={{width: 35, alignItems: 'center'}}>
                 <DurationIcon />
-                <Space marginVertical={1} />
+                <Space marginVertical={2} />
               </View>
               <Space marginHorizontal={2} />
               <View style={{width: 35, alignItems: 'center'}}>
                 <InstructionIcon />
-                <Space marginVertical={1} />
+                <Space marginVertical={2} />
               </View>
             </View>
             <View style={{flexDirection: 'column', alignItems: 'flex-start'}}>
               {!!exercisesSelected &&
                 exercisesSelected.length !== 0 &&
-                exercisesSelected.map((exercise, index) => {
+                exercisesSelected.map(exercise => {
                   if (exercise.category === selectedCategory) {
                     return (
                       <View
+                        key={exercise.name}
                         style={{
                           flexDirection: 'row',
                           alignItems: 'center',
                           justifyContent: 'center',
+                          marginBottom: 8,
                         }}>
                         <View style={{flex: 1}}>
                           <Text
@@ -353,15 +411,10 @@ const Step2 = ({
                             width: 35,
                             alignItems: 'center',
                             justifyContent: 'center',
-                            backgroundColor: Colors.blueMedium,
                           }}>
                           <InputNota
-                            value={
-                              exercise.type.weight !== ''
-                                ? exercise.type.weight
-                                : ''
-                            }
-                            placeholder="0"
+                            background={Colors.blueMedium}
+                            value={exercise.type.weight}
                             onText={e => (exercise.type.weight = e)}
                           />
                         </View>
@@ -371,11 +424,10 @@ const Step2 = ({
                             width: 35,
                             alignItems: 'center',
                             justifyContent: 'center',
-                            backgroundColor: Colors.blueLight,
                           }}>
                           <InputNota
+                            background={Colors.blueLight}
                             value={exercise.type.series}
-                            placeholder="0"
                             onText={e => (exercise.type.series = e)}
                           />
                         </View>
@@ -385,11 +437,10 @@ const Step2 = ({
                             width: 35,
                             alignItems: 'center',
                             justifyContent: 'center',
-                            backgroundColor: Colors.blueLight,
                           }}>
                           <InputNota
+                            background={Colors.blueLight}
                             value={exercise.type.repeat}
-                            placeholder="0"
                             onText={e => (exercise.type.repeat = e)}
                           />
                         </View>
@@ -399,11 +450,10 @@ const Step2 = ({
                             width: 35,
                             alignItems: 'center',
                             justifyContent: 'center',
-                            backgroundColor: Colors.blueLight,
                           }}>
                           <InputNota
+                            background={Colors.blueLight}
                             value={exercise.type.duration}
-                            placeholder="0"
                             onText={e => (exercise.type.duration = e)}
                           />
                         </View>
@@ -413,21 +463,45 @@ const Step2 = ({
                             width: 35,
                             alignItems: 'center',
                             justifyContent: 'center',
+                            backgroundColor:
+                              exercise.instruction.value === 'OBS'
+                                ? Colors.backYellowLight
+                                : exercise.instruction.value === 'MIN'
+                                ? Colors.colorBackRgba
+                                : exercise.instruction.value === 'ADP'
+                                ? Colors.lightOrange
+                                : Colors.lightGray,
+                            borderRadius: 8,
                           }}>
                           <TouchableOpacity
                             style={{
-                              backgroundColor: Colors.lightGray,
-                              borderRadius: 5,
+                              borderRadius: 8,
                               padding: 4,
-                              width: '100%',
+                              flex: 1,
                               justifyContent: 'center',
                               alignItems: 'center',
+                            }}
+                            onPress={() => {
+                              setExercise(exercise);
+                              setVisible(true);
                             }}>
                             <Text
-                              title="INS"
-                              size={14}
+                              title={
+                                exercise.instruction.value !== ''
+                                  ? exercise.instruction.value
+                                  : 'INS'
+                              }
+                              size={13}
                               weight={600}
-                              color={Colors.inputColorText}
+                              color={
+                                exercise.instruction.value === 'OBS'
+                                  ? Colors.textYellow
+                                  : exercise.instruction.value === 'MIN'
+                                  ? Colors.textColorRXC
+                                  : exercise.instruction.value === 'ADP'
+                                  ? Colors.orange
+                                  : Colors.inputColorText
+                              }
                             />
                           </TouchableOpacity>
                         </View>
@@ -437,17 +511,130 @@ const Step2 = ({
                 })}
             </View>
           </Card>
+
+          <Space marginVertical={20} />
+          <Card>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-around',
+              }}>
+              <View
+                style={{
+                  backgroundColor: Colors.backYellowLight,
+                  width: 45,
+                  height: 25,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 8,
+                }}>
+                <Text
+                  title="OBS"
+                  weight={600}
+                  color={Colors.textYellow}
+                  size={14}
+                />
+              </View>
+              <View style={{width: '80%'}}>
+                <Text
+                  title="Exercício possui uma observação"
+                  weight={500}
+                  color={Colors.inputColorText}
+                  size={14}
+                  center
+                />
+              </View>
+            </View>
+            <Space marginVertical={8} />
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-around',
+              }}>
+              <View
+                style={{
+                  width: 45,
+                  height: 25,
+                  borderRadius: 8,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: Colors.colorBackRgba,
+                }}>
+                <Text
+                  title="MIN"
+                  weight={600}
+                  color={Colors.textColorRXC}
+                  size={14}
+                />
+              </View>
+              <View style={{width: '80%'}}>
+                <Text
+                  title="A contagem do descanco é por minutos"
+                  weight={500}
+                  color={Colors.inputColorText}
+                  size={14}
+                  center
+                />
+              </View>
+            </View>
+            <Space marginVertical={8} />
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-around',
+              }}>
+              <View
+                style={{
+                  width: 45,
+                  height: 25,
+                  borderRadius: 8,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: Colors.lightOrange,
+                }}>
+                <Text
+                  title="ADP"
+                  weight={600}
+                  color={Colors.orange}
+                  size={14}
+                />
+              </View>
+              <View style={{width: '80%'}}>
+                <Text
+                  title="O exercício pode adaptar o peso de acordo com seu ritmo"
+                  weight={500}
+                  color={Colors.inputColorText}
+                  size={14}
+                  center
+                />
+              </View>
+            </View>
+          </Card>
+          <Space marginVertical={20} />
+          <Button
+            title="Criar treino"
+            weight={500}
+            size={14}
+            color={Colors.textColorWhite}
+            background={Colors.red}
+            onPress={() => {
+              const verified = verify();
+
+              if (verified) {
+                return setCreateTrainning(true);
+              }
+              return showMessage({
+                type: 'warning',
+                message: 'Campos Vazios',
+                description: 'Precisa preencher todos os campos',
+              });
+            }}
+          />
         </>
       )}
-      <Space marginVertical={20} />
-      <Button
-        title="Avançar"
-        weight={500}
-        size={14}
-        color={Colors.textColorWhite}
-        background={Colors.red}
-        onPress={() => console.log(exercisesSelected)}
-      />
     </ScrollView>
   );
 };

@@ -34,6 +34,7 @@ const CreateTrainning = ({setState}: CreateTrainningProps) => {
   const [categories, setCategories] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<any[]>([]);
   const [exercisesSelected, setexercisesSelected] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const verify = () => {
     const studentsVerified = fieldValidate(student);
     setError({aluno: studentsVerified.error});
@@ -70,6 +71,7 @@ const CreateTrainning = ({setState}: CreateTrainningProps) => {
           });
         });
         setCategories(list);
+        setLoading(false);
       })
       .catch(err => {});
   }, []);
@@ -126,96 +128,100 @@ const CreateTrainning = ({setState}: CreateTrainningProps) => {
         onBack={() => setState('')}
       />
       <Space marginVertical={20} />
-      <DropdownStudents
-        error={error.aluno}
-        value={student}
-        onValue={setStudent}
-      />
-      <Space marginVertical={25} />
-      <Label
-        title="Selecione as categorias"
-        size={16}
-        color={Colors.textColorBlack}
-      />
-      <Space marginVertical={20} />
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          justifyContent: 'space-around',
-        }}>
-        {categories.length === 0 && (
+      {!!loading && (
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+          <ActivityIndicator size="large" color={Colors.red} />
+        </View>
+      )}
+      {!loading && (
+        <>
+          <DropdownStudents
+            error={error.aluno}
+            value={student}
+            onValue={setStudent}
+          />
+          <Space marginVertical={25} />
+          <Label
+            title="Selecione as categorias"
+            size={16}
+            color={Colors.textColorBlack}
+          />
+          <Space marginVertical={20} />
           <View
-            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-            <ActivityIndicator size="large" color={Colors.red} />
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              justifyContent: 'space-around',
+            }}>
+            {!!categories &&
+              categories.length !== 0 &&
+              categories.map((category, index) => {
+                return (
+                  <TouchableOpacity
+                    key={category.value}
+                    style={{
+                      width: 140,
+                      height: 40,
+                      borderRadius: 8,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-around',
+                      backgroundColor: category.selected
+                        ? Colors.red
+                        : Colors.backgroundLight,
+                      marginVertical: 8,
+                    }}
+                    onPress={() => handleSelect(index)}>
+                    <Text
+                      title={category.label}
+                      size={14}
+                      weight={500}
+                      color={
+                        category.selected
+                          ? Colors.textColorWhite
+                          : Colors.inputColorText
+                      }
+                    />
+                    <Text
+                      title={
+                        exercises.filter(
+                          exercise => exercise.category === category.value,
+                        ).length
+                      }
+                      size={14}
+                      weight={500}
+                      color={
+                        category.selected
+                          ? Colors.textColorWhite
+                          : Colors.inputColorText
+                      }
+                    />
+                  </TouchableOpacity>
+                );
+              })}
           </View>
-        )}
-        {!!categories &&
-          categories.length !== 0 &&
-          categories.map((category, index) => {
-            return (
-              <TouchableOpacity
-                key={category.value}
-                style={{
-                  width: 140,
-                  height: 40,
-                  borderRadius: 8,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-around',
-                  backgroundColor: category.selected
-                    ? Colors.red
-                    : Colors.backgroundLight,
-                  marginVertical: 8,
-                }}
-                onPress={() => handleSelect(index)}>
-                <Text
-                  title={category.label}
-                  size={14}
-                  weight={500}
-                  color={
-                    category.selected
-                      ? Colors.textColorWhite
-                      : Colors.inputColorText
-                  }
-                />
-                <Text
-                  title={
-                    exercises.filter(
-                      exercise => exercise.category === category.value,
-                    ).length
-                  }
-                  size={14}
-                  weight={500}
-                  color={
-                    category.selected
-                      ? Colors.textColorWhite
-                      : Colors.inputColorText
-                  }
-                />
-              </TouchableOpacity>
-            );
-          })}
-      </View>
-      <Space marginVertical={20} />
-      <Button
-        title="Avançar"
-        weight={500}
-        size={14}
-        color={Colors.textColorWhite}
-        background={Colors.red}
-        onPress={() => {
-          const verified = verify();
-          if (verified) {
-            return setTrainningStep('step1');
-          }
-          return showMessage({
-            type: 'danger',
-            message: 'Precisa selecionar um aluno ou selecionar as categorias',
-          });
-        }}
-      />
+          <Space marginVertical={20} />
+          <Button
+            title="Avançar"
+            weight={500}
+            size={14}
+            color={Colors.textColorWhite}
+            background={Colors.red}
+            onPress={() => {
+              const verified = verify();
+              if (verified) {
+                return setTrainningStep('step1');
+              }
+              return showMessage({
+                type: 'danger',
+                message:
+                  'Precisa selecionar um aluno ou selecionar as categorias',
+              });
+            }}
+          />
+        </>
+      )}
     </ScrollView>
   );
 };
