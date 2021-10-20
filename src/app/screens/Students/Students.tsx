@@ -9,10 +9,16 @@ import {StudentStyle} from './styles';
 
 import WarningIcon from 'assets/svg/warningIcon.svg';
 import moment from 'moment';
+import {useGetRequests, useGetTrainning, useGetUser} from 'hooks';
 
 const Students = ({navigation}: any) => {
   const user = useSelector((state: any) => state.auth.user);
   const gym = useSelector((state: any) => state.trainner.gym);
+
+  const getRequests = useGetRequests();
+  const {getUserTypeAndAssociate, getUser} = useGetUser();
+  const {getTrainningTrainner} = useGetTrainning();
+
   const [state, setState] = useState('');
   const [trainnings, setTrainnings] = useState<any[]>([]);
   const [commons, setCommons] = useState<any[]>([]);
@@ -31,47 +37,50 @@ const Students = ({navigation}: any) => {
     if (state !== '') {
       setLoading(true);
     } else {
-      firestore()
-        .collection('users')
-        .doc(gym.gym)
-        .get()
-        .then(querySnapshot => {
-          setProfileGym(querySnapshot.data());
-        })
-        .catch(err => {});
-      firestore()
-        .collection('users')
-        .where('type', '==', 'common')
-        .where('userAssociate', '==', gym.gym)
-        .get()
-        .then(querySnapshot => {
-          const commonsList = querySnapshot.docs.map(doc => doc.data());
-          setCommons(commonsList);
-        })
-        .catch(err => {});
-      firestore()
-        .collection('trainnings')
-        .where('trainnerId', '==', user.uid)
-        .get()
-        .then(querySnapshot => {
-          const trainningList = querySnapshot.docs.map(doc => doc.data());
-          setTrainnings(trainningList);
-          setLoading(false);
-        })
-        .catch(err => {});
+      getUser({
+        uid: gym.gym,
+        onComplete: user => {
+          if (user) {
+            setProfileGym(user);
+          }
+        },
+        onFail: err => {},
+      });
+
+      getUserTypeAndAssociate({
+        type: 'common',
+        associate: gym.gym,
+        onComplete: users => {
+          if (users) {
+            setCommons(users);
+          }
+        },
+        onFail: err => {},
+      });
+
+      getTrainningTrainner({
+        uid: user.uid,
+        onComplete: trainning => {
+          if (trainning) {
+            setTrainnings(trainning);
+            setLoading(false);
+          }
+        },
+        onFail: err => {},
+      });
     }
   }, [state]);
 
   useEffect(() => {
-    firestore()
-      .collection('requests')
-      .where('trainnerId', '==', user.uid)
-      .get()
-      .then(querySnapshot => {
-        const requests = querySnapshot.docs.map(doc => doc.data());
-        setRequest(requests);
-      })
-      .catch(err => {});
+    getRequests({
+      uid: user.uid,
+      onComplete: requests => {
+        if (requests) {
+          setRequest(requests);
+        }
+      },
+      onFail: err => {},
+    });
   }, []);
 
   if (state === 'Criar treino') {

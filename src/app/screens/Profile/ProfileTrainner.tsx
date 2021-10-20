@@ -13,20 +13,22 @@ import {Image} from 'react-native';
 import {Logout} from 'functions';
 import {firestore} from 'firebase';
 import Colors from '@styles';
+import {useGetUser} from 'hooks';
 
 const ProfileTrainner = ({user, navigation}: any) => {
   const [gym, setGym] = useState<any>([]);
-
+  const {getUserTypeAndAssociateTrainner} = useGetUser();
   useEffect(() => {
-    firestore()
-      .collection('users')
-      .where('uid', 'in', user.userAssociate)
-      .get()
-      .then(res => {
-        const gyms = res.docs.map(doc => doc.data());
-
-        setGym(gyms);
-      });
+    getUserTypeAndAssociateTrainner({
+      type: 'gym',
+      associate: user.userAssociate,
+      onComplete: gyms => {
+        if (gyms) {
+          setGym(gyms);
+        }
+      },
+      onFail: err => {},
+    });
   }, []);
   return (
     <ProfileContainer

@@ -22,6 +22,7 @@ import CalendarIcon from 'assets/svg/calendarIcon.svg';
 import HeightIcon from 'assets/svg/heightIcon.svg';
 import VerticalLine from 'assets/svg/verticalLine.svg';
 import {useSelector} from 'react-redux';
+import {useGetExercise, useGetUser} from 'hooks';
 
 interface StepProps {
   categorySelected: any[];
@@ -39,6 +40,8 @@ const Step1 = ({
   setExercisesSelected,
 }: StepProps) => {
   const gym = useSelector((state: any) => state.trainner.gym);
+  const getExerciseByGym = useGetExercise();
+  const {getUser} = useGetUser();
   const [student, setStudent] = useState<any>();
   const [category, setCategory] = useState<any[]>(categorySelected);
   const [exercises, setExercises] = useState<any[]>([]);
@@ -47,26 +50,26 @@ const Step1 = ({
   const [selectedCategory, setSelectedCategory] = useState('');
 
   useEffect(() => {
-    firestore()
-      .collection('exercises')
-      .where('gym', '==', gym.gym)
-      .get()
-      .then(querySnapshot => {
-        const exercise = querySnapshot.docs.map(doc => doc.data());
+    getExerciseByGym({
+      uid: gym.gym,
+      onComplete: exercise => {
+        if (exercise) {
+          setExercises(exercise);
+        }
+      },
+      onFail: err => {},
+    });
 
-        setExercises(exercise);
-      })
-      .catch(err => {});
-    firestore()
-      .collection('users')
-      .doc(commonId)
-      .get()
-      .then(querySnapshot => {
-        setStudent(querySnapshot.data());
-        setLoading(false);
-      })
-      .catch(err => {});
-
+    getUser({
+      uid: commonId,
+      onComplete: user => {
+        if (user) {
+          setStudent(user);
+          setLoading(false);
+        }
+      },
+      onFail: err => {},
+    });
     setSelectedCategory(category[0].value);
   }, []);
 

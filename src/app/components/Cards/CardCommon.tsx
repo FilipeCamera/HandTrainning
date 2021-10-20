@@ -32,7 +32,7 @@ const CardCommon = ({
   setLoading,
 }: CardCommonProps) => {
   const user = useSelector((state: any) => state.auth.user);
-  const getTrainning = useGetTrainning();
+  const {getTrainning} = useGetTrainning();
   const {getUser} = useGetUser();
   const [trainning, setTrainning] = useState(false);
   const [loadCard, setLoadCard] = useState(true);
@@ -182,7 +182,8 @@ const CardCommon = ({
                       backgroundColor: Colors.backgroundLight,
                       padding: 8,
                       borderRadius: 9999,
-                    }}>
+                    }}
+                    onPress={() => setVisible(true)}>
                     <Refresh width="18px" height="18px" />
                   </TouchableOpacity>
                 </View>
@@ -277,7 +278,8 @@ const CardCommon = ({
                         backgroundColor: Colors.backgroundLight,
                         padding: 8,
                         borderRadius: 9999,
-                      }}>
+                      }}
+                      onPress={() => setVisible(true)}>
                       <Refresh width="18px" height="18px" />
                     </TouchableOpacity>
                   </View>

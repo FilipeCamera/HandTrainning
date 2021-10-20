@@ -8,6 +8,7 @@ import {
   Text,
 } from 'components';
 import {firestore} from 'firebase';
+import {useGetCategories, useGetExercise} from 'hooks';
 import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
@@ -27,6 +28,9 @@ interface CreateTrainningProps {
 
 const CreateTrainning = ({setState}: CreateTrainningProps) => {
   const gym = useSelector((state: any) => state.trainner.gym);
+
+  const getCategories = useGetCategories();
+  const getExerciseByGym = useGetExercise();
   const [error, setError] = useState({aluno: ''});
   const [trainningStep, setTrainningStep] = useState('');
   const [student, setStudent] = useState('');
@@ -63,35 +67,35 @@ const CreateTrainning = ({setState}: CreateTrainningProps) => {
     }
   }, [send]);
   useEffect(() => {
-    firestore()
-      .collection('categories')
-      .get()
-      .then(querySnapshot => {
+    getCategories({
+      onComplete: category => {
         const list: any = [];
-        const category = querySnapshot.docs.map(doc => doc.data());
-        category.map(cat => {
-          list.push({
-            label: cat.label,
-            value: cat.value,
-            selected: false,
+        if (category) {
+          category.map(cat => {
+            list.push({
+              label: cat.label,
+              value: cat.value,
+              selected: false,
+            });
           });
-        });
-        setCategories(list);
-        setLoading(false);
-      })
-      .catch(err => {});
+          setCategories(list);
+          setLoading(false);
+        }
+      },
+      onFail: err => {},
+    });
   }, []);
 
   useEffect(() => {
-    firestore()
-      .collection('exercises')
-      .where('gym', '==', gym.gym)
-      .get()
-      .then(querySnapshot => {
-        const exercise = querySnapshot.docs.map(doc => doc.data());
-        setExercises(exercise);
-      })
-      .catch(err => {});
+    getExerciseByGym({
+      uid: gym.gym,
+      onComplete: exercise => {
+        if (exercise) {
+          setExercises(exercise);
+        }
+      },
+      onFail: err => {},
+    });
   }, []);
 
   if (trainningStep === 'step2') {

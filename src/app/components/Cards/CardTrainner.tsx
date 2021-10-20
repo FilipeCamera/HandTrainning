@@ -7,11 +7,15 @@ import {CardTrainnerStyle, styles} from './styles';
 import {ActivityIndicator, Image, View} from 'react-native';
 import {ButtonText, Space, Text} from 'components';
 import Colors from '@styles';
-import {firestore} from 'firebase';
 import {useSelector} from 'react-redux';
+import {useGetRequests, useGetTrainning, useGetUser} from 'hooks';
 
 const CardTrainner = ({navigation}: any) => {
   const user = useSelector((state: any) => state.auth.user);
+
+  const {getTrainningTrainner} = useGetTrainning();
+  const getRequests = useGetRequests();
+  const {getUserType} = useGetUser();
   const [trainnings, setTrainnings] = useState(0);
   const [requests, setRequests] = useState(0);
   const [score, setScore] = useState('');
@@ -19,52 +23,52 @@ const CardTrainner = ({navigation}: any) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    firestore()
-      .collection('trainnings')
-      .where('trainnerId', '==', user.uid)
-      .get()
-      .then(querySnapshot => {
-        const list = querySnapshot.docs.map(doc => doc.data());
-        setTrainnings(list.length);
-      })
-      .catch(err => {});
-    firestore()
-      .collection('requests')
-      .where('trainnerId', '==', user.uid)
-      .get()
-      .then(querySnapshot => {
-        setRequests(querySnapshot.docs.length);
-      })
-      .catch(err => {});
+    getTrainningTrainner({
+      uid: user.uid,
+      onComplete: trainning => {
+        if (trainning) {
+          setTrainnings(trainning.length);
+        }
+      },
+      onFail: err => {},
+    });
+    getRequests({
+      uid: user.uid,
+      onComplete: request => {
+        if (request) {
+          setRequests(request.length);
+        }
+      },
+      onFail: err => {},
+    });
   }, []);
 
   useEffect(() => {
-    firestore()
-      .collection('users')
-      .where('type', '==', 'common')
-      .get()
-      .then(querySnap => {
-        const list = querySnap.docs.map(doc => doc.data());
-        firestore()
-          .collection('trainnings')
-          .where('trainnerId', '==', user.uid)
-          .get()
-          .then(querySnapshot => {
-            const common: any = [];
-            const trainning = querySnapshot.docs.map(doc => doc.data());
-            list.map(l => {
-              trainning.map(t => {
-                if (t.commonId === l.uid) {
-                  common.push(l);
-                }
-              });
-            });
-            setCommons(common);
-            setLoading(false);
-          })
-          .catch(err => {});
-      })
-      .catch(err => {});
+    const resultList: any = [];
+    getUserType({
+      type: 'common',
+      onComplete: common => {
+        if (common) {
+          getTrainningTrainner({
+            uid: user.uid,
+            onComplete: trainning => {
+              if (trainning) {
+                common.map(c => {
+                  trainning.map(t => {
+                    if (t.commonId === c.uid) {
+                      resultList.push(c);
+                    }
+                  });
+                });
+                setCommons(resultList);
+                setLoading(false);
+              }
+            },
+            onFail: err => {},
+          });
+        }
+      },
+    });
   }, []);
   return (
     <CardTrainnerStyle style={styles.shadow}>
@@ -144,7 +148,6 @@ const CardTrainner = ({navigation}: any) => {
                     flex: 1,
                   }}>
                   {commons.map((common, index) => {
-                    console.log(common);
                     if (index <= 3) {
                       return (
                         <View
@@ -208,9 +211,9 @@ const CardTrainner = ({navigation}: any) => {
                   <Space marginHorizontal={2.5} />
                   <Text
                     title={`${
-                      requests > 1
-                        ? `${requests} solicitações`
-                        : `${requests} solicitação`
+                      requests === 1
+                        ? `${requests} solicitação`
+                        : `${requests} solicitações`
                     }`}
                     size={14}
                     weight={500}

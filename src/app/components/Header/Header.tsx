@@ -7,9 +7,9 @@ import ArrowExchange from 'assets/svg/arrowExchange.svg';
 import {Modal, Space, Text} from 'components';
 import {useSelector} from 'react-redux';
 import Colors from '@styles';
-import {firestore} from 'firebase';
 import {setGymId, setNotVisualize} from 'functions';
 import moment from 'moment';
+import {useGetRequests, useGetUser, useGetWarnings} from 'hooks';
 
 interface HeaderProps {
   navigation: any;
@@ -19,6 +19,10 @@ const Header = ({navigation}: HeaderProps) => {
   const user = useSelector((state: any) => state.auth.user);
   const gym = useSelector((state: any) => state.trainner.gym);
   const visualized = useSelector((state: any) => state.visualized.visualized);
+
+  const {getUserTypeAndAssociateTrainner} = useGetUser();
+  const {getWarnings, getWarningsTrainner} = useGetWarnings();
+  const getRequests = useGetRequests();
   const [info, setInfo] = useState(false);
   const [visible, setVisible] = useState(false);
   const [gyms, setGyms] = useState<any[]>([]);
@@ -28,49 +32,45 @@ const Header = ({navigation}: HeaderProps) => {
       setVisible(true);
     }
     if (user.type === 'trainner') {
-      firestore()
-        .collection('users')
-        .where('type', '==', 'gym')
-        .where('uid', 'in', user.userAssociate)
-        .get()
-        .then(querySnapshot => {
-          const listGyms = querySnapshot.docs.map(doc => doc.data());
-          setGyms(listGyms);
-        })
-        .catch(err => {});
+      getUserTypeAndAssociateTrainner({
+        type: 'gym',
+        associate: user.userAssociate,
+        onComplete: gym => {
+          if (gym) {
+            setGyms(gym);
+          }
+        },
+        onFail: err => {},
+      });
     }
   }, []);
   const dateNow = Date.now();
 
   useEffect(() => {
     if (user.type === 'trainner') {
-      firestore()
-        .collection('requests')
-        .where('trainnerId', '==', user.uid)
-        .get()
-        .then(querySnapshot => {
-          const request = querySnapshot.docs.map(doc => doc.data());
-          if (request.length !== 0) {
-            request.map(req => {
-              if (
-                moment.unix(req.createdAt).format('DD/MM/YYYY') ===
-                moment(dateNow).format('DD/MM/YYYY')
-              ) {
-                setInfo(true);
-                setNotVisualize();
-              }
-            });
+      getRequests({
+        uid: user.uid,
+        onComplete: request => {
+          if (request) {
+            if (request.length !== 0) {
+              request.map(req => {
+                if (
+                  moment.unix(req.createdAt).format('DD/MM/YYYY') ===
+                  moment(dateNow).format('DD/MM/YYYY')
+                ) {
+                  setInfo(true);
+                  setNotVisualize();
+                }
+              });
+            }
           }
-        })
-        .catch(err => {});
-      firestore()
-        .collection('warning')
-        .where('gym', 'in', user.userAssociate)
-        .get()
-        .then(querySnapshot => {
-          const warnings = querySnapshot.docs.map(doc => doc.data());
-
-          if (warnings.length !== 0) {
+        },
+        onFail: err => {},
+      });
+      getWarningsTrainner({
+        uid: user.userAssociate,
+        onComplete: warnings => {
+          if (warnings) {
             warnings.map(wg => {
               if (wg.finallized !== dateNow && wg.finallized > dateNow) {
                 setInfo(true);
@@ -78,26 +78,28 @@ const Header = ({navigation}: HeaderProps) => {
               }
             });
           }
-        });
+        },
+        onFail: err => [],
+      });
     }
     if (user.type === 'common') {
       if (user.userAssociate !== undefined) {
-        firestore()
-          .collection('warning')
-          .where('gym', '==', user.userAssociate)
-          .get()
-          .then(querySnapshot => {
-            const warnings = querySnapshot.docs.map(doc => doc.data());
-
-            if (warnings.length !== 0) {
-              warnings.map(wg => {
-                if (wg.finallized !== dateNow && wg.finallized > dateNow) {
-                  setInfo(true);
-                  setNotVisualize();
-                }
-              });
+        getWarnings({
+          uid: user.userAssociate,
+          onComplete: warnings => {
+            if (warnings) {
+              if (warnings.length !== 0) {
+                warnings.map(wg => {
+                  if (wg.finallized !== dateNow && wg.finallized > dateNow) {
+                    setInfo(true);
+                    setNotVisualize();
+                  }
+                });
+              }
             }
-          });
+          },
+          onFail: err => {},
+        });
       }
     }
   }, []);

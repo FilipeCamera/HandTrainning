@@ -8,9 +8,13 @@ import Colors from '@styles';
 import {firestore} from 'firebase';
 import {useSelector} from 'react-redux';
 import {setVisualize} from 'functions';
+import {useGetRequests, useGetWarnings} from 'hooks';
 
 const Warnings = ({navigation}: any) => {
   const user = useSelector((state: any) => state.auth.user);
+
+  const getRequests = useGetRequests();
+  const {getWarningsTrainner, getWarnings} = useGetWarnings();
   const [requests, setRequests] = useState<any[]>([]);
   const [warnings, setWarnings] = useState<any[]>([]);
 
@@ -21,57 +25,61 @@ const Warnings = ({navigation}: any) => {
   }, []);
 
   useEffect(() => {
-    firestore()
-      .collection('requests')
-      .where('trainnerId', '==', user.uid)
-      .get()
-      .then(querySnapshot => {
+    getRequests({
+      uid: user.uid,
+      onComplete: request => {
         const listRequest: any[] = [];
-        const request = querySnapshot.docs.map(doc => doc.data());
-        request.map(req => {
-          if (
-            moment.unix(req.createdAt.seconds).format('DD/MM/YYYY') ===
-            moment(dateNow).format('DD/MM/YYYY')
-          ) {
-            listRequest.push(req);
+        if (request) {
+          if (request.length !== 0) {
+            request.map(req => {
+              if (
+                moment.unix(req.createdAt).format('DD/MM/YYYY') ===
+                moment(dateNow).format('DD/MM/YYYY')
+              ) {
+                listRequest.push(req);
+              }
+            });
+            console.log(listRequest);
+            setRequests(listRequest);
           }
-        });
-        console.log(listRequest);
-        setRequests(listRequest);
-      })
-      .catch(err => {});
+        }
+      },
+      onFail: err => {},
+    });
     if (user.type === 'trainner') {
-      firestore()
-        .collection('warning')
-        .where('gym', 'in', user.userAssociate)
-        .get()
-        .then(querySnapshot => {
+      getWarningsTrainner({
+        uid: user.userAssociate,
+        onComplete: warnings => {
           const listWarnings: any[] = [];
-          const warning = querySnapshot.docs.map(doc => doc.data());
-          warning.map(wg => {
-            if (wg.finallized !== dateNow && wg.finallized > dateNow) {
-              listWarnings.push(wg);
-            }
-          });
-          setWarnings(listWarnings);
-        });
-    }
-    if (user.type === 'common') {
-      if (user.userAssociate !== undefined) {
-        firestore()
-          .collection('warning')
-          .where('gym', '==', user.userAssociate)
-          .get()
-          .then(querySnapshot => {
-            const listWarnings: any[] = [];
-            const warning = querySnapshot.docs.map(doc => doc.data());
-            warning.map(wg => {
+          if (warnings) {
+            warnings.map(wg => {
               if (wg.finallized !== dateNow && wg.finallized > dateNow) {
                 listWarnings.push(wg);
               }
             });
             setWarnings(listWarnings);
-          });
+          }
+        },
+        onFail: err => [],
+      });
+    }
+    if (user.type === 'common') {
+      if (user.userAssociate !== undefined) {
+        getWarnings({
+          uid: user.userAssociate,
+          onComplete: warnings => {
+            const listWarnings: any[] = [];
+            if (warnings) {
+              warnings.map(wg => {
+                if (wg.finallized !== dateNow && wg.finallized > dateNow) {
+                  listWarnings.push(wg);
+                }
+              });
+              setWarnings(listWarnings);
+            }
+          },
+          onFail: err => {},
+        });
       }
     }
   }, []);

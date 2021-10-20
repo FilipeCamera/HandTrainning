@@ -13,7 +13,18 @@ const useGetTrainning = () => {
       .catch(err => onFail(err));
   };
 
-  return getTrainning;
+  const getTrainningTrainner = ({uid, onComplete, onFail}: any) => {
+    firestore()
+      .collection('trainnings')
+      .where('trainnerId', '==', uid)
+      .get()
+      .then(querySnapshot => {
+        const list = querySnapshot.docs.map(doc => doc.data());
+        onComplete(list);
+      })
+      .catch(err => onFail(err));
+  };
+  return {getTrainning, getTrainningTrainner};
 };
 
 export default useGetTrainning;

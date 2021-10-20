@@ -31,6 +31,7 @@ import InstructionIcon from 'assets/svg/instructionIcon.svg';
 import VerticalLine from 'assets/svg/verticalLine.svg';
 import {showMessage} from 'react-native-flash-message';
 import {useSelector} from 'react-redux';
+import {useGetUser} from 'hooks';
 
 interface StepProps {
   categorySelected: any[];
@@ -49,6 +50,8 @@ const Step2 = ({
   setSend,
 }: StepProps) => {
   const user = useSelector((state: any) => state.auth.user);
+
+  const {getUser} = useGetUser();
   const [student, setStudent] = useState<any>();
   const [category, setCategory] = useState<any[]>(categorySelected);
   const [loading, setLoading] = useState(true);
@@ -59,15 +62,16 @@ const Step2 = ({
   const [exercise, setExercise] = useState<any>();
 
   useEffect(() => {
-    firestore()
-      .collection('users')
-      .doc(commonId)
-      .get()
-      .then(querySnapshot => {
-        setStudent(querySnapshot.data());
-        setLoading(false);
-      })
-      .catch(err => {});
+    getUser({
+      uid: commonId,
+      onComplete: user => {
+        if (user) {
+          setStudent(user);
+          setLoading(false);
+        }
+      },
+      onFail: err => {},
+    });
 
     setSelectedCategory(category[0].value);
   }, []);

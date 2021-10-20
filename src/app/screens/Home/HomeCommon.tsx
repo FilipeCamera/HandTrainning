@@ -1,5 +1,6 @@
 import {CardCommon, Carousel, Header, Modal} from 'components';
 import {firestore} from 'firebase';
+import {useGetUser} from 'hooks';
 
 import React, {useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
@@ -8,6 +9,7 @@ import {HomeStyle} from './styles';
 
 const HomeCommon = ({navigation}: any) => {
   const user = useSelector((state: any) => state.auth.user);
+  const {getUserTrainner} = useGetUser();
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [send, setSend] = useState(false);
@@ -15,16 +17,15 @@ const HomeCommon = ({navigation}: any) => {
   const [trainner, setTrainner] = useState<any>();
   useEffect(() => {
     if (user.userAssociate !== undefined) {
-      firestore()
-        .collection('users')
-        .where('type', '==', 'trainner')
-        .where('userAssociate', 'array-contains', user.userAssociate)
-        .get()
-        .then(querySnapshot => {
-          const trainnerList = querySnapshot.docs.map(doc => doc.data());
-          setTrainners(trainnerList);
-        })
-        .catch(error => {});
+      getUserTrainner({
+        uid: user.userAssociate,
+        onComplete: users => {
+          if (users) {
+            setTrainners(users);
+          }
+        },
+        onFail: err => {},
+      });
     }
   }, []);
 

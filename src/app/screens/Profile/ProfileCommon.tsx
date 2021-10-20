@@ -11,27 +11,49 @@ import {TouchableOpacity, View} from 'react-native';
 import {Button, CardMini, Space, Text} from 'components';
 import {Image} from 'react-native';
 import {Logout} from 'functions';
-import {firestore} from 'firebase';
 import Colors from '@styles';
+import {useGetTrainning, useGetUser} from 'hooks';
 
 const ProfileCommon = ({user, navigation}: any) => {
   const [gym, setGym] = useState<any>();
-
+  const [trainner, setTrainner] = useState<any>();
+  const {getUser} = useGetUser();
+  const {getTrainning} = useGetTrainning();
   useEffect(() => {
-    firestore()
-      .collection('users')
-      .where('uid', '==', user.uid)
-      .get()
-      .then(res => {
-        const common = res.docs.map(doc => doc.data());
-        firestore()
-          .collection('users')
-          .doc(common[0].userAssociate)
-          .get()
-          .then(res => {
-            setGym(res.data());
+    getUser({
+      uid: user.uid,
+      onComplete: users => {
+        if (users) {
+          getUser({
+            uid: users.userAssociate,
+            onComplete: gyms => {
+              if (gyms) {
+                setGym(gyms);
+              }
+            },
+            onFail: err => {},
           });
-      });
+        }
+      },
+      onFail: err => {},
+    });
+    getTrainning({
+      uid: user.uid,
+      onComplete: trainning => {
+        if (trainning) {
+          getUser({
+            uid: trainning.trainnerId,
+            onComplete: trainner => {
+              if (trainner) {
+                setTrainner(trainner);
+              }
+            },
+            onFail: err => {},
+          });
+        }
+      },
+      onFail: err => {},
+    });
   }, []);
   return (
     <ProfileContainer
@@ -102,7 +124,7 @@ const ProfileCommon = ({user, navigation}: any) => {
         </View>
       </View>
       <Space marginVertical={15} />
-      {!!gym && (
+      {!!gym && !!trainner && (
         <View
           style={{
             flexDirection: 'row',
@@ -111,7 +133,7 @@ const ProfileCommon = ({user, navigation}: any) => {
             width: '100%',
           }}>
           <CardMini avatar={gym.avatar} name={gym.name} />
-          <CardMini avatar={gym.avatar} name={gym.name} />
+          <CardMini avatar={trainner.avatar} name={trainner.name} />
         </View>
       )}
       <Space marginVertical={30} />
