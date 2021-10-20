@@ -5,6 +5,7 @@ import {ActivityIndicator, View} from 'react-native';
 
 import {Modal, Portal} from 'react-native-paper';
 
+import Notify from 'assets/svg/Notify.svg';
 import SucessIcon from 'assets/svg/sucessIcon.svg';
 
 interface ModalProps {
@@ -44,24 +45,45 @@ const ModalCommon = ({
         }}>
         {!loading && !send && (
           <>
-            <Space marginVertical={8} />
-            <Label
-              title={title}
-              color={Colors.textColorBlack}
-              size={15}
-              center
-            />
-            <Space marginVertical={16} />
-            {!!trainners &&
-              trainners.length !== 0 &&
-              trainners.map(trainner => (
-                <SelectProfileCheck
-                  key={trainner.uid}
-                  profile={trainner}
-                  onFunction={() => setTrainner(trainner.uid)}
+            {!!trainners && trainners.length === 0 && (
+              <View
+                style={{
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <View style={{width: 100, height: 100}}>
+                  <Notify width="100%" height="100%" />
+                </View>
+                <Text
+                  title="Usuário precisa está associado a alguma academia"
+                  size={14}
+                  weight={500}
+                  color={Colors.textGrayMedium}
+                  center
                 />
-              ))}
-            <Space marginVertical={16} />
+              </View>
+            )}
+            {!!trainners && trainners.length !== 0 && (
+              <>
+                <Space marginVertical={8} />
+                <Label
+                  title={title}
+                  color={Colors.textColorBlack}
+                  size={15}
+                  center
+                />
+                <Space marginVertical={16} />
+                {trainners.map(trainner => (
+                  <SelectProfileCheck
+                    key={trainner.uid}
+                    profile={trainner}
+                    onFunction={() => setTrainner(trainner.uid)}
+                  />
+                ))}
+                <Space marginVertical={16} />
+              </>
+            )}
             {!!trainners && trainners.length !== 0 && (
               <View
                 style={{

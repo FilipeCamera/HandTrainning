@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Image, TouchableOpacity, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {ActivityIndicator, Image, TouchableOpacity, View} from 'react-native';
 import {CardCommonStyle} from './styles';
 
 import Refresh from 'assets/svg/refresh.svg';
@@ -15,6 +15,8 @@ import {styles} from '../Board/styles';
 import {useSelector} from 'react-redux';
 import {ButtonText, Space, Text} from 'components';
 import Colors from '@styles';
+import {useGetTrainning, useGetUser} from 'hooks';
+import moment from 'moment';
 
 interface CardCommonProps {
   navigation: any;
@@ -30,11 +32,51 @@ const CardCommon = ({
   setLoading,
 }: CardCommonProps) => {
   const user = useSelector((state: any) => state.auth.user);
+  const getTrainning = useGetTrainning();
+  const {getUser} = useGetUser();
   const [trainning, setTrainning] = useState(false);
+  const [loadCard, setLoadCard] = useState(true);
+  const [expiration, setExpiration] = useState<any>();
+  const [trainner, setTrainner] = useState<any>();
+  const [score, setScore] = useState<any>();
 
+  useEffect(() => {
+    getTrainning({
+      uid: user.uid,
+      onComplete: trainning => {
+        if (trainning) {
+          setTrainning(true);
+          setLoadCard(false);
+          setExpiration(trainning.expiredTrainning);
+          getUser({
+            uid: trainning.trainnerId,
+            onComplete: user => {
+              if (user) {
+                setTrainner(user);
+              }
+            },
+            onFail: err => {},
+          });
+        } else {
+          setLoadCard(false);
+        }
+      },
+      onFail: err => {
+        setLoadCard(false);
+      },
+    });
+  }, []);
   return (
     <>
-      {!!trainning && (
+      {!!loadCard && (
+        <CardCommonStyle style={styles.shadow}>
+          <View
+            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            <ActivityIndicator size="large" color={Colors.red} />
+          </View>
+        </CardCommonStyle>
+      )}
+      {!loadCard && !!trainning && (
         <CardCommonStyle style={styles.shadow}>
           <RectangleRed width="100%" style={{position: 'absolute', top: -14}} />
           {user.sex === 'woman' && (
@@ -44,22 +86,26 @@ const CardCommon = ({
               style={{position: 'absolute', right: 0, bottom: 60}}
             />
           )}
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-              paddingTop: 10,
-              paddingHorizontal: 20,
-            }}>
-            <Text
-              title="29d 12:25:59"
-              weight={600}
-              size={10}
-              color={Colors.textColorWhite}
-            />
-            <Clock style={{marginLeft: 5}} />
-          </View>
+          {!!expiration && (
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+                paddingTop: 10,
+                paddingHorizontal: 20,
+              }}>
+              <Text
+                title={`${moment
+                  .unix(expiration.seconds)
+                  .format('[Expira em] DD [de] MMM [de] YYYY')}`}
+                weight={600}
+                size={11}
+                color={Colors.textColorWhite}
+              />
+              <Clock style={{marginLeft: 5}} />
+            </View>
+          )}
           <View
             style={{
               flexDirection: 'row',
@@ -82,24 +128,27 @@ const CardCommon = ({
                 style={{width: 130}}
               />
             </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <Star />
-              <Text
-                title="9.5"
-                size={12}
-                weight={700}
-                color={Colors.orange}
-                style={{position: 'absolute', bottom: 10}}
-              />
-            </View>
+            {!!score && (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Star />
+                <Text
+                  title="9.5"
+                  size={12}
+                  weight={700}
+                  color={Colors.orange}
+                  style={{position: 'absolute', bottom: 10}}
+                />
+              </View>
+            )}
           </View>
           {user.sex === 'woman' && (
             <View>
+              <Space marginVertical={8} />
               <View style={{padding: 16}}>
                 <Text
                   title="Treinador"
@@ -113,18 +162,20 @@ const CardCommon = ({
                     alignItems: 'center',
                     marginTop: 5,
                   }}>
-                  <View style={{width: 50, height: 50, borderRadius: 25}}>
-                    <Image
-                      source={{
-                        uri: 'https://images.unsplash.com/photo-1626806810916-f895a624c6f0?ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0fHx8ZW58MHx8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-                      }}
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        borderRadius: 9999,
-                      }}
-                    />
-                  </View>
+                  {!!trainner && (
+                    <View style={{width: 50, height: 50, borderRadius: 25}}>
+                      <Image
+                        source={{
+                          uri: trainner.avatar,
+                        }}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          borderRadius: 9999,
+                        }}
+                      />
+                    </View>
+                  )}
                   <TouchableOpacity
                     style={{
                       marginLeft: 10,
@@ -145,7 +196,7 @@ const CardCommon = ({
                     />
                     <Space marginHorizontal={2.5} />
                     <Text
-                      title={user.name}
+                      title={trainner ? trainner.name : ''}
                       size={13}
                       weight={500}
                       color={Colors.textColorBlack}
@@ -160,7 +211,7 @@ const CardCommon = ({
                     />
                     <Space marginHorizontal={2.5} />
                     <Text
-                      title={user.name}
+                      title={trainner ? trainner.course : ''}
                       size={13}
                       weight={500}
                       color={Colors.textColorBlack}
@@ -175,7 +226,7 @@ const CardCommon = ({
                     />
                     <Space marginHorizontal={2.5} />
                     <Text
-                      title={user.name}
+                      title={trainner ? trainner.experience : ''}
                       size={13}
                       weight={500}
                       color={Colors.textColorBlack}
@@ -206,18 +257,20 @@ const CardCommon = ({
                       alignItems: 'center',
                       marginTop: 5,
                     }}>
-                    <View style={{width: 60, height: 60, borderRadius: 30}}>
-                      <Image
-                        source={{
-                          uri: 'https://images.unsplash.com/photo-1626806810916-f895a624c6f0?ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0fHx8ZW58MHx8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-                        }}
-                        style={{
-                          width: '100%',
-                          height: '100%',
-                          borderRadius: 9999,
-                        }}
-                      />
-                    </View>
+                    {!!trainner && (
+                      <View style={{width: 60, height: 60, borderRadius: 30}}>
+                        <Image
+                          source={{
+                            uri: trainner.avatar,
+                          }}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            borderRadius: 9999,
+                          }}
+                        />
+                      </View>
+                    )}
                     <TouchableOpacity
                       style={{
                         marginLeft: 10,
@@ -238,7 +291,7 @@ const CardCommon = ({
                       />
                       <Space marginHorizontal={2.5} />
                       <Text
-                        title={user.name}
+                        title={trainner ? trainner.name : ''}
                         size={13}
                         weight={500}
                         color={Colors.textColorBlack}
@@ -253,7 +306,7 @@ const CardCommon = ({
                       />
                       <Space marginHorizontal={2.5} />
                       <Text
-                        title={user.name}
+                        title={trainner ? trainner.course : ''}
                         size={13}
                         weight={500}
                         color={Colors.textColorBlack}
@@ -268,7 +321,7 @@ const CardCommon = ({
                       />
                       <Space marginHorizontal={2.5} />
                       <Text
-                        title={user.name}
+                        title={trainner ? trainner.experience : ''}
                         size={13}
                         weight={500}
                         color={Colors.textColorBlack}
@@ -296,7 +349,7 @@ const CardCommon = ({
           </View>
         </CardCommonStyle>
       )}
-      {!trainning && (
+      {!loadCard && !trainning && (
         <CardCommonStyle style={styles.shadow}>
           <RectangleGray
             width="100%"

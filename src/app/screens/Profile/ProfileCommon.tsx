@@ -15,7 +15,7 @@ import {firestore} from 'firebase';
 import Colors from '@styles';
 
 const ProfileCommon = ({user, navigation}: any) => {
-  const [gym, setGym] = useState<any>([]);
+  const [gym, setGym] = useState<any>();
 
   useEffect(() => {
     firestore()
