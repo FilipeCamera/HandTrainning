@@ -1,6 +1,5 @@
 apply plugin: "com.android.application"
 
-
 import com.android.build.OutputFile
 
 /**
@@ -189,6 +188,11 @@ dependencies {
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation project(':react-native-svg')
+
+    implementation 'com.facebook.fresco:animated-base-support:1.3.0'
+    implementation 'com.facebook.fresco:fresco:2.0.0'
+    implementation 'com.facebook.fresco:animated-gif:2.0.0'
+
     implementation project(':react-native-permissions')
     implementation project(':react-native-splash-screen')
     implementation project(':@react-native-community_datetimepicker')

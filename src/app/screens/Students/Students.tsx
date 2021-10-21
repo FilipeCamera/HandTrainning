@@ -7,6 +7,8 @@ import CreateTrainning from './CreateTrainning';
 import {StudentStyle} from './styles';
 
 import WarningIcon from 'assets/svg/warningIcon.svg';
+import TrashIcon from 'assets/svg/trashIcon.svg';
+import EditIcon from 'assets/svg/editIcon.svg';
 import moment from 'moment';
 import {useGetRequests, useGetTrainning, useGetUser} from 'hooks';
 import VisualStudents from './VisualStudents';
@@ -26,7 +28,6 @@ const Students = ({navigation}: any) => {
   const [profileGym, setProfileGym] = useState<any>();
   const [buttonTitle, setButtonTitle] = useState('Criar treino');
   const [request, setRequest] = useState<any[]>([]);
-  const [selectedTrainning, setSelectedTrainning] = useState<any>();
   const [selectedCommon, setSelectedCommon] = useState<any>();
   const [mode, setMode] = useState('');
   const items = [
@@ -159,6 +160,8 @@ const Students = ({navigation}: any) => {
                     setButtonTitle(item.title);
                     if (item.title === 'Criar treino') {
                       setState(item.title);
+                    } else {
+                      setMode(item.title);
                     }
                   }}
                   key={item.title}
@@ -193,49 +196,95 @@ const Students = ({navigation}: any) => {
                     .filter(common => common.uid === trainning.commonId)
                     .map(common => {
                       return (
-                        <TouchableOpacity
+                        <View
                           key={common.name}
                           style={{
                             flexDirection: 'row',
                             alignItems: 'center',
                             justifyContent: 'space-between',
                             marginBottom: 16,
-                          }}
-                          onPress={() => {
-                            setSelectedTrainning(trainning);
-                            setSelectedCommon(common);
-                            setState('Visualizar');
                           }}>
-                          <View
+                          <TouchableOpacity
                             style={{
                               flexDirection: 'row',
                               alignItems: 'center',
+                            }}
+                            onPress={() => {
+                              setSelectedCommon(common);
+                              setMode('');
+                              setState('Visualizar');
                             }}>
                             <View
-                              style={{width: 28, height: 28, borderRadius: 14}}>
-                              <Image
-                                source={{uri: common.avatar}}
+                              style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                              }}>
+                              <View
                                 style={{
-                                  width: '100%',
-                                  height: '100%',
-                                  borderRadius: 9999,
-                                }}
+                                  width: 28,
+                                  height: 28,
+                                  borderRadius: 14,
+                                }}>
+                                <Image
+                                  source={{uri: common.avatar}}
+                                  style={{
+                                    width: '100%',
+                                    height: '100%',
+                                    borderRadius: 9999,
+                                  }}
+                                />
+                              </View>
+                              <Space marginHorizontal={4} />
+                              <Text
+                                title={common.name}
+                                size={14}
+                                weight={500}
+                                color={Colors.textColorRX}
                               />
                             </View>
-                            <Space marginHorizontal={4} />
-                            <Text
-                              title={common.name}
-                              size={14}
-                              weight={500}
-                              color={Colors.textColorRX}
-                            />
-                          </View>
-                          {moment(Date.now()).isAfter(trainning.expiration) && (
-                            <View style={{width: 20, height: 20}}>
-                              <WarningIcon width="100%" height="100%" />
-                            </View>
+                            {moment(Date.now()).isAfter(
+                              trainning.expiration,
+                            ) && (
+                              <View style={{width: 20, height: 20}}>
+                                <WarningIcon width="100%" height="100%" />
+                              </View>
+                            )}
+                          </TouchableOpacity>
+                          {mode === 'Excluir' && (
+                            <TouchableOpacity
+                              style={{
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                backgroundColor: Colors.lightRed2,
+                                width: 32,
+                                height: 32,
+                                borderRadius: 16,
+                              }}>
+                              <View style={{width: 18, height: 18}}>
+                                <TrashIcon width="100%" height="100%" />
+                              </View>
+                            </TouchableOpacity>
                           )}
-                        </TouchableOpacity>
+                          {mode === 'Editar' && (
+                            <TouchableOpacity
+                              style={{
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                backgroundColor: Colors.backYellowLight,
+                                width: 32,
+                                height: 32,
+                                borderRadius: 16,
+                              }}
+                              onPress={() => {
+                                setSelectedCommon(common);
+                                setState('Visualizar');
+                              }}>
+                              <View style={{width: 18, height: 18}}>
+                                <EditIcon width="100%" height="100%" />
+                              </View>
+                            </TouchableOpacity>
+                          )}
+                        </View>
                       );
                     })}
                 </View>

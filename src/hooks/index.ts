@@ -7,6 +7,7 @@ import useGetRequests from './useGetRequests';
 import useGetCategories from './useGetCategories';
 import useGetExercise from './useGetExercise';
 import useGetWarnings from './useGetWarnings';
+import useGetPostAndWarnings from './useGetPostAndWarnings';
 
 export {
   useSendFile,
@@ -18,4 +19,5 @@ export {
   useGetCategories,
   useGetExercise,
   useGetWarnings,
+  useGetPostAndWarnings,
 };

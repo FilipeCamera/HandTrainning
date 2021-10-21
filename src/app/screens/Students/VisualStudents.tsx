@@ -1,4 +1,13 @@
-import {Card, SimpleHeader, Space, Text} from 'components';
+import {
+  Button,
+  Card,
+  InputNota,
+  ModalInstruction,
+  ModalVisualTrainning,
+  SimpleHeader,
+  Space,
+  Text,
+} from 'components';
 import React, {useEffect, useState} from 'react';
 
 import KiloIcon from 'assets/svg/kiloIcon.svg';
@@ -24,6 +33,8 @@ import {useGetCategories, useGetTrainning} from 'hooks';
 import Clock from 'assets/svg/clockGray.svg';
 
 import moment from 'moment';
+import {firestore} from 'firebase';
+import {showMessage} from 'react-native-flash-message';
 
 interface VisualStudentsProps {
   mode: string;
@@ -35,11 +46,13 @@ const VisualStudents = ({mode, setState, common}: VisualStudentsProps) => {
   const {getTrainning} = useGetTrainning();
   const getCategories = useGetCategories();
   const [trainning, setTrainning] = useState<any>();
+  const [visible, setVisible] = useState(false);
+  const [instruct, setInstruct] = useState(false);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [categories, setCategories] = useState<any[]>([]);
-
+  const [selectedExercise, setSelectedExercise] = useState<any>();
   const handleSelect = (index, value) => {
     setSelected(index);
     setSelectedCategory(value);
@@ -74,6 +87,53 @@ const VisualStudents = ({mode, setState, common}: VisualStudentsProps) => {
       onFail: err => {},
     });
   }, []);
+
+  const verify = () => {
+    const test = trainning.trainning.every(function (exercise) {
+      if (
+        exercise.type.weight === '' ||
+        exercise.type.series === '' ||
+        exercise.type.repeat === '' ||
+        exercise.type.duration === ''
+      ) {
+        return false;
+      } else {
+        return true;
+      }
+    });
+    return test;
+  };
+  const handleUpdate = () => {
+    const verified = verify();
+    if (verified) {
+      firestore()
+        .collection('trainnings')
+        .where('commonId', '==', common.uid)
+        .get()
+        .then(querySnapshot => {
+          const trainningId = querySnapshot.docs.map(doc => doc.id);
+          firestore()
+            .collection('trainnings')
+            .doc(trainningId[0])
+            .update(trainning)
+            .then(res => {
+              showMessage({
+                type: 'success',
+                message: 'Treino alterado com sucesso!',
+              });
+              setState('');
+            })
+            .catch(err => {});
+        })
+        .catch(err => []);
+    } else {
+      showMessage({
+        type: 'warning',
+        message: 'Campo vazio',
+        description: 'Você precisa preencher todos os campos',
+      });
+    }
+  };
   return (
     <ScrollView
       contentContainerStyle={{
@@ -84,6 +144,29 @@ const VisualStudents = ({mode, setState, common}: VisualStudentsProps) => {
         backgroundColor: Colors.background,
       }}
       showsVerticalScrollIndicator={false}>
+      <ModalInstruction
+        title="Criar instrução"
+        visible={instruct}
+        setVisible={setInstruct}
+        instruct={selectedExercise ? selectedExercise.instruction.value : ''}
+        onFunction={(instruction, desc) => {
+          selectedExercise.instruction.value = instruction;
+          selectedExercise.instruction.desc = desc;
+        }}
+      />
+      <ModalVisualTrainning
+        visible={visible}
+        setVisible={setVisible}
+        title={selectedExercise ? selectedExercise.name : ''}
+        image={selectedExercise ? selectedExercise.url : ''}
+        imageTwo={
+          selectedExercise
+            ? selectedExercise.urlTwo
+              ? selectedExercise.urlTwo
+              : ''
+            : ''
+        }
+      />
       <SimpleHeader
         back
         onBack={() => setState('')}
@@ -357,44 +440,42 @@ const VisualStudents = ({mode, setState, common}: VisualStudentsProps) => {
                           justifyContent: 'center',
                           marginBottom: 8,
                         }}>
-                        <View style={{flex: 1}}>
+                        <TouchableOpacity
+                          style={{flex: 1}}
+                          onPress={() => {
+                            setSelectedExercise(exercise);
+                            setVisible(true);
+                          }}>
                           <Text
                             title={exercise.name}
                             size={14}
                             weight={500}
                             color={Colors.inputColorText}
                           />
-                        </View>
+                        </TouchableOpacity>
                         <View
                           style={{
                             width: 35,
                             alignItems: 'center',
                             justifyContent: 'center',
-                            backgroundColor: Colors.blueMedium,
+                            backgroundColor:
+                              mode === 'Editar' ? '' : Colors.blueMedium,
                             borderRadius: 8,
-                            paddingVertical: 8,
+                            paddingVertical: mode === 'Editar' ? 0 : 8,
                           }}>
-                          <Text
-                            size={14}
-                            title={exercise.type.weight}
-                            weight={500}
-                          />
-                        </View>
-                        <Space marginHorizontal={2} />
-                        <View
-                          style={{
-                            width: 35,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: Colors.blueLight,
-                            borderRadius: 8,
-                            paddingVertical: 8,
-                          }}>
-                          <Text
-                            size={14}
-                            title={exercise.type.series}
-                            weight={500}
-                          />
+                          {mode === 'Editar' ? (
+                            <InputNota
+                              background={Colors.blueMedium}
+                              value={exercise.type.weight}
+                              onText={e => (exercise.type.weight = e)}
+                            />
+                          ) : (
+                            <Text
+                              size={14}
+                              title={exercise.type.weight}
+                              weight={500}
+                            />
+                          )}
                         </View>
                         <Space marginHorizontal={2} />
                         <View
@@ -402,15 +483,24 @@ const VisualStudents = ({mode, setState, common}: VisualStudentsProps) => {
                             width: 35,
                             alignItems: 'center',
                             justifyContent: 'center',
-                            backgroundColor: Colors.blueLight,
+                            backgroundColor:
+                              mode === 'Editar' ? '' : Colors.blueLight,
                             borderRadius: 8,
-                            paddingVertical: 8,
+                            paddingVertical: mode === 'Editar' ? 0 : 8,
                           }}>
-                          <Text
-                            size={14}
-                            title={exercise.type.repeat}
-                            weight={500}
-                          />
+                          {mode === 'Editar' ? (
+                            <InputNota
+                              background={Colors.blueLight}
+                              value={exercise.type.series}
+                              onText={e => (exercise.type.series = e)}
+                            />
+                          ) : (
+                            <Text
+                              size={14}
+                              title={exercise.type.series}
+                              weight={500}
+                            />
+                          )}
                         </View>
                         <Space marginHorizontal={2} />
                         <View
@@ -418,20 +508,57 @@ const VisualStudents = ({mode, setState, common}: VisualStudentsProps) => {
                             width: 35,
                             alignItems: 'center',
                             justifyContent: 'center',
-                            backgroundColor: Colors.blueLight,
+                            backgroundColor:
+                              mode === 'Editar' ? '' : Colors.blueLight,
                             borderRadius: 8,
-                            paddingVertical: 8,
+                            paddingVertical: mode === 'Editar' ? 0 : 8,
                           }}>
-                          <Text
-                            size={14}
-                            title={exercise.type.duration}
-                            weight={500}
-                          />
+                          {mode === 'Editar' ? (
+                            <InputNota
+                              background={Colors.blueLight}
+                              value={exercise.type.repeat}
+                              onText={e => (exercise.type.repeat = e)}
+                            />
+                          ) : (
+                            <Text
+                              size={14}
+                              title={exercise.type.repeat}
+                              weight={500}
+                            />
+                          )}
+                        </View>
+                        <Space marginHorizontal={2} />
+                        <View
+                          style={{
+                            width: 35,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor:
+                              mode === 'Editar' ? '' : Colors.blueLight,
+                            borderRadius: 8,
+                            paddingVertical: mode === 'Editar' ? 0 : 8,
+                          }}>
+                          {mode === 'Editar' ? (
+                            <InputNota
+                              background={Colors.blueLight}
+                              value={exercise.type.duration}
+                              onText={e => (exercise.type.duration = e)}
+                            />
+                          ) : (
+                            <Text
+                              size={14}
+                              title={exercise.type.weight}
+                              weight={500}
+                            />
+                          )}
                         </View>
                         <Space marginHorizontal={2} />
                         <TouchableOpacity
                           disabled={
-                            exercise.instruction.value === 'OBS' ? false : true
+                            exercise.instruction.value === 'OBS' ||
+                            mode === 'Editar'
+                              ? false
+                              : true
                           }
                           style={{
                             width: 35,
@@ -444,8 +571,16 @@ const VisualStudents = ({mode, setState, common}: VisualStudentsProps) => {
                                 ? Colors.colorBackRgba
                                 : exercise.instruction.value === 'ADP'
                                 ? Colors.lightOrange
+                                : mode === 'Editar'
+                                ? Colors.lightGray
                                 : Colors.background,
                             borderRadius: 8,
+                          }}
+                          onPress={() => {
+                            if (mode === 'Editar') {
+                              setSelectedExercise(exercise);
+                              setInstruct(true);
+                            }
                           }}>
                           <View
                             style={{
@@ -458,6 +593,8 @@ const VisualStudents = ({mode, setState, common}: VisualStudentsProps) => {
                               title={
                                 exercise.instruction.value !== ''
                                   ? exercise.instruction.value
+                                  : mode === 'Editar'
+                                  ? 'INS'
                                   : ''
                               }
                               size={13}
@@ -596,6 +733,16 @@ const VisualStudents = ({mode, setState, common}: VisualStudentsProps) => {
             center
           />
         </View>
+      )}
+      {!loading && mode === 'Editar' && (
+        <Button
+          background={Colors.red}
+          title="Salvar alterações"
+          weight={600}
+          size={14}
+          color={Colors.textColorWhite}
+          onPress={() => handleUpdate()}
+        />
       )}
     </ScrollView>
   );

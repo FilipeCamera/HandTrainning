@@ -39,7 +39,11 @@ import Space from './Space';
 import Text from './Text';
 import DateTime from './DateTime';
 import BoxUpload from './BoxUpload';
-import Modal, {ModalInstruction, ModalCreateTrainning} from './Modal';
+import Modal, {
+  ModalInstruction,
+  ModalCreateTrainning,
+  ModalVisualTrainning,
+} from './Modal';
 
 export {
   Button,
@@ -88,4 +92,5 @@ export {
   InputNota,
   ModalInstruction,
   ModalCreateTrainning,
+  ModalVisualTrainning,
 };

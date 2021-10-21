@@ -3,26 +3,42 @@ import {View, Dimensions, Image} from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import {Text} from 'components';
 import {styles} from './styles';
-import {firestore} from 'firebase';
 import {useSelector} from 'react-redux';
+import {useGetPostAndWarnings} from 'hooks';
+import Colors from '@styles';
 
 const CarouselComponent = () => {
   const user = useSelector((state: any) => state.auth.user);
+  const gym = useSelector((state: any) => state.trainner.gym);
+
   const carouselRef = useRef(null);
+  const {getPosts} = useGetPostAndWarnings();
   const {width} = Dimensions.get('screen');
   const [data, setData] = useState<any[]>([]);
 
   useEffect(() => {
-    if (user.userAssociate !== undefined) {
-      firestore()
-        .collection('posts')
-        .where('gym', '==', user.userAssociate)
-        .get()
-        .then(querySnapshot => {
-          const list = querySnapshot.docs.map(doc => doc.data());
-          setData(list);
-        })
-        .catch(error => {});
+    if (user.type === 'trainner' && gym !== undefined) {
+      getPosts({
+        uid: gym.gym,
+        onComplete: posts => {
+          if (posts) {
+            console.log(posts);
+            setData(posts);
+          }
+        },
+        onFail: err => {},
+      });
+    }
+    if (user.type === 'common' && user.userAssociate !== undefined) {
+      getPosts({
+        uid: user.userAssociate,
+        onComplete: posts => {
+          if (posts) {
+            setData(posts);
+          }
+        },
+        onFail: err => {},
+      });
     }
   }, []);
 
@@ -76,7 +92,7 @@ const CarouselComponent = () => {
     <>
       {data.length !== 0 ? (
         <Carousel
-          slideStyle={{backgroundColor: '#fff', paddingVertical: 16}}
+          slideStyle={{backgroundColor: Colors.background, paddingVertical: 16}}
           autoplay={true}
           horizontal={true}
           autoplayDelay={1000}
