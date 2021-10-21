@@ -1,6 +1,5 @@
 import Colors from '@styles';
 import {Card, CarouselWarnings, Header, Space, Text} from 'components';
-import {firestore} from 'firebase';
 import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, Image, TouchableOpacity, View} from 'react-native';
 import {useSelector} from 'react-redux';
@@ -10,6 +9,7 @@ import {StudentStyle} from './styles';
 import WarningIcon from 'assets/svg/warningIcon.svg';
 import moment from 'moment';
 import {useGetRequests, useGetTrainning, useGetUser} from 'hooks';
+import VisualStudents from './VisualStudents';
 
 const Students = ({navigation}: any) => {
   const user = useSelector((state: any) => state.auth.user);
@@ -26,6 +26,8 @@ const Students = ({navigation}: any) => {
   const [profileGym, setProfileGym] = useState<any>();
   const [buttonTitle, setButtonTitle] = useState('Criar treino');
   const [request, setRequest] = useState<any[]>([]);
+  const [selectedTrainning, setSelectedTrainning] = useState<any>();
+  const [selectedCommon, setSelectedCommon] = useState<any>();
   const [mode, setMode] = useState('');
   const items = [
     {title: 'Criar treino'},
@@ -85,6 +87,11 @@ const Students = ({navigation}: any) => {
 
   if (state === 'Criar treino') {
     return <CreateTrainning setState={setState} />;
+  }
+  if (state === 'Visualizar') {
+    return (
+      <VisualStudents setState={setState} common={selectedCommon} mode={mode} />
+    );
   }
   return (
     <StudentStyle
@@ -193,6 +200,11 @@ const Students = ({navigation}: any) => {
                             alignItems: 'center',
                             justifyContent: 'space-between',
                             marginBottom: 16,
+                          }}
+                          onPress={() => {
+                            setSelectedTrainning(trainning);
+                            setSelectedCommon(common);
+                            setState('Visualizar');
                           }}>
                           <View
                             style={{

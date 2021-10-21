@@ -23,6 +23,7 @@ interface ModalProps {
   setVisible: any;
   title: string;
   exercisesSelected: any[];
+  categoriesSelected: any[];
   commonId: string;
   trainnerId: string;
   setSend: any;
@@ -33,6 +34,7 @@ const ModalCreateTrainning = ({
   setVisible,
   title,
   exercisesSelected,
+  categoriesSelected,
   setSend,
   commonId,
   trainnerId,
@@ -53,12 +55,14 @@ const ModalCreateTrainning = ({
     trainnerId: trainnerId,
     commonId: commonId,
     trainning: exercisesSelected,
+    categories: categoriesSelected,
     expiredTrainning: expire,
     createdAt: firestore.FieldValue.serverTimestamp(),
   };
   const updatedData = {
     trainnerId: trainnerId,
     commonId: commonId,
+    categories: categoriesSelected,
     trainning: exercisesSelected,
     expiredTrainning: expire,
     updatedAt: firestore.FieldValue.serverTimestamp(),
@@ -84,7 +88,6 @@ const ModalCreateTrainning = ({
       .get()
       .then(querySnapshot => {
         const trainning = querySnapshot.docs.map(doc => doc.id);
-        console.log(trainning);
         if (trainning[0]) {
           firestore()
             .collection('trainnings')
@@ -100,6 +103,10 @@ const ModalCreateTrainning = ({
                     doc.ref.delete();
                   });
                   setLoading(false);
+                  showMessage({
+                    type: 'success',
+                    message: 'Treino criado com sucesso!',
+                  });
                   setCreated(true);
                 })
                 .catch(err => {});
@@ -120,6 +127,10 @@ const ModalCreateTrainning = ({
                     doc.ref.delete();
                   });
                   setLoading(false);
+                  showMessage({
+                    type: 'success',
+                    message: 'Treino criado com sucesso!',
+                  });
                   setCreated(true);
                 })
                 .catch(err => {});

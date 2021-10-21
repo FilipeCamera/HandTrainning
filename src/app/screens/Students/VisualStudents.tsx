@@ -1,24 +1,5 @@
-import Colors from '@styles';
-import {
-  Button,
-  Card,
-  InputNota,
-  ModalCreateTrainning,
-  ModalInstruction,
-  SimpleHeader,
-  Space,
-  Text,
-} from 'components';
-import {firestore} from 'firebase';
+import {Card, SimpleHeader, Space, Text} from 'components';
 import React, {useEffect, useState} from 'react';
-import {
-  ActivityIndicator,
-  Image,
-  ScrollView,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
 
 import KiloIcon from 'assets/svg/kiloIcon.svg';
 import CalendarIcon from 'assets/svg/calendarIcon.svg';
@@ -28,75 +9,71 @@ import SerieIcon from 'assets/svg/repeatIcon.svg';
 import RepeatIcon from 'assets/svg/repeatIcon2.svg';
 import DurationIcon from 'assets/svg/durationIcon.svg';
 import InstructionIcon from 'assets/svg/instructionIcon.svg';
+import ExerciseIcon from 'assets/svg/weightIcon.svg';
 import VerticalLine from 'assets/svg/verticalLine.svg';
-import {showMessage} from 'react-native-flash-message';
-import {useSelector} from 'react-redux';
-import {useGetUser} from 'hooks';
 
-interface StepProps {
-  categorySelected: any[];
-  exercisesSelected: any[];
-  setExercisesSelected: any;
-  setTrainningStep: any;
-  commonId: string;
-  setSend: any;
+import {
+  ActivityIndicator,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import Colors from '@styles';
+import {useGetCategories, useGetTrainning} from 'hooks';
+
+import Clock from 'assets/svg/clockGray.svg';
+
+import moment from 'moment';
+
+interface VisualStudentsProps {
+  mode: string;
+  setState: any;
+  common: any;
 }
 
-const Step2 = ({
-  categorySelected,
-  setTrainningStep,
-  commonId,
-  exercisesSelected,
-  setSend,
-}: StepProps) => {
-  const user = useSelector((state: any) => state.auth.user);
-
-  const {getUser} = useGetUser();
-  const [student, setStudent] = useState<any>();
-  const [category, setCategory] = useState<any[]>(categorySelected);
+const VisualStudents = ({mode, setState, common}: VisualStudentsProps) => {
+  const {getTrainning} = useGetTrainning();
+  const getCategories = useGetCategories();
+  const [trainning, setTrainning] = useState<any>();
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState('');
-  const [visible, setVisible] = useState(false);
-  const [createTrainning, setCreateTrainning] = useState(false);
-  const [exercise, setExercise] = useState<any>();
-
-  useEffect(() => {
-    getUser({
-      uid: commonId,
-      onComplete: user => {
-        if (user) {
-          setStudent(user);
-          setLoading(false);
-        }
-      },
-      onFail: err => {},
-    });
-
-    setSelectedCategory(category[0].value);
-  }, []);
+  const [categories, setCategories] = useState<any[]>([]);
 
   const handleSelect = (index, value) => {
     setSelected(index);
     setSelectedCategory(value);
   };
 
-  const verify = () => {
-    const test = exercisesSelected.every(function (exercise) {
-      if (
-        exercise.type.weight === '' ||
-        exercise.type.series === '' ||
-        exercise.type.repeat === '' ||
-        exercise.type.duration === ''
-      ) {
-        return false;
-      } else {
-        return true;
-      }
+  useEffect(() => {
+    getTrainning({
+      uid: common.uid,
+      onComplete: trainningUser => {
+        const list: any = [];
+        if (trainningUser) {
+          setTrainning(trainningUser);
+          getCategories({
+            onComplete: category => {
+              if (category) {
+                category.map(cat => {
+                  trainningUser.categories.map(tr => {
+                    if (tr.value === cat.value) {
+                      list.push(cat);
+                    }
+                  });
+                });
+                setCategories(list);
+                setSelectedCategory(list[0].value);
+                setLoading(false);
+              }
+            },
+            onFail: err => {},
+          });
+        }
+      },
+      onFail: err => {},
     });
-    return test;
-  };
-
+  }, []);
   return (
     <ScrollView
       contentContainerStyle={{
@@ -107,40 +84,19 @@ const Step2 = ({
         backgroundColor: Colors.background,
       }}
       showsVerticalScrollIndicator={false}>
-      <ModalCreateTrainning
-        title="Finalizando treino"
-        visible={createTrainning}
-        setVisible={setCreateTrainning}
-        commonId={commonId}
-        trainnerId={user.uid}
-        setSend={setSend}
-        exercisesSelected={exercisesSelected}
-        categoriesSelected={categorySelected}
-      />
-      <ModalInstruction
-        title="Criar instrução"
-        visible={visible}
-        setVisible={setVisible}
-        instruct={exercise ? exercise.instruction.value : ''}
-        onFunction={(instruction, desc) => {
-          exercise.instruction.value = instruction;
-          exercise.instruction.desc = desc;
-        }}
-      />
       <SimpleHeader
-        title="Criar treino"
         back
+        onBack={() => setState('')}
+        title="Treino do Aluno"
         size={18}
-        weight={500}
-        color={Colors.textColorBlack}
-        onBack={() => setTrainningStep('step1')}
+        weight={600}
       />
       {!!loading && (
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
           <ActivityIndicator size="large" color={Colors.red} />
         </View>
       )}
-      {!loading && (
+      {!loading && !!trainning && (
         <>
           <Space marginVertical={10} />
           <Card>
@@ -166,9 +122,9 @@ const Step2 = ({
                   showsVerticalScrollIndicator={false}
                   nestedScrollEnabled={true}
                   contentContainerStyle={{paddingVertical: 2}}>
-                  {!!student &&
-                    Object.keys(student.problemHealth).map(problem => {
-                      if (student.problemHealth[problem].value === true) {
+                  {!!common &&
+                    Object.keys(common.problemHealth).map(problem => {
+                      if (common.problemHealth[problem].value === true) {
                         return (
                           <View key={problem}>
                             <View
@@ -181,7 +137,7 @@ const Step2 = ({
                                 padding: 2,
                               }}>
                               <Text
-                                title={student.problemHealth[problem].title}
+                                title={common.problemHealth[problem].title}
                                 weight={600}
                                 size={11}
                                 color={Colors.inputColorText}
@@ -194,7 +150,7 @@ const Step2 = ({
                                 alignItems: 'center',
                               }}>
                               <Space marginHorizontal={5} />
-                              {!!student.problemHealth[problem].desc && (
+                              {!!common.problemHealth[problem].desc && (
                                 <View
                                   style={{
                                     width: 90,
@@ -205,7 +161,7 @@ const Step2 = ({
                                     padding: 5,
                                   }}>
                                   <Text
-                                    title={student.problemHealth[problem].desc}
+                                    title={common.problemHealth[problem].desc}
                                     weight={600}
                                     size={10}
                                     color={Colors.inputColorText}
@@ -213,7 +169,7 @@ const Step2 = ({
                                 </View>
                               )}
                             </View>
-                            {!!student.problemHealth[problem].desc && (
+                            {!!common.problemHealth[problem].desc && (
                               <Space marginVertical={4} />
                             )}
                           </View>
@@ -226,7 +182,7 @@ const Step2 = ({
                 <VerticalLine />
               </View>
               <View>
-                {!!student && (
+                {!!common && (
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <View
                       style={{flexDirection: 'column', alignItems: 'center'}}>
@@ -242,7 +198,7 @@ const Step2 = ({
                           justifyContent: 'center',
                         }}>
                         <Text
-                          title={student.weight}
+                          title={common.weight}
                           size={15}
                           weight={600}
                           color={Colors.inputColorText}
@@ -264,7 +220,7 @@ const Step2 = ({
                           justifyContent: 'center',
                         }}>
                         <Text
-                          title={student.age}
+                          title={common.age}
                           size={15}
                           weight={600}
                           color={Colors.inputColorText}
@@ -286,7 +242,7 @@ const Step2 = ({
                           justifyContent: 'center',
                         }}>
                         <Text
-                          title={student.height}
+                          title={common.height}
                           size={15}
                           weight={600}
                           color={Colors.inputColorText}
@@ -300,28 +256,31 @@ const Step2 = ({
           </Card>
           <Space marginVertical={20} />
           <Card>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <View style={{width: 30, height: 30, borderRadius: 15}}>
-                <Image
-                  source={{uri: student.avatar}}
-                  style={{height: '100%', width: '100%', borderRadius: 9999}}
+            {!!trainning && (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'flex-end',
+                }}>
+                <Text
+                  title={`${moment
+                    .unix(trainning.expiredTrainning.seconds)
+                    .format('[Expira em] DD [de] MMM [de] YYYY')}`}
+                  weight={600}
+                  size={11}
+                  color={Colors.textGrayLight}
                 />
+                <Clock style={{marginLeft: 5}} />
               </View>
-              <Space marginHorizontal={4} />
-              <Text
-                title={student.name}
-                size={14}
-                weight={500}
-                color={Colors.inputColorText}
-              />
-            </View>
+            )}
             <Space marginVertical={5} />
-            {!!categorySelected && (
+            {!!categories && (
               <ScrollView
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}>
-                {categorySelected.length !== 0 &&
-                  categorySelected.map((category, index) => {
+                {categories.length !== 0 &&
+                  categories.map((category, index) => {
                     return (
                       <TouchableOpacity
                         key={category.label}
@@ -385,9 +344,9 @@ const Step2 = ({
               </View>
             </View>
             <View style={{flexDirection: 'column', alignItems: 'flex-start'}}>
-              {!!exercisesSelected &&
-                exercisesSelected.length !== 0 &&
-                exercisesSelected.map(exercise => {
+              {!!trainning &&
+                trainning.trainning.length !== 0 &&
+                trainning.trainning.map(exercise => {
                   if (exercise.category === selectedCategory) {
                     return (
                       <View
@@ -411,11 +370,14 @@ const Step2 = ({
                             width: 35,
                             alignItems: 'center',
                             justifyContent: 'center',
+                            backgroundColor: Colors.blueMedium,
+                            borderRadius: 8,
+                            paddingVertical: 8,
                           }}>
-                          <InputNota
-                            background={Colors.blueMedium}
-                            value={exercise.type.weight}
-                            onText={e => (exercise.type.weight = e)}
+                          <Text
+                            size={14}
+                            title={exercise.type.weight}
+                            weight={500}
                           />
                         </View>
                         <Space marginHorizontal={2} />
@@ -424,11 +386,14 @@ const Step2 = ({
                             width: 35,
                             alignItems: 'center',
                             justifyContent: 'center',
+                            backgroundColor: Colors.blueLight,
+                            borderRadius: 8,
+                            paddingVertical: 8,
                           }}>
-                          <InputNota
-                            background={Colors.blueLight}
-                            value={exercise.type.series}
-                            onText={e => (exercise.type.series = e)}
+                          <Text
+                            size={14}
+                            title={exercise.type.series}
+                            weight={500}
                           />
                         </View>
                         <Space marginHorizontal={2} />
@@ -437,11 +402,14 @@ const Step2 = ({
                             width: 35,
                             alignItems: 'center',
                             justifyContent: 'center',
+                            backgroundColor: Colors.blueLight,
+                            borderRadius: 8,
+                            paddingVertical: 8,
                           }}>
-                          <InputNota
-                            background={Colors.blueLight}
-                            value={exercise.type.repeat}
-                            onText={e => (exercise.type.repeat = e)}
+                          <Text
+                            size={14}
+                            title={exercise.type.repeat}
+                            weight={500}
                           />
                         </View>
                         <Space marginHorizontal={2} />
@@ -450,15 +418,21 @@ const Step2 = ({
                             width: 35,
                             alignItems: 'center',
                             justifyContent: 'center',
+                            backgroundColor: Colors.blueLight,
+                            borderRadius: 8,
+                            paddingVertical: 8,
                           }}>
-                          <InputNota
-                            background={Colors.blueLight}
-                            value={exercise.type.duration}
-                            onText={e => (exercise.type.duration = e)}
+                          <Text
+                            size={14}
+                            title={exercise.type.duration}
+                            weight={500}
                           />
                         </View>
                         <Space marginHorizontal={2} />
-                        <View
+                        <TouchableOpacity
+                          disabled={
+                            exercise.instruction.value === 'OBS' ? false : true
+                          }
                           style={{
                             width: 35,
                             alignItems: 'center',
@@ -470,26 +444,21 @@ const Step2 = ({
                                 ? Colors.colorBackRgba
                                 : exercise.instruction.value === 'ADP'
                                 ? Colors.lightOrange
-                                : Colors.lightGray,
+                                : Colors.background,
                             borderRadius: 8,
                           }}>
-                          <TouchableOpacity
+                          <View
                             style={{
                               borderRadius: 8,
-                              padding: 4,
-                              flex: 1,
+                              paddingVertical: 8,
                               justifyContent: 'center',
                               alignItems: 'center',
-                            }}
-                            onPress={() => {
-                              setExercise(exercise);
-                              setVisible(true);
                             }}>
                             <Text
                               title={
                                 exercise.instruction.value !== ''
                                   ? exercise.instruction.value
-                                  : 'INS'
+                                  : ''
                               }
                               size={13}
                               weight={600}
@@ -503,15 +472,14 @@ const Step2 = ({
                                   : Colors.inputColorText
                               }
                             />
-                          </TouchableOpacity>
-                        </View>
+                          </View>
+                        </TouchableOpacity>
                       </View>
                     );
                   }
                 })}
             </View>
           </Card>
-
           <Space marginVertical={20} />
           <Card>
             <View
@@ -571,7 +539,7 @@ const Step2 = ({
               </View>
               <View style={{width: '80%'}}>
                 <Text
-                  title="A contagem do descanco é por minutos"
+                  title="A contagem do descanco é por minuto"
                   weight={500}
                   color={Colors.inputColorText}
                   size={14}
@@ -613,30 +581,24 @@ const Step2 = ({
               </View>
             </View>
           </Card>
-          <Space marginVertical={20} />
-          <Button
-            title="Criar treino"
-            weight={500}
-            size={14}
-            color={Colors.textColorWhite}
-            background={Colors.red}
-            onPress={() => {
-              const verified = verify();
-
-              if (verified) {
-                return setCreateTrainning(true);
-              }
-              return showMessage({
-                type: 'warning',
-                message: 'Campos Vazios',
-                description: 'Precisa preencher todos os campos',
-              });
-            }}
-          />
+          <Space marginVertical={16} />
         </>
+      )}
+      {!loading && trainning.length === 0 && (
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+          <ExerciseIcon width="120px" height="120px" />
+          <Space marginVertical={4} />
+          <Text
+            title="Opa! Você não tem um treino"
+            size={15}
+            weight={500}
+            color={Colors.grayMediumLight}
+            center
+          />
+        </View>
       )}
     </ScrollView>
   );
 };
 
-export default Step2;
+export default VisualStudents;
