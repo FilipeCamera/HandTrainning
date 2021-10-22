@@ -1,4 +1,11 @@
-import {Card, Header, ModalVisualTrainning, Space, Text} from 'components';
+import {
+  Card,
+  Header,
+  Modal,
+  ModalVisualTrainning,
+  Space,
+  Text,
+} from 'components';
 import React, {useEffect, useState} from 'react';
 import {TrainningStyle} from './styles';
 
@@ -7,7 +14,10 @@ import SerieIcon from 'assets/svg/repeatIcon.svg';
 import RepeatIcon from 'assets/svg/repeatIcon2.svg';
 import DurationIcon from 'assets/svg/durationIcon.svg';
 import InstructionIcon from 'assets/svg/instructionIcon.svg';
+import StarOutlineIcon from 'assets/svg/starOutline.svg';
 import ExerciseIcon from 'assets/svg/weightIcon.svg';
+import Refresh from 'assets/svg/refresh.svg';
+
 import {
   ActivityIndicator,
   Image,
@@ -22,25 +32,64 @@ import {useSelector} from 'react-redux';
 import Clock from 'assets/svg/clockGray.svg';
 
 import moment from 'moment';
+import {firestore} from 'firebase';
 
 const Trainning = ({navigation}: any) => {
   const user = useSelector((state: any) => state.auth.user);
   const {getTrainning} = useGetTrainning();
-  const {getUser} = useGetUser();
+  const {getUser, getUserTrainner} = useGetUser();
   const getCategories = useGetCategories();
 
   const [visible, setVisible] = useState(false);
+  const [visibleSelect, setVisibleSelect] = useState(false);
   const [trainning, setTrainning] = useState<any>();
   const [loading, setLoading] = useState(true);
   const [trainner, setTrainner] = useState<any>();
   const [selected, setSelected] = useState(0);
+  const [trainners, setTrainners] = useState<any[]>([]);
   const [selectedExercise, setSelectedExercise] = useState<any>();
   const [selectedCategory, setSelectedCategory] = useState('');
   const [categories, setCategories] = useState<any[]>([]);
+  const [send, setSend] = useState(false);
 
   const handleSelect = (index, value) => {
     setSelected(index);
     setSelectedCategory(value);
+  };
+
+  useEffect(() => {
+    if (user.userAssociate !== undefined) {
+      getUserTrainner({
+        uid: user.userAssociate,
+        onComplete: users => {
+          if (users) {
+            setTrainners(users);
+          }
+        },
+        onFail: err => {},
+      });
+    }
+  }, []);
+
+  const handleRequestTrainner = () => {
+    setLoading(!loading);
+    const data = {
+      commonId: user.uid,
+      trainnerId: trainner,
+      title: 'Novo treino',
+      desc: `${user.name} solicitou um novo treino`,
+      createdAt: firestore.FieldValue.serverTimestamp(),
+    };
+
+    firestore()
+      .collection('requests')
+      .doc()
+      .set(data)
+      .then(res => {
+        setLoading(!loading);
+        setSend(!send);
+      })
+      .catch(err => console.log(err));
   };
 
   useEffect(() => {
@@ -93,6 +142,16 @@ const Trainning = ({navigation}: any) => {
       }}
       showsVerticalScrollIndicator={false}>
       <Header navigation={navigation} />
+      <Modal
+        visible={visibleSelect}
+        setVisible={setVisibleSelect}
+        trainners={trainners}
+        loading={loading}
+        send={send}
+        setTrainner={setTrainner}
+        title="Escolha um novo treinador"
+        onFunction={() => handleRequestTrainner()}
+      />
       <ModalVisualTrainning
         visible={visible}
         setVisible={setVisible}
@@ -133,6 +192,7 @@ const Trainning = ({navigation}: any) => {
                 <Clock style={{marginLeft: 5}} />
               </View>
             )}
+            <Space marginVertical={5} />
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <View style={{width: 30, height: 30, borderRadius: 15}}>
                 <Image
@@ -147,6 +207,20 @@ const Trainning = ({navigation}: any) => {
                 weight={500}
                 color={Colors.inputColorText}
               />
+              <Space marginHorizontal={12} />
+              <TouchableOpacity>
+                <StarOutlineIcon />
+              </TouchableOpacity>
+              <Space marginHorizontal={4} />
+              <TouchableOpacity
+                style={{
+                  backgroundColor: Colors.backgroundLight,
+                  padding: 8,
+                  borderRadius: 9999,
+                }}
+                onPress={() => setVisibleSelect(true)}>
+                <Refresh width="14px" height="14px" />
+              </TouchableOpacity>
             </View>
             <Space marginVertical={5} />
             {!!categories && (

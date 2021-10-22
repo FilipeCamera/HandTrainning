@@ -144,12 +144,6 @@ const ProfileEdit = ({setState, user}: StepProps) => {
         .update(dados)
         .then(res => {
           userPersist(dados);
-          if (dados.type === 'gym') {
-            firestore()
-              .collection('statistic')
-              .doc(user.uid)
-              .set({total: 0, trainner: 0, common: 0, data: []});
-          }
           showMessage({
             type: 'success',
             message: 'Atualizado com sucesso!',

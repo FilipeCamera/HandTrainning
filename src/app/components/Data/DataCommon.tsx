@@ -59,7 +59,6 @@ const DataCommon = ({dados, setDados, errors}: DataProps) => {
     dados.problemHealth.cancer.value || false,
   );
   useEffect(() => {
-    dados.problemHealth.breath;
     if (lesion === false) {
       setLesionText('');
     }
@@ -205,8 +204,9 @@ const DataCommon = ({dados, setDados, errors}: DataProps) => {
           <View style={{marginLeft: 30}}>
             <Input
               slogan
-              placeholder="Qual ou quais?"
+              placeholder="Quais?"
               multiline={4}
+              value={lesionText}
               onText={e => {
                 setLesionText(e);
               }}
@@ -239,6 +239,7 @@ const DataCommon = ({dados, setDados, errors}: DataProps) => {
               slogan
               placeholder="Quais?"
               multiline={2}
+              value={breathText}
               onText={e => setBreathText(e)}
               error={errors.breath}
             />
