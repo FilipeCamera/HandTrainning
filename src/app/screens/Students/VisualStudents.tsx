@@ -39,10 +39,18 @@ import {showMessage} from 'react-native-flash-message';
 interface VisualStudentsProps {
   mode: string;
   setState: any;
+  setButtonTitle: any;
+  setMode: any;
   common: any;
 }
 
-const VisualStudents = ({mode, setState, common}: VisualStudentsProps) => {
+const VisualStudents = ({
+  mode,
+  setState,
+  common,
+  setButtonTitle,
+  setMode,
+}: VisualStudentsProps) => {
   const {getTrainning} = useGetTrainning();
   const getCategories = useGetCategories();
   const [trainning, setTrainning] = useState<any>();
@@ -169,7 +177,11 @@ const VisualStudents = ({mode, setState, common}: VisualStudentsProps) => {
       />
       <SimpleHeader
         back
-        onBack={() => setState('')}
+        onBack={() => {
+          setMode('');
+          setButtonTitle('Criar treino');
+          setState('');
+        }}
         title="Treino do Aluno"
         size={18}
         weight={600}
@@ -547,7 +559,7 @@ const VisualStudents = ({mode, setState, common}: VisualStudentsProps) => {
                           ) : (
                             <Text
                               size={14}
-                              title={exercise.type.weight}
+                              title={exercise.type.duration}
                               weight={500}
                             />
                           )}
@@ -738,7 +750,7 @@ const VisualStudents = ({mode, setState, common}: VisualStudentsProps) => {
         <Button
           background={Colors.red}
           title="Salvar alterações"
-          weight={600}
+          weight={500}
           size={14}
           color={Colors.textColorWhite}
           onPress={() => handleUpdate()}

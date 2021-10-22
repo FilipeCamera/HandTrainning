@@ -8,17 +8,53 @@ import CloseIcon from 'assets/svg/CloseIcon.svg';
 import LocationIcon from 'assets/svg/locationIcon.svg';
 import LineGray from 'assets/svg/LineGran.svg';
 import {TouchableOpacity, View} from 'react-native';
-import {Button, CardMini, Space, Text} from 'components';
+import {Button, CardMini, ModalUnbindGym, Space, Text} from 'components';
 import {Image} from 'react-native';
 import {Logout} from 'functions';
 import Colors from '@styles';
 import {useGetTrainning, useGetUser} from 'hooks';
+import {firestore} from 'firebase';
+import {showMessage} from 'react-native-flash-message';
+import ProfileEdit from './ProfileEdit';
 
 const ProfileCommon = ({user, navigation}: any) => {
   const [gym, setGym] = useState<any>();
   const [trainner, setTrainner] = useState<any>();
+  const [state, setState] = useState('');
+  const [visible, setVisible] = useState(false);
   const {getUser} = useGetUser();
-  const {getTrainning} = useGetTrainning();
+  const {getTrainning, getTrainningId} = useGetTrainning();
+
+  const handleUnbindGym = () => {
+    firestore()
+      .collection('users')
+      .doc(user.uid)
+      .update({userAssociate: ''})
+      .then(res => {
+        getTrainningId({
+          uid: user.uid,
+          onComplete: trainning => {
+            if (trainning) {
+              firestore()
+                .collection('trainnings')
+                .doc(trainning)
+                .delete()
+                .then(res => {
+                  setVisible(false);
+                  showMessage({
+                    type: 'info',
+                    message: 'Você foi desvinculado da academia',
+                  });
+                })
+                .catch(err => {});
+            }
+          },
+          onFail: err => {},
+        });
+      })
+      .catch(err => {});
+  };
+
   useEffect(() => {
     getUser({
       uid: user.uid,
@@ -55,6 +91,10 @@ const ProfileCommon = ({user, navigation}: any) => {
       onFail: err => {},
     });
   }, []);
+
+  if (state === 'edit') {
+    return <ProfileEdit user={user} setState={setState} />;
+  }
   return (
     <ProfileContainer
       contentContainerStyle={{
@@ -64,6 +104,13 @@ const ProfileCommon = ({user, navigation}: any) => {
         paddingBottom: 16,
       }}
       showsVerticalScrollIndicator={false}>
+      <ModalUnbindGym
+        visible={visible}
+        setVisible={setVisible}
+        title="Deseja realmente desvincular?"
+        desc="Você perderá o seu treino caso faça isso."
+        onFunction={handleUnbindGym}
+      />
       <View style={{width: '100%', height: 200}}>
         <BackRedHeader
           width="100%"
@@ -157,40 +204,45 @@ const ProfileCommon = ({user, navigation}: any) => {
         <LineGray width="100%" />
       </View>
       <Space marginVertical={8} />
-      <View style={{width: '90%'}}>
-        <TouchableOpacity
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-          onPress={() => {}}>
-          <Text
-            title="Desvincular da academia"
-            size={17}
-            weight={600}
-            color={Colors.textColorBlack}
-            style={{marginLeft: 5}}
-          />
-          <CloseIcon />
-        </TouchableOpacity>
-        <LineGray width="100%" />
-      </View>
+      {!!gym && (
+        <View style={{width: '90%'}}>
+          <TouchableOpacity
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+            onPress={() => {
+              setVisible(true);
+            }}>
+            <Text
+              title="Desvincular da academia"
+              size={17}
+              weight={600}
+              color={Colors.textColorBlack}
+              style={{marginLeft: 5}}
+            />
+            <CloseIcon />
+          </TouchableOpacity>
+          <LineGray width="100%" />
+        </View>
+      )}
       <Space marginVertical={60} />
       <View style={{width: '90%', alignItems: 'center'}}>
         <Button
           title="Editar Dados"
-          background="#fff"
+          background={Colors.background}
           size={15}
           weight={500}
-          color="#090A0A"
+          color={Colors.textColorBlack}
+          onPress={() => setState('edit')}
         />
         <Button
           title="Sair"
-          background="#FF6859"
+          background={Colors.red}
           size={15}
           weight={500}
-          color="#fff"
+          color={Colors.textColorWhite}
           onPress={() => Logout().then(_ => navigation.navigate('Public'))}
         />
       </View>

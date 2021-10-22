@@ -17,26 +17,49 @@ interface DataProps {
 }
 
 const DataCommon = ({dados, setDados, errors}: DataProps) => {
-  const [name, setName] = useState('');
-  const [slogan, setSlogan] = useState('');
-  const [uf, setUF] = useState('');
-  const [sex, setSex] = useState('');
-  const [city, setCity] = useState('');
-  const [weight, setWeight] = useState('');
-  const [age, setAge] = useState('');
-  const [height, setHeight] = useState('');
-  const [lesionText, setLesionText] = useState('');
-  const [breathText, setBreathText] = useState('');
-  const [lesion, setLesion] = useState(false);
-  const [breath, setBreath] = useState(false);
-  const [diabete, setDiabete] = useState(false);
-  const [obesity, setObesity] = useState(false);
-  const [hypertension, setHypertension] = useState(false);
-  const [arthritis, setArthritis] = useState(false);
-  const [arthrosis, setArthrosis] = useState(false);
-  const [cholesterol, setCholesterol] = useState(false);
-  const [cancer, setCancer] = useState(false);
+  const [name, setName] = useState(dados.name || '');
+  const [slogan, setSlogan] = useState(dados.slogan || '');
+  const [uf, setUF] = useState(dados.uf || '');
+  const [sex, setSex] = useState(dados.sex || '');
+  const [city, setCity] = useState(dados.city || '');
+  const [weight, setWeight] = useState(dados.weight || '');
+  const [age, setAge] = useState(dados.age || '');
+  const [height, setHeight] = useState(dados.height || '');
+  const [lesionText, setLesionText] = useState(
+    dados.problemHealth.lesion.desc || '',
+  );
+  const [breathText, setBreathText] = useState(
+    dados.problemHealth.breath.desc || '',
+  );
+  const [lesion, setLesion] = useState(
+    dados.problemHealth.lesion.value || false,
+  );
+  const [breath, setBreath] = useState(
+    dados.problemHealth.breath.value || false,
+  );
+  const [diabete, setDiabete] = useState(
+    dados.problemHealth.diabete.value || false,
+  );
+  const [obesity, setObesity] = useState(
+    dados.problemHealth.obesity.value || false,
+  );
+  const [hypertension, setHypertension] = useState(
+    dados.problemHealth.hypertension.value || false,
+  );
+  const [arthritis, setArthritis] = useState(
+    dados.problemHealth.arthritis.value || false,
+  );
+  const [arthrosis, setArthrosis] = useState(
+    dados.problemHealth.arthrosis.value || false,
+  );
+  const [cholesterol, setCholesterol] = useState(
+    dados.problemHealth.cholesterol.value || false,
+  );
+  const [cancer, setCancer] = useState(
+    dados.problemHealth.cancer.value || false,
+  );
   useEffect(() => {
+    dados.problemHealth.breath;
     if (lesion === false) {
       setLesionText('');
     }
@@ -184,7 +207,9 @@ const DataCommon = ({dados, setDados, errors}: DataProps) => {
               slogan
               placeholder="Qual ou quais?"
               multiline={4}
-              onText={setLesionText}
+              onText={e => {
+                setLesionText(e);
+              }}
               error={errors.lesion}
             />
           </View>
@@ -214,7 +239,7 @@ const DataCommon = ({dados, setDados, errors}: DataProps) => {
               slogan
               placeholder="Quais?"
               multiline={2}
-              onText={setBreathText}
+              onText={e => setBreathText(e)}
               error={errors.breath}
             />
           </View>

@@ -17,7 +17,7 @@ interface AvatarProps {
 
 const Avatar = ({edit, dados, setDados, error}: AvatarProps) => {
   const {sendFile} = useSendFile();
-  const [image, setImage] = useState({});
+  const [image, setImage] = useState<any>({});
 
   const handleImage = () => {
     selectImage()
@@ -49,19 +49,31 @@ const Avatar = ({edit, dados, setDados, error}: AvatarProps) => {
   }, [image]);
   return (
     <AvatarStyle onPress={handleImage} error={error ? true : false}>
-      {!!edit && !image.uri && (
+      {!!edit && !dados.avatar && !image.uri && (
         <ProfilePicBox error={error ? true : false}>
           <ProfilePic />
         </ProfilePicBox>
       )}
       {Object.keys(image).length !== 0 && (
         <Image
-          source={{uri: image.uri}}
+          source={{
+            uri: image.uri,
+          }}
           style={{width: '100%', height: '100%', borderRadius: 9999}}
         />
       )}
       {Object.keys(image).length === 0 && (
-        <Profile width="140px" height="140px" />
+        <>
+          {!!dados.avatar && (
+            <Image
+              source={{
+                uri: dados.avatar,
+              }}
+              style={{width: '100%', height: '100%', borderRadius: 9999}}
+            />
+          )}
+          {!dados.avatar && <Profile width="140px" height="140px" />}
+        </>
       )}
     </AvatarStyle>
   );

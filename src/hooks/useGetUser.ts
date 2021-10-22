@@ -38,7 +38,7 @@ const useGetUser = () => {
 
   const searchUser = async (
     value: string,
-    uid: string,
+    type: string,
     {onComplete, onFail}: any,
   ) => {
     await firestore()
@@ -48,7 +48,7 @@ const useGetUser = () => {
       .get()
       .then(querySnapshot => {
         const users = querySnapshot.docs.map(res => res.data());
-        const usersUpdted = users.filter(user => user.uid !== uid);
+        const usersUpdted = users.filter(user => user.type === type);
         onComplete(usersUpdted);
       })
       .catch(error => onFail(error));

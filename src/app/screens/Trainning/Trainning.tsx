@@ -1,4 +1,4 @@
-import {Card, Header, Space, Text} from 'components';
+import {Card, Header, ModalVisualTrainning, Space, Text} from 'components';
 import React, {useEffect, useState} from 'react';
 import {TrainningStyle} from './styles';
 
@@ -28,10 +28,13 @@ const Trainning = ({navigation}: any) => {
   const {getTrainning} = useGetTrainning();
   const {getUser} = useGetUser();
   const getCategories = useGetCategories();
+
+  const [visible, setVisible] = useState(false);
   const [trainning, setTrainning] = useState<any>();
   const [loading, setLoading] = useState(true);
   const [trainner, setTrainner] = useState<any>();
   const [selected, setSelected] = useState(0);
+  const [selectedExercise, setSelectedExercise] = useState<any>();
   const [selectedCategory, setSelectedCategory] = useState('');
   const [categories, setCategories] = useState<any[]>([]);
 
@@ -73,6 +76,8 @@ const Trainning = ({navigation}: any) => {
             },
             onFail: err => {},
           });
+        } else {
+          setLoading(false);
         }
       },
       onFail: err => {},
@@ -88,6 +93,19 @@ const Trainning = ({navigation}: any) => {
       }}
       showsVerticalScrollIndicator={false}>
       <Header navigation={navigation} />
+      <ModalVisualTrainning
+        visible={visible}
+        setVisible={setVisible}
+        title={selectedExercise ? selectedExercise.name : ''}
+        image={selectedExercise ? selectedExercise.url : ''}
+        imageTwo={
+          selectedExercise
+            ? selectedExercise.urlTwo
+              ? selectedExercise.urlTwo
+              : ''
+            : ''
+        }
+      />
       {!!loading && (
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
           <ActivityIndicator size="large" color={Colors.red} />
@@ -213,14 +231,19 @@ const Trainning = ({navigation}: any) => {
                           justifyContent: 'center',
                           marginBottom: 8,
                         }}>
-                        <View style={{flex: 1}}>
+                        <TouchableOpacity
+                          style={{flex: 1}}
+                          onPress={() => {
+                            setSelectedExercise(exercise);
+                            setVisible(true);
+                          }}>
                           <Text
                             title={exercise.name}
                             size={14}
                             weight={500}
                             color={Colors.inputColorText}
                           />
-                        </View>
+                        </TouchableOpacity>
                         <View
                           style={{
                             width: 35,
@@ -440,7 +463,7 @@ const Trainning = ({navigation}: any) => {
           <Space marginVertical={16} />
         </>
       )}
-      {!loading && trainning.length === 0 && (
+      {!loading && !trainning && (
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
           <ExerciseIcon width="120px" height="120px" />
           <Space marginVertical={4} />

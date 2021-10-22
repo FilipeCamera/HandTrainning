@@ -166,7 +166,7 @@ const InviteCommon = ({auth, navigation}: any) => {
           user={userSearch}
           onSearch={e => {
             setUserSearch(e),
-              searchUser(e, auth.uid, {
+              searchUser(e, 'gym', {
                 onComplete: (users: any) => {
                   if (users) {
                     setUsersSearch(users);

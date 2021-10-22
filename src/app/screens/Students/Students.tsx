@@ -12,6 +12,7 @@ import EditIcon from 'assets/svg/editIcon.svg';
 import moment from 'moment';
 import {useGetRequests, useGetTrainning, useGetUser} from 'hooks';
 import VisualStudents from './VisualStudents';
+import {firestore} from 'firebase';
 
 const Students = ({navigation}: any) => {
   const user = useSelector((state: any) => state.auth.user);
@@ -19,7 +20,7 @@ const Students = ({navigation}: any) => {
 
   const getRequests = useGetRequests();
   const {getUserTypeAndAssociate, getUser} = useGetUser();
-  const {getTrainningTrainner} = useGetTrainning();
+  const {getTrainningTrainner, getTrainningId} = useGetTrainning();
 
   const [state, setState] = useState('');
   const [trainnings, setTrainnings] = useState<any[]>([]);
@@ -35,6 +36,18 @@ const Students = ({navigation}: any) => {
     {title: 'Excluir'},
     {title: 'Editar'},
   ];
+
+  const handleDeleteTrainning = uid => {
+    getTrainningId({
+      uid,
+      onComplete: trainningId => {
+        if (trainningId) {
+          firestore().collection('trainnings').doc(trainningId).delete();
+        }
+      },
+      onFail: err => {},
+    });
+  };
 
   useEffect(() => {
     if (state !== '') {
@@ -87,11 +100,19 @@ const Students = ({navigation}: any) => {
   }, []);
 
   if (state === 'Criar treino') {
-    return <CreateTrainning setState={setState} />;
+    return (
+      <CreateTrainning setState={setState} setButtonTitle={setButtonTitle} />
+    );
   }
   if (state === 'Visualizar') {
     return (
-      <VisualStudents setState={setState} common={selectedCommon} mode={mode} />
+      <VisualStudents
+        setState={setState}
+        common={selectedCommon}
+        mode={mode}
+        setMode={setMode}
+        setButtonTitle={setButtonTitle}
+      />
     );
   }
   return (
@@ -259,6 +280,15 @@ const Students = ({navigation}: any) => {
                                 width: 32,
                                 height: 32,
                                 borderRadius: 16,
+                              }}
+                              onPress={() => {
+                                handleDeleteTrainning(common.uid);
+                                setTrainnings(
+                                  trainnings.filter(
+                                    trainning =>
+                                      trainning.commonId !== common.uid,
+                                  ),
+                                );
                               }}>
                               <View style={{width: 18, height: 18}}>
                                 <TrashIcon width="100%" height="100%" />

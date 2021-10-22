@@ -7,7 +7,7 @@ import {
   Space,
   Text,
 } from 'components';
-import {firestore} from 'firebase';
+
 import {useGetCategories, useGetExercise} from 'hooks';
 import React, {useEffect, useState} from 'react';
 import {
@@ -24,9 +24,10 @@ import Step2 from './Step2';
 
 interface CreateTrainningProps {
   setState: any;
+  setButtonTitle: any;
 }
 
-const CreateTrainning = ({setState}: CreateTrainningProps) => {
+const CreateTrainning = ({setState, setButtonTitle}: CreateTrainningProps) => {
   const gym = useSelector((state: any) => state.trainner.gym);
 
   const getCategories = useGetCategories();
@@ -136,7 +137,10 @@ const CreateTrainning = ({setState}: CreateTrainningProps) => {
         title="Criar treino"
         size={18}
         weight={600}
-        onBack={() => setState('')}
+        onBack={() => {
+          setButtonTitle('Criar treino');
+          setState('');
+        }}
       />
       <Space marginVertical={20} />
       {!!loading && (
