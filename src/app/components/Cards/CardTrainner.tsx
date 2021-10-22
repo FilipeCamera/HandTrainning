@@ -8,7 +8,7 @@ import {ActivityIndicator, Image, View} from 'react-native';
 import {ButtonText, Space, Text} from 'components';
 import Colors from '@styles';
 import {useSelector} from 'react-redux';
-import {useGetRequests, useGetTrainning, useGetUser} from 'hooks';
+import {useGetRequests, useGetScore, useGetTrainning, useGetUser} from 'hooks';
 
 const CardTrainner = ({navigation}: any) => {
   const user = useSelector((state: any) => state.auth.user);
@@ -16,9 +16,10 @@ const CardTrainner = ({navigation}: any) => {
   const {getTrainningTrainner} = useGetTrainning();
   const getRequests = useGetRequests();
   const {getUserType} = useGetUser();
+  const {getTrainnerScore} = useGetScore();
   const [trainnings, setTrainnings] = useState(0);
   const [requests, setRequests] = useState(0);
-  const [score, setScore] = useState('');
+  const [score, setScore] = useState<any>();
   const [commons, setCommons] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -37,6 +38,19 @@ const CardTrainner = ({navigation}: any) => {
       onComplete: request => {
         if (request) {
           setRequests(request.length);
+        }
+      },
+      onFail: err => {},
+    });
+    getTrainnerScore({
+      uid: user.uid,
+      onComplete: scores => {
+        if (scores) {
+          const result = scores
+            .map(scr => scr.score)
+            .reduce((total, scr) => (total += scr));
+          const total = result / scores.length;
+          setScore(total);
         }
       },
       onFail: err => {},
@@ -95,7 +109,7 @@ const CardTrainner = ({navigation}: any) => {
             style={{width: 130}}
           />
         </View>
-        {score !== '' && (
+        {!!score && (
           <View
             style={{
               flexDirection: 'row',
@@ -104,7 +118,7 @@ const CardTrainner = ({navigation}: any) => {
             }}>
             <Star />
             <Text
-              title={score}
+              title={score.toFixed(1)}
               size={12}
               weight={700}
               color={Colors.orange}

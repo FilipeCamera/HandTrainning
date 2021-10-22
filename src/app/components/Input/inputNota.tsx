@@ -1,8 +1,6 @@
 import React, {useState} from 'react';
 import {TextInput} from 'react-native-gesture-handler';
-import {Text} from 'components';
-import {InputStyle} from './styles';
-import {View} from 'react-native';
+
 import normalize from '@normalize';
 import Colors from '@styles';
 

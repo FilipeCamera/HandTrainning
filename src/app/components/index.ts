@@ -44,6 +44,7 @@ import Modal, {
   ModalCreateTrainning,
   ModalVisualTrainning,
   ModalUnbindGym,
+  ModalScore,
 } from './Modal';
 
 export {
@@ -95,4 +96,5 @@ export {
   ModalCreateTrainning,
   ModalVisualTrainning,
   ModalUnbindGym,
+  ModalScore,
 };

@@ -31,7 +31,7 @@ const InviteTrainner = ({auth}: any) => {
         user={userSearch}
         onSearch={e => {
           setUserSearch(e),
-            searchUser(e, auth.uid, {
+            searchUser(e, 'gym', {
               onComplete: (users: any) => {
                 if (users) {
                   setUsersSearch(users);
@@ -121,8 +121,6 @@ const InviteTrainner = ({auth}: any) => {
         })}
       <Space marginVertical={5} />
       {usersSearch.length === 0 && <Label title="Academias" />}
-      <Space marginVertical={20} />
-      {usersSearch.length === 0 && <Label title="Alunos" />}
     </InvitesStyle>
   );
 };

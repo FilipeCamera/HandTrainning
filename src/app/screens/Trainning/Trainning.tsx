@@ -2,6 +2,7 @@ import {
   Card,
   Header,
   Modal,
+  ModalScore,
   ModalVisualTrainning,
   Space,
   Text,
@@ -26,21 +27,28 @@ import {
   View,
 } from 'react-native';
 import Colors from '@styles';
-import {useGetCategories, useGetTrainning, useGetUser} from 'hooks';
+import {
+  useGetCategories,
+  useGetScore,
+  useGetTrainning,
+  useGetUser,
+} from 'hooks';
 import {useSelector} from 'react-redux';
 
 import Clock from 'assets/svg/clockGray.svg';
 
 import moment from 'moment';
 import {firestore} from 'firebase';
+import {showMessage} from 'react-native-flash-message';
 
 const Trainning = ({navigation}: any) => {
   const user = useSelector((state: any) => state.auth.user);
-  const {getTrainning} = useGetTrainning();
+  const {getTrainning, getTrainningId} = useGetTrainning();
   const {getUser, getUserTrainner} = useGetUser();
   const getCategories = useGetCategories();
-
+  const {getScore} = useGetScore();
   const [visible, setVisible] = useState(false);
+  const [scoreVisible, setScoreVisible] = useState(false);
   const [visibleSelect, setVisibleSelect] = useState(false);
   const [trainning, setTrainning] = useState<any>();
   const [loading, setLoading] = useState(true);
@@ -49,14 +57,58 @@ const Trainning = ({navigation}: any) => {
   const [trainners, setTrainners] = useState<any[]>([]);
   const [selectedExercise, setSelectedExercise] = useState<any>();
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [score, setScore] = useState<any>();
+  const [trainningId, setTrainningId] = useState('');
   const [categories, setCategories] = useState<any[]>([]);
   const [send, setSend] = useState(false);
+  const [scoreValue, setScoreValue] = useState('');
 
   const handleSelect = (index, value) => {
     setSelected(index);
     setSelectedCategory(value);
   };
 
+  const handleScore = () => {
+    const data = {
+      trainnerId: trainner.uid,
+      score: scoreValue,
+      createdAt: firestore.FieldValue.serverTimestamp(),
+    };
+    const updatedData = {
+      trainnerId: trainner.uid,
+      score: scoreValue,
+      updatedAt: firestore.FieldValue.serverTimestamp(),
+    };
+    if (score) {
+      firestore()
+        .collection('trainningScores')
+        .doc(trainningId)
+        .update(updatedData)
+        .then(res => {
+          setScoreVisible(false);
+          showMessage({
+            type: 'success',
+            message: 'Sucesso!',
+            description: 'Muito obrigado por avaliar seu treino.',
+          });
+        })
+        .catch(err => {});
+    } else {
+      firestore()
+        .collection('trainningScores')
+        .doc(trainningId)
+        .set(data)
+        .then(res => {
+          setScoreVisible(false);
+          showMessage({
+            type: 'success',
+            message: 'Sucesso!',
+            description: 'Muito obrigado por avaliar seu treino.',
+          });
+        })
+        .catch(err => {});
+    }
+  };
   useEffect(() => {
     if (user.userAssociate !== undefined) {
       getUserTrainner({
@@ -64,6 +116,24 @@ const Trainning = ({navigation}: any) => {
         onComplete: users => {
           if (users) {
             setTrainners(users);
+          }
+        },
+        onFail: err => {},
+      });
+      getTrainningId({
+        uid: user.uid,
+        onComplete: id => {
+          if (id) {
+            setTrainningId(id);
+          }
+        },
+        onFail: err => {},
+      });
+      getScore({
+        uid: trainningId,
+        onComplete: scores => {
+          if (scores) {
+            setScore(scores);
           }
         },
         onFail: err => {},
@@ -152,6 +222,15 @@ const Trainning = ({navigation}: any) => {
         title="Escolha um novo treinador"
         onFunction={() => handleRequestTrainner()}
       />
+      <ModalScore
+        visible={scoreVisible}
+        setVisible={setScoreVisible}
+        value={scoreValue}
+        setValue={setScoreValue}
+        onFunction={handleScore}
+        title="Avaliação do seu treino"
+        desc="Sua nota vai ser muito importante para a pontuação do treinador"
+      />
       <ModalVisualTrainning
         visible={visible}
         setVisible={setVisible}
@@ -208,7 +287,7 @@ const Trainning = ({navigation}: any) => {
                 color={Colors.inputColorText}
               />
               <Space marginHorizontal={12} />
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => setScoreVisible(true)}>
                 <StarOutlineIcon />
               </TouchableOpacity>
               <Space marginHorizontal={4} />
@@ -542,7 +621,7 @@ const Trainning = ({navigation}: any) => {
           <ExerciseIcon width="120px" height="120px" />
           <Space marginVertical={4} />
           <Text
-            title="Opa! Você não tem um treino"
+            title="Ops! Você não tem um treino"
             size={15}
             weight={500}
             color={Colors.grayMediumLight}

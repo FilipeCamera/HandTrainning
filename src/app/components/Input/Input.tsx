@@ -17,6 +17,7 @@ interface InputProps {
   error: string;
   city: boolean;
   numeric: boolean;
+  center: boolean;
 }
 
 const Input = ({
@@ -30,6 +31,7 @@ const Input = ({
   error,
   city,
   numeric,
+  center,
 }: InputProps) => {
   return (
     <>
@@ -40,6 +42,7 @@ const Input = ({
             fontSize: normalize(15),
             width: '100%',
             height: slogan ? 80 : 56,
+            textAlign: center ? 'center' : 'left',
           }}
           multiline={multiline ? true : false}
           placeholder={placeholder}
@@ -49,7 +52,7 @@ const Input = ({
           autoCapitalize="none"
           secureTextEntry={password}
           placeholderTextColor={!error ? Colors.textColorRX : Colors.red}
-          keyboardType={numeric ? 'numeric' : 'default'}
+          keyboardType={numeric ? 'number-pad' : 'default'}
         />
       </InputStyle>
       {!!error && !city && (

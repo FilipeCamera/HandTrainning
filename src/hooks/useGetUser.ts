@@ -48,7 +48,9 @@ const useGetUser = () => {
       .get()
       .then(querySnapshot => {
         const users = querySnapshot.docs.map(res => res.data());
-        const usersUpdted = users.filter(user => user.type === type);
+        const usersUpdted = users.filter(
+          user => user.type === type && value !== '',
+        );
         onComplete(usersUpdted);
       })
       .catch(error => onFail(error));

@@ -22,7 +22,6 @@ const CarouselComponent = () => {
         uid: gym.gym,
         onComplete: posts => {
           if (posts) {
-            console.log(posts);
             setData(posts);
           }
         },

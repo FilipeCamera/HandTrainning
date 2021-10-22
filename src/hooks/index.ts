@@ -8,6 +8,7 @@ import useGetCategories from './useGetCategories';
 import useGetExercise from './useGetExercise';
 import useGetWarnings from './useGetWarnings';
 import useGetPostAndWarnings from './useGetPostAndWarnings';
+import useGetScore from './useGetScore';
 
 export {
   useSendFile,
@@ -20,4 +21,5 @@ export {
   useGetExercise,
   useGetWarnings,
   useGetPostAndWarnings,
+  useGetScore,
 };

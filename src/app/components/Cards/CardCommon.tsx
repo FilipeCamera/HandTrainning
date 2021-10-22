@@ -15,7 +15,7 @@ import {styles} from '../Board/styles';
 import {useSelector} from 'react-redux';
 import {ButtonText, Space, Text} from 'components';
 import Colors from '@styles';
-import {useGetTrainning, useGetUser} from 'hooks';
+import {useGetScore, useGetTrainning, useGetUser} from 'hooks';
 import moment from 'moment';
 
 interface CardCommonProps {
@@ -32,8 +32,9 @@ const CardCommon = ({
   setLoading,
 }: CardCommonProps) => {
   const user = useSelector((state: any) => state.auth.user);
-  const {getTrainning} = useGetTrainning();
+  const {getTrainning, getTrainningId} = useGetTrainning();
   const {getUser} = useGetUser();
+  const {getScore} = useGetScore();
   const [trainning, setTrainning] = useState(false);
   const [loadCard, setLoadCard] = useState(true);
   const [expiration, setExpiration] = useState<any>();
@@ -48,6 +49,23 @@ const CardCommon = ({
           setTrainning(true);
           setLoadCard(false);
           setExpiration(trainning.expiredTrainning);
+          getTrainningId({
+            uid: user.uid,
+            onComplete: id => {
+              if (id) {
+                getScore({
+                  uid: id,
+                  onComplete: scr => {
+                    if (scr) {
+                      setScore(scr);
+                    }
+                  },
+                  onFail: err => {},
+                });
+              }
+            },
+            onFail: err => {},
+          });
           getUser({
             uid: trainning.trainnerId,
             onComplete: user => {
@@ -137,7 +155,7 @@ const CardCommon = ({
                 }}>
                 <Star />
                 <Text
-                  title="9.5"
+                  title={score.score}
                   size={12}
                   weight={700}
                   color={Colors.orange}
