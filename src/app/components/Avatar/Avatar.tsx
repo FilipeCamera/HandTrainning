@@ -6,7 +6,7 @@ import Profile from 'assets/svg/profile.svg';
 import ProfilePic from 'assets/svg/profile_pic.svg';
 import {useSendFile} from 'hooks';
 import {selectImage} from 'functions';
-import {firestore} from 'firebase';
+import {firestore, storage} from 'firebase';
 
 interface AvatarProps {
   edit: boolean;
@@ -27,11 +27,18 @@ const Avatar = ({edit, dados, setDados, error}: AvatarProps) => {
       .catch((error: any) => {});
   };
   useEffect(() => {
+    if (dados.avatar !== '') {
+      const storageRef = storage().refFromURL(dados.avatar);
+      const imageRef = storage().ref(storageRef.fullPath);
+
+      imageRef
+        .delete()
+        .then(() => {})
+        .catch(err => {});
+    }
     if (Object.keys(image).length !== 0) {
       const {uri} = image;
-      const filename =
-        firestore.FieldValue.serverTimestamp() +
-        uri.substring(uri.lastIndexOf('/') + 1);
+      const filename = uri.substring(uri.lastIndexOf('/') + 1);
       const uploadUri =
         Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
       sendFile({
