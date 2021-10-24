@@ -74,7 +74,7 @@ const App = () => {
           <FlashMessage
             statusBarHeight={30}
             position="top"
-            duration={5000}
+            duration={3000}
             titleStyle={{fontFamily: 'Poppins-Medium', fontSize: normalize(16)}}
             textStyle={{fontFamily: 'Poppins-Medium', fontSize: normalize(16)}}
           />

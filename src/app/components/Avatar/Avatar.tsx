@@ -27,7 +27,7 @@ const Avatar = ({edit, dados, setDados, error}: AvatarProps) => {
       .catch((error: any) => {});
   };
   useEffect(() => {
-    if (dados.avatar !== '') {
+    if (dados.avatar !== '' && Object.keys(image).length !== 0) {
       const storageRef = storage().refFromURL(dados.avatar);
       const imageRef = storage().ref(storageRef.fullPath);
 

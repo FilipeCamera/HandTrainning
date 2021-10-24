@@ -8,15 +8,26 @@ import CloseIcon from 'assets/svg/CloseIcon.svg';
 import LocationIcon from 'assets/svg/locationIcon.svg';
 import LineGray from 'assets/svg/LineGran.svg';
 import {TouchableOpacity, View} from 'react-native';
-import {Button, CardMini, Space, Text} from 'components';
+import {
+  Button,
+  CardMini,
+  ModalUnbindGymTrainner,
+  Space,
+  Text,
+} from 'components';
 import {Image} from 'react-native';
 import {Logout} from 'functions';
-import {firestore} from 'firebase';
 import Colors from '@styles';
 import {useGetUser} from 'hooks';
+import ProfileEdit from './ProfileEdit';
+import {useSelector} from 'react-redux';
+import {firestore} from 'firebase';
+import {showMessage} from 'react-native-flash-message';
 
 const ProfileTrainner = ({user, navigation}: any) => {
   const [gym, setGym] = useState<any>([]);
+  const [state, setState] = useState<any>('');
+  const [visible, setVisible] = useState(false);
   const {getUserTypeAndAssociateTrainner} = useGetUser();
   useEffect(() => {
     getUserTypeAndAssociateTrainner({
@@ -30,6 +41,28 @@ const ProfileTrainner = ({user, navigation}: any) => {
       onFail: err => {},
     });
   }, []);
+
+  const handleUnbindGym = uid => {
+    const userAssociate = user.userAssociate.filter(uidGym => uidGym !== uid);
+
+    console.log(userAssociate);
+    /*firestore()
+      .collection('users')
+      .doc(user.uid)
+      .update(userAssociate)
+      .then(res => {
+        setVisible(false);
+        showMessage({
+          type: 'success',
+          message: 'Você não faz mais parte dessa academia',
+        });
+      })
+      .catch(err => {});*/
+  };
+  if (state === 'edit') {
+    return <ProfileEdit user={user} setState={setState} />;
+  }
+
   return (
     <ProfileContainer
       contentContainerStyle={{
@@ -39,6 +72,14 @@ const ProfileTrainner = ({user, navigation}: any) => {
         paddingBottom: 16,
       }}
       showsVerticalScrollIndicator={false}>
+      <ModalUnbindGymTrainner
+        title="Deseja realmente desvincular?"
+        desc="Caso se desvincule da academia escolhida, você irá perder seus alunos"
+        visible={visible}
+        setVisible={setVisible}
+        gyms={gym}
+        onFunction={uid => handleUnbindGym(uid)}
+      />
       <View style={{width: '100%', height: 200}}>
         <BackRedHeader
           width="100%"
@@ -66,7 +107,7 @@ const ProfileTrainner = ({user, navigation}: any) => {
       <View style={{alignItems: 'center'}}>
         <Text
           title={user.name}
-          size={22}
+          size={20}
           weight={600}
           color={Colors.textColorBlack}
         />
@@ -75,7 +116,7 @@ const ProfileTrainner = ({user, navigation}: any) => {
           <Space marginHorizontal={1} />
           <Text
             title={`${user.city}, ${user.uf}`}
-            size={15}
+            size={14}
             weight={500}
             color={Colors.grayMediumLight}
           />
@@ -123,7 +164,7 @@ const ProfileTrainner = ({user, navigation}: any) => {
           onPress={() => {}}>
           <Text
             title="Convidar amigos"
-            size={18}
+            size={16}
             weight={600}
             color={Colors.textColorBlack}
             style={{marginLeft: 5}}
@@ -140,10 +181,10 @@ const ProfileTrainner = ({user, navigation}: any) => {
             alignItems: 'center',
             justifyContent: 'space-between',
           }}
-          onPress={() => {}}>
+          onPress={() => setVisible(true)}>
           <Text
             title="Desvincular da academia"
-            size={18}
+            size={16}
             weight={600}
             color={Colors.textColorBlack}
             style={{marginLeft: 5}}
@@ -160,6 +201,7 @@ const ProfileTrainner = ({user, navigation}: any) => {
           size={15}
           weight={500}
           color={Colors.textColorBlack}
+          onPress={() => setState('edit')}
         />
         <Button
           title="Sair"

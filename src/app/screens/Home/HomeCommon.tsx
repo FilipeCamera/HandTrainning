@@ -60,6 +60,7 @@ const HomeCommon = ({navigation}: any) => {
       }}
       showsVerticalScrollIndicator={false}>
       <Modal
+        user={user}
         visible={visible}
         setVisible={setVisible}
         trainners={trainners}

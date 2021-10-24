@@ -1,23 +1,11 @@
-import Colors from '@styles';
-import {
-  Button,
-  Label,
-  Space,
-  Text,
-  SelectProfileCheck,
-  ButtonText,
-} from 'components';
 import React from 'react';
-import {ActivityIndicator, View} from 'react-native';
 
-import {Modal, Portal} from 'react-native-paper';
-
-import SucessIcon from 'assets/svg/sucessIcon.svg';
 import {useSelector} from 'react-redux';
 import ModalCommon from './ModalCommon';
 import ModalTrainner from './ModalTrainner';
 
 interface ModalProps {
+  user: any;
   visible: boolean;
   setVisible: any;
   setTrainner: any;
@@ -31,6 +19,7 @@ interface ModalProps {
 }
 
 const Modals = ({
+  user,
   visible,
   setVisible,
   title,
@@ -42,10 +31,9 @@ const Modals = ({
   trainners,
   gyms,
 }: ModalProps) => {
-  const user = useSelector((state: any) => state.auth.user);
   return (
     <>
-      {user.type === 'common' && (
+      {!!user && user.type === 'common' && (
         <ModalCommon
           title={title}
           send={send}
@@ -57,7 +45,7 @@ const Modals = ({
           loading={loading}
         />
       )}
-      {user.type === 'trainner' && (
+      {!!user && user.type === 'trainner' && (
         <ModalTrainner
           title={title}
           setVisible={setVisible}

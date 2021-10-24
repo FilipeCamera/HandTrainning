@@ -158,13 +158,16 @@ const Header = ({navigation}: HeaderProps) => {
           </ButtonAlert>
         </View>
       </HeaderStyle>
-      <Modal
-        visible={visible}
-        setVisible={setVisible}
-        gyms={gyms}
-        setGym={setGymId}
-        title="Trocar academia"
-      />
+      {user.type === 'trainner' && (
+        <Modal
+          user={user}
+          visible={visible}
+          setVisible={setVisible}
+          gyms={gyms}
+          setGym={setGymId}
+          title="Trocar academia"
+        />
+      )}
     </>
   );
 };

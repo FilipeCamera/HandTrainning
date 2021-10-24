@@ -103,7 +103,7 @@ const CardTrainner = ({navigation}: any) => {
           }}>
           <Text
             title="Seus Alunos"
-            size={30}
+            size={28}
             weight={700}
             color={Colors.textColorWhite}
             style={{width: 130}}

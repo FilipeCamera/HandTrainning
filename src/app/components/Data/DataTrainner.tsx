@@ -1,4 +1,4 @@
-import {Label, Space, Input, DropDownUF, Avatar} from 'components';
+import {Label, Space, Input, DropdownUF, Avatar} from 'components';
 import React, {useState, useEffect} from 'react';
 import {View} from 'react-native';
 
@@ -9,14 +9,14 @@ interface DataProps {
 }
 
 const DataTrainner = ({dados, setDados, errors}: DataProps) => {
-  const [name, setName] = useState('');
-  const [slogan, setSlogan] = useState('');
-  const [uf, setUF] = useState('');
-  const [city, setCity] = useState('');
-  const [course, setCourse] = useState('');
-  const [university, setUniversity] = useState('');
-  const [experience, setExperience] = useState('');
-  const [specs, setSpecs] = useState('');
+  const [name, setName] = useState(dados.name || '');
+  const [slogan, setSlogan] = useState(dados.slogan || '');
+  const [uf, setUF] = useState(dados.uf || '');
+  const [city, setCity] = useState(dados.city || '');
+  const [course, setCourse] = useState(dados.course || '');
+  const [university, setUniversity] = useState(dados.university || '');
+  const [experience, setExperience] = useState(dados.experience || '');
+  const [specs, setSpecs] = useState(dados.specs || '');
 
   useEffect(() => {
     setDados({
@@ -97,7 +97,7 @@ const DataTrainner = ({dados, setDados, errors}: DataProps) => {
           error={errors.city}
         />
         <Space marginHorizontal={5} />
-        <DropDownUF value={uf} onValue={setUF} error={errors.uf} />
+        <DropdownUF value={uf} onValue={setUF} error={errors.uf} />
       </View>
     </>
   );

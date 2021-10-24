@@ -24,7 +24,7 @@ interface StepProps {
 const ProfileEdit = ({setState, user}: StepProps) => {
   const {getUser} = useGetUser();
   const [loading, setLoading] = useState(true);
-  const [dados, setDados] = useState(user);
+  const [dados, setDados] = useState<any>();
   const [errors, setErrors] = useState({
     name: '',
     slogan: '',
