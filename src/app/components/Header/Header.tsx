@@ -28,59 +28,63 @@ const Header = ({navigation}: HeaderProps) => {
   const [gyms, setGyms] = useState<any[]>([]);
 
   useEffect(() => {
-    if (gym === undefined) {
+    if (gym === undefined && user.userAssociate.length !== 0) {
       setVisible(true);
     }
     if (user.type === 'trainner') {
-      getUserTypeAndAssociateTrainner({
-        type: 'gym',
-        associate: user.userAssociate,
-        onComplete: gym => {
-          if (gym) {
-            setGyms(gym);
-          }
-        },
-        onFail: err => {},
-      });
+      if (user.userAssociate.length !== 0) {
+        getUserTypeAndAssociateTrainner({
+          type: 'gym',
+          associate: user.userAssociate,
+          onComplete: gym => {
+            if (gym) {
+              setGyms(gym);
+            }
+          },
+          onFail: err => {},
+        });
+      }
     }
   }, []);
   const dateNow = Date.now();
 
   useEffect(() => {
     if (user.type === 'trainner') {
-      getRequests({
-        uid: user.uid,
-        onComplete: request => {
-          if (request) {
-            if (request.length !== 0) {
-              request.map(req => {
-                if (
-                  moment.unix(req.createdAt).format('DD/MM/YYYY') ===
-                  moment(dateNow).format('DD/MM/YYYY')
-                ) {
+      if (user.userAssociate.length !== 0) {
+        getRequests({
+          uid: user.uid,
+          onComplete: request => {
+            if (request) {
+              if (request.length !== 0) {
+                request.map(req => {
+                  if (
+                    moment.unix(req.createdAt).format('DD/MM/YYYY') ===
+                    moment(dateNow).format('DD/MM/YYYY')
+                  ) {
+                    setInfo(true);
+                    setNotVisualize();
+                  }
+                });
+              }
+            }
+          },
+          onFail: err => {},
+        });
+        getWarningsTrainner({
+          uid: user.userAssociate,
+          onComplete: warnings => {
+            if (warnings) {
+              warnings.map(wg => {
+                if (wg.finallized !== dateNow && wg.finallized > dateNow) {
                   setInfo(true);
                   setNotVisualize();
                 }
               });
             }
-          }
-        },
-        onFail: err => {},
-      });
-      getWarningsTrainner({
-        uid: user.userAssociate,
-        onComplete: warnings => {
-          if (warnings) {
-            warnings.map(wg => {
-              if (wg.finallized !== dateNow && wg.finallized > dateNow) {
-                setInfo(true);
-                setNotVisualize();
-              }
-            });
-          }
-        },
-        onFail: err => [],
-      });
+          },
+          onFail: err => [],
+        });
+      }
     }
     if (user.type === 'common') {
       if (user.userAssociate !== undefined) {

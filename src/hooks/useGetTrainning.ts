@@ -35,7 +35,26 @@ const useGetTrainning = () => {
       })
       .catch(err => onFail(err));
   };
-  return {getTrainning, getTrainningTrainner, getTrainningId};
+  const getTrainningDeleteUnbindGymCT = ({uid, listUid, onFail}: any) => {
+    firestore()
+      .collection('trainnings')
+      .where('commonId', 'in', listUid)
+      .where('trainnerId', '==', uid)
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.docs.forEach(doc => {
+          firestore().collection('trainnings').doc(doc.id).delete();
+          firestore().collection('trainningScores').doc(doc.id).delete();
+        });
+      })
+      .catch(err => onFail(err));
+  };
+  return {
+    getTrainning,
+    getTrainningTrainner,
+    getTrainningId,
+    getTrainningDeleteUnbindGymCT,
+  };
 };
 
 export default useGetTrainning;

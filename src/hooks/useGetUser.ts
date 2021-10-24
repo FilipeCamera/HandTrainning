@@ -95,6 +95,23 @@ const useGetUser = () => {
       })
       .catch(err => onFail(err));
   };
+  const getUserTypeAndAssociateID = ({
+    type,
+    associate,
+    onComplete,
+    onFail,
+  }: any) => {
+    firestore()
+      .collection('users')
+      .where('type', '==', type)
+      .where('userAssociate', '==', associate)
+      .get()
+      .then(querySnapshot => {
+        const list = querySnapshot.docs.map(doc => doc.id);
+        onComplete(list);
+      })
+      .catch(err => onFail(err));
+  };
   const getUserTypeAndAssociateTrainner = ({
     type,
     associate,
@@ -135,6 +152,7 @@ const useGetUser = () => {
     getUserTypeAndAssociate,
     getUserTypeAndAssociateTrainner,
     getUserTrainner,
+    getUserTypeAndAssociateID,
   };
 };
 

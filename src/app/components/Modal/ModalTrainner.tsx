@@ -27,6 +27,33 @@ const ModalTrainner = ({
   setGym,
   gyms,
 }: ModalProps) => {
+  if (gyms.length === 0 || !gyms) {
+    return (
+      <Portal>
+        <Modal
+          visible={visible}
+          onDismiss={() => setVisible(false)}
+          contentContainerStyle={{
+            backgroundColor: Colors.background,
+            paddingHorizontal: 16,
+            paddingVertical: 32,
+            margin: 24,
+            borderRadius: 20,
+            alignItems: 'center',
+            flexDirection: 'column',
+            justifyContent: 'flex-start',
+          }}>
+          <Text
+            title="Você não é associado a nenhuma academia"
+            size={14}
+            weight={500}
+            color={Colors.grayMediumLight}
+            center
+          />
+        </Modal>
+      </Portal>
+    );
+  }
   return (
     <Portal>
       <Modal

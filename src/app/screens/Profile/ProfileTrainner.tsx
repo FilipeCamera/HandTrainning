@@ -16,15 +16,17 @@ import {
   Text,
 } from 'components';
 import {Image} from 'react-native';
-import {Logout} from 'functions';
+import {Logout, removeGymId} from 'functions';
 import Colors from '@styles';
-import {useGetUser} from 'hooks';
+import {useGetTrainning, useGetUser} from 'hooks';
 import ProfileEdit from './ProfileEdit';
 import {useSelector} from 'react-redux';
 import {firestore} from 'firebase';
 import {showMessage} from 'react-native-flash-message';
 
 const ProfileTrainner = ({user, navigation}: any) => {
+  const {getUserTypeAndAssociateID} = useGetUser();
+  const {getTrainningDeleteUnbindGymCT} = useGetTrainning();
   const [gym, setGym] = useState<any>([]);
   const [state, setState] = useState<any>('');
   const [visible, setVisible] = useState(false);
@@ -45,19 +47,33 @@ const ProfileTrainner = ({user, navigation}: any) => {
   const handleUnbindGym = uid => {
     const userAssociate = user.userAssociate.filter(uidGym => uidGym !== uid);
 
-    console.log(userAssociate);
-    /*firestore()
+    getUserTypeAndAssociateID({
+      type: 'common',
+      associate: uid,
+      onComplete: ids => {
+        if (ids) {
+          getTrainningDeleteUnbindGymCT({
+            uid: user.uid,
+            listUid: ids,
+            onFail: err => {},
+          });
+        }
+      },
+      onFail: err => {},
+    });
+    firestore()
       .collection('users')
       .doc(user.uid)
-      .update(userAssociate)
+      .update({userAssociate: userAssociate})
       .then(res => {
         setVisible(false);
+        removeGymId();
         showMessage({
           type: 'success',
           message: 'Você não faz mais parte dessa academia',
         });
       })
-      .catch(err => {});*/
+      .catch(err => {});
   };
   if (state === 'edit') {
     return <ProfileEdit user={user} setState={setState} />;

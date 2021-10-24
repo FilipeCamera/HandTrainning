@@ -65,7 +65,7 @@ const CarouselComponent = () => {
             position: 'absolute',
             top: 16,
             right: 16,
-            backgroundColor: '#34A853',
+            backgroundColor: Colors.greenMediumLight,
             borderRadius: 8,
             paddingHorizontal: 8,
             paddingVertical: 2,
@@ -82,8 +82,18 @@ const CarouselComponent = () => {
           left: 16,
           width: '90%',
         }}>
-        <Text title={item.title} size={14} weight={500} color="#FFF" />
-        <Text title={item.desc} size={12} weight={400} color="#FFF" />
+        <Text
+          title={item.title}
+          size={14}
+          weight={500}
+          color={Colors.textColorWhite}
+        />
+        <Text
+          title={item.desc}
+          size={12}
+          weight={400}
+          color={Colors.textColorWhite}
+        />
       </View>
     </View>
   );

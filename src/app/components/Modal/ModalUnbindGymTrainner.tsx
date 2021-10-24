@@ -28,7 +28,10 @@ const ModalUnbindGymTrainner = ({
     <Portal>
       <Modal
         visible={visible}
-        onDismiss={() => setVisible(false)}
+        onDismiss={() => {
+          setSelectGym('');
+          setVisible(false);
+        }}
         contentContainerStyle={{
           backgroundColor: Colors.background,
           padding: 16,
@@ -84,7 +87,23 @@ const ModalUnbindGymTrainner = ({
                   weight={500}
                   color={Colors.textColorBlack}
                 />
-                <CheckBox value={selectGym === gym.uid ? true : false} />
+                <Space marginHorizontal={6} />
+                <View
+                  style={{
+                    width: 16,
+                    height: 16,
+                    borderRadius: 8,
+                    borderWidth: 1,
+                    borderColor:
+                      selectGym === gym.uid
+                        ? Colors.greenMediumLight
+                        : Colors.lightGray,
+                    backgroundColor:
+                      selectGym === gym.uid
+                        ? Colors.greenMediumLight
+                        : Colors.background,
+                  }}
+                />
               </TouchableOpacity>
             ))}
         </View>
@@ -101,7 +120,10 @@ const ModalUnbindGymTrainner = ({
             size={14}
             weight={500}
             color={Colors.textGrayMedium}
-            onPress={() => setVisible(false)}
+            onPress={() => {
+              setSelectGym('');
+              setVisible(false);
+            }}
           />
           <ButtonText
             color={Colors.red}

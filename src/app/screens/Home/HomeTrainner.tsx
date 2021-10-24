@@ -1,8 +1,6 @@
-import {CardTrainner, Carousel, Header, Modal} from 'components';
-import {firestore} from 'firebase';
-import {setGymId} from 'functions';
-import React, {useEffect, useState} from 'react';
-import {useSelector} from 'react-redux';
+import {CardTrainner, Carousel, Header} from 'components';
+
+import React from 'react';
 
 import {HomeStyle} from './styles';
 
