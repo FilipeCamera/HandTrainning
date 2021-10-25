@@ -18,7 +18,7 @@ import InviteProfile from './InviteProfile';
 import {InvitesStyle} from './styles';
 
 const InviteGym = ({auth}: any) => {
-  const {searchUser, getUsers} = useGetUser();
+  const {searchUserTypeGym, getUsers} = useGetUser();
   const {getInvites, acceptedInvite} = useInvites();
   const {verifyUserAssociate, verifyUserIsType} = useVerification();
   const [userSearch, setUserSearch] = useState('');
@@ -200,7 +200,7 @@ const InviteGym = ({auth}: any) => {
         user={userSearch}
         onSearch={e => {
           setUserSearch(e),
-            searchUser(e, auth.uid, {
+            searchUserTypeGym(e, auth.uid, {
               onComplete: (users: any) => {
                 if (users) {
                   setUsersSearch(users);

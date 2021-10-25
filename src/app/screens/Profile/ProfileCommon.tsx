@@ -29,7 +29,10 @@ const ProfileCommon = ({user, navigation}: any) => {
     firestore()
       .collection('users')
       .doc(user.uid)
-      .update({userAssociate: ''})
+      .update({
+        userAssociate: '',
+        updatedAt: firestore.FieldValue.serverTimestamp(),
+      })
       .then(res => {
         getTrainningId({
           uid: user.uid,
@@ -47,6 +50,12 @@ const ProfileCommon = ({user, navigation}: any) => {
                   });
                 })
                 .catch(err => {});
+            } else {
+              setVisible(false);
+              showMessage({
+                type: 'info',
+                message: 'Você foi desvinculado da academia',
+              });
             }
           },
           onFail: err => {},
@@ -164,7 +173,7 @@ const ProfileCommon = ({user, navigation}: any) => {
           }}>
           <Text
             title={user.plan}
-            size={10}
+            size={12}
             weight={600}
             color={Colors.textColorWhite}
           />

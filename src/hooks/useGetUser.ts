@@ -56,6 +56,25 @@ const useGetUser = () => {
       .catch(error => onFail(error));
   };
 
+  const searchUserTypeGym = async (
+    value: string,
+    type: string,
+    {onComplete, onFail}: any,
+  ) => {
+    await firestore()
+      .collection('users')
+      .where('name', '>=', value)
+      .where('name', '<=', value + '\uf8ff')
+      .get()
+      .then(querySnapshot => {
+        const users = querySnapshot.docs.map(res => res.data());
+        const usersUpdted = users.filter(
+          user => user.type !== type && value !== '',
+        );
+        onComplete(usersUpdted);
+      })
+      .catch(error => onFail(error));
+  };
   const getUsers = async ({onComplete, onFail}: any) => {
     await firestore()
       .collection('users')
@@ -153,6 +172,7 @@ const useGetUser = () => {
     getUserTypeAndAssociateTrainner,
     getUserTrainner,
     getUserTypeAndAssociateID,
+    searchUserTypeGym,
   };
 };
 

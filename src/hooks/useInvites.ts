@@ -1,27 +1,30 @@
 import {firestore} from 'firebase';
 
 const useInvites = () => {
-  const acceptedInvite = async (
-    invite: any,
-    state: boolean,
-    {onComplete, onFail}: any,
-  ) => {
-    const data = {
-      accept: state,
-      updatedAt: firestore.FieldValue.serverTimestamp(),
-    };
-    await firestore()
+  const acceptedInvite = ({gymId, uid, onComplete, onFail}: any) => {
+    firestore()
       .collection('invites')
-      .doc(invite[0].id)
-      .update(data)
-      .then((res: any) => {
-        if (state === false) {
-          return onComplete(false);
-        }
-        return onComplete(true);
+      .where('from', '==', uid)
+      .where('to', '==', gymId)
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.docs.forEach(doc => {
+          firestore()
+            .collection('invites')
+            .doc(doc.id)
+            .update({
+              accept: true,
+              updatedAt: firestore.FieldValue.serverTimestamp(),
+            })
+            .then(res => {
+              onComplete(true);
+            })
+            .catch(err => onFail(err));
+        });
       })
-      .catch(error => onFail(error));
+      .catch(err => onFail(err));
   };
+
   const getInvites = async (uid: any, {onComplete, onFail}: any) => {
     await firestore()
       .collection('invites')
@@ -39,6 +42,29 @@ const useInvites = () => {
       })
       .catch((error: any) => onFail(error));
   };
+  const recusedInvite = ({gymId, uid, onComplete, onFail}: any) => {
+    firestore()
+      .collection('invites')
+      .where('from', '==', uid)
+      .where('to', '==', gymId)
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.docs.forEach(doc => {
+          firestore()
+            .collection('invites')
+            .doc(doc.id)
+            .update({
+              accept: false,
+              updatedAt: firestore.FieldValue.serverTimestamp(),
+            })
+            .then(res => {
+              onComplete(true);
+            })
+            .catch(err => onFail(err));
+        });
+      })
+      .catch(err => onFail(err));
+  };
   const sendInvite = async (to: any, from: any, {onComplete}: any) => {
     const data = {
       createdAt: firestore.FieldValue.serverTimestamp(),
@@ -55,7 +81,7 @@ const useInvites = () => {
       })
       .catch(error => console.log(error));
   };
-  return {sendInvite, getInvites, acceptedInvite};
+  return {sendInvite, getInvites, acceptedInvite, recusedInvite};
 };
 
 export default useInvites;
