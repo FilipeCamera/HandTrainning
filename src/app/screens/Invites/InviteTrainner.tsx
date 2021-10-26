@@ -1,22 +1,126 @@
-import Colors from '@styles';
-import {ButtonInvite, Header, Label, Search, Space, Text} from 'components';
-import {useGetUser} from 'hooks';
+import {
+  ButtonInvite,
+  Header,
+  Label,
+  Search,
+  Space,
+  Text,
+  ButtonMiniRed,
+  ButtonText,
+} from 'components';
+import {firestore} from 'firebase';
+import {useGetUser, useInvites} from 'hooks';
 import React, {useState, useEffect} from 'react';
-import {Image, TouchableOpacity, View} from 'react-native';
-import InviteProfile from './InviteProfile';
+import {ActivityIndicator, Image, TouchableOpacity, View} from 'react-native';
+import {showMessage} from 'react-native-flash-message';
 import {InvitesStyle} from './styles';
 
-const InviteTrainner = ({auth}: any) => {
-  const {searchUser} = useGetUser();
+import Notify from 'assets/svg/Notify.svg';
+import {userPersist} from 'functions';
+import Colors from '@styles';
+import InviteProfile from './InviteProfile';
+
+const InviteTrainner = ({auth, navigation}: any) => {
+  const {searchUser, getUsers, getUser, getUserType} = useGetUser();
+  const {getInvites, recusedInvite, acceptedInvite} = useInvites();
+
   const [userSearch, setUserSearch] = useState('');
   const [usersSearch, setUsersSearch] = useState<any>([]);
-  const [profile, setProfile] = useState('');
+  const [users, setUsers] = useState<any>([]);
+  const [invites, setInvites] = useState<any>([]);
+  const [associated, setAssociated] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [state, setState] = useState('');
   const [user, setUser] = useState<any>();
+  const [accepted, setAccepted] = useState<any[]>([]);
 
-  if (profile === 'profile') {
-    return <InviteProfile profile={user} onBack={setProfile} />;
+  useEffect(() => {
+    if (loading) {
+      getUser({
+        uid: auth.uid,
+        onComplete: user => {
+          if (user) {
+            const {userAssociate} = user;
+
+            if (userAssociate) {
+              if (userAssociate.length === user.limitGym) {
+                setAssociated(true);
+                setLoading(false);
+              } else {
+                setLoading(false);
+              }
+            }
+          }
+        },
+        onFail: err => {},
+      });
+    }
+  }, [loading]);
+
+  useEffect(() => {
+    if (loading) {
+      getInvites(auth.uid, {
+        onComplete: (invite: any) => {
+          if (invite) {
+            setInvites(invite);
+            setLoading(false);
+          }
+        },
+        onFail: (error: any) => console.log(error),
+      });
+      getUserType({
+        type: 'gym',
+        onComplete: (user: any) => {
+          setUsers(user);
+        },
+        onFail: (error: any) => console.log(error),
+      });
+    }
+  }, [loading]);
+
+  const handleAcceptOrRecused = (state: boolean, gymId: any) => {
+    if (!state) {
+      recusedInvite({
+        gymId,
+        uid: auth.uid,
+        onComplete: res => {
+          if (res) {
+            return console.log('recusado');
+          }
+        },
+        onFail: err => {},
+      });
+      setUsers(users.filter(gym => gym.uid !== gymId));
+    } else {
+      setAccepted([...accepted, gymId]);
+
+      acceptedInvite({
+        gymId,
+        uid: auth.uid,
+        onComplete: res => {
+          if (res) {
+            firestore()
+              .collection('users')
+              .doc(auth.uid)
+              .update({
+                userAssociate: [...accepted, gymId],
+                updatedAt: firestore.FieldValue.serverTimestamp(),
+              })
+              .then(res => {
+                setLoading(true);
+              })
+              .catch(err => {});
+          }
+        },
+        onFail: err => {},
+      });
+      setUsers(users.filter(gym => gym.uid !== gymId));
+    }
+  };
+
+  if (state === 'profile') {
+    return <InviteProfile profile={user} onBack={setState} />;
   }
-
   return (
     <InvitesStyle
       contentContainerStyle={{
@@ -26,28 +130,57 @@ const InviteTrainner = ({auth}: any) => {
         width: '100%',
       }}
       showsVerticalScrollIndicator={false}>
-      <Header />
-      <Search
-        user={userSearch}
-        onSearch={e => {
-          setUserSearch(e),
-            searchUser(e, 'gym', {
-              onComplete: (users: any) => {
-                if (users) {
-                  setUsersSearch(users);
-                }
-                return;
-              },
-              onFail: (error: any) => {
-                console.log(error);
-              },
-            });
-        }}
-      />
-      {usersSearch.length !== 0 &&
+      <Header navigation={navigation} />
+      {!!loading && (
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+          <ActivityIndicator size="large" color={Colors.red} />
+        </View>
+      )}
+      {!loading && !!associated && (
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Space marginVertical={20} />
+          <Notify />
+          <Space marginVertical={12} />
+          <Text
+            title="Você já atingiu o seu limite de academias"
+            size={15}
+            weight={500}
+            color={Colors.grayMediumLight}
+            center
+          />
+        </View>
+      )}
+      {!loading && !associated && (
+        <Search
+          user={userSearch}
+          onSearch={e => {
+            setUserSearch(e),
+              searchUser(e, 'gym', {
+                onComplete: (users: any) => {
+                  if (users) {
+                    setUsersSearch(users);
+                  }
+                  return;
+                },
+                onFail: (error: any) => {
+                  console.log(error);
+                },
+              });
+          }}
+        />
+      )}
+      {!loading &&
+        !associated &&
+        usersSearch.length !== 0 &&
         usersSearch.map((userInvite: any) => {
           return (
-            <TouchableOpacity
+            <View
               key={userInvite.uid}
               style={{
                 width: '100%',
@@ -58,7 +191,7 @@ const InviteTrainner = ({auth}: any) => {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 marginVertical: 8,
-                shadowColor: Colors.inputColorText,
+                shadowColor: Colors.textColorRX,
                 shadowOffset: {
                   width: 0,
                   height: 2,
@@ -67,12 +200,13 @@ const InviteTrainner = ({auth}: any) => {
                 shadowRadius: 3.84,
 
                 elevation: 5,
-              }}
-              onPress={() => {
-                setUser(userInvite);
-                setProfile('profile');
               }}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <TouchableOpacity
+                onPress={() => {
+                  setUser(userInvite);
+                  setState('profile');
+                }}
+                style={{flexDirection: 'row', alignItems: 'center'}}>
                 <View style={{width: 50, height: 50, borderRadius: 25}}>
                   <Image
                     source={{uri: userInvite.avatar}}
@@ -93,18 +227,18 @@ const InviteTrainner = ({auth}: any) => {
                   />
                   <Text
                     title={
-                      userInvite.type === 'common'
-                        ? 'Aluno(a)'
-                        : userInvite.type === 'trainner'
+                      userInvite.type === 'trainner'
                         ? 'Treinador(a)'
+                        : userInvite.type === 'common'
+                        ? 'Aluno(a)'
                         : 'Academia'
                     }
-                    size={13}
+                    size={12}
                     weight={500}
                     color={Colors.textColorBlack}
                   />
                 </View>
-              </View>
+              </TouchableOpacity>
               <View style={{height: 30}}>
                 <ButtonInvite
                   title="Enviar convite"
@@ -116,11 +250,113 @@ const InviteTrainner = ({auth}: any) => {
                   from={userInvite.uid}
                 />
               </View>
-            </TouchableOpacity>
+            </View>
           );
         })}
       <Space marginVertical={5} />
-      {usersSearch.length === 0 && <Label title="Academias" />}
+      {!loading && !associated && usersSearch.length === 0 && (
+        <Label title="Academias" />
+      )}
+      <Space marginVertical={5} />
+      {!associated &&
+        usersSearch.length === 0 &&
+        users.map(userInvite => {
+          const invite = invites.filter(
+            (invite: any) => invite.to === userInvite.uid,
+          );
+          const status = invite.length > 0 ? invite[0].accept : {status: null};
+          if (status === null) {
+            if (userInvite.type === 'gym') {
+              return (
+                <View
+                  key={userInvite.uid}
+                  style={{
+                    width: '100%',
+                    backgroundColor: Colors.background,
+                    padding: 16,
+                    borderRadius: 10,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginVertical: 8,
+                    shadowColor: Colors.inputColorText,
+                    shadowOffset: {
+                      width: 0,
+                      height: 2,
+                    },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 3.84,
+
+                    elevation: 5,
+                  }}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setUser(userInvite);
+                      setState('profile');
+                    }}
+                    style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <View style={{width: 50, height: 50, borderRadius: 25}}>
+                      <Image
+                        source={{uri: userInvite.avatar}}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          borderRadius: 999,
+                        }}
+                      />
+                    </View>
+                    <View
+                      style={{
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                        marginLeft: 8,
+                      }}>
+                      <Text
+                        title={userInvite.name}
+                        size={14}
+                        weight={600}
+                        color={Colors.textColorBlack}
+                      />
+                      <Text
+                        title="Academia"
+                        size={12}
+                        weight={500}
+                        color={Colors.textColorBlack}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                  <View
+                    style={{
+                      width: 70,
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <ButtonMiniRed
+                      title="Aceitar"
+                      weight={600}
+                      size={11}
+                      color={Colors.textColorWhite}
+                      onPress={() =>
+                        handleAcceptOrRecused(true, userInvite.uid)
+                      }
+                    />
+                    <Space marginVertical={5} />
+                    <ButtonText
+                      title="Recusar"
+                      weight={400}
+                      size={11}
+                      color={Colors.red}
+                      onPress={() =>
+                        handleAcceptOrRecused(false, userInvite.uid)
+                      }
+                    />
+                  </View>
+                </View>
+              );
+            }
+          }
+        })}
     </InvitesStyle>
   );
 };

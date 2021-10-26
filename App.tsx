@@ -72,11 +72,11 @@ const App = () => {
             </NavigationContainer>
           </SafeAreaView>
           <FlashMessage
-            statusBarHeight={30}
+            statusBarHeight={16}
             position="top"
             duration={3000}
             titleStyle={{fontFamily: 'Poppins-Medium', fontSize: normalize(16)}}
-            textStyle={{fontFamily: 'Poppins-Medium', fontSize: normalize(16)}}
+            textStyle={{fontFamily: 'Poppins-Regular', fontSize: normalize(15)}}
           />
         </PersistGate>
       </PaperProvider>

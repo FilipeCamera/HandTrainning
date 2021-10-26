@@ -1,5 +1,5 @@
 import Colors from '@styles';
-import {Card, CarouselWarnings, Header, Space, Text} from 'components';
+import {Button, Card, CarouselWarnings, Header, Space, Text} from 'components';
 import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, Image, TouchableOpacity, View} from 'react-native';
 import {useSelector} from 'react-redux';
@@ -13,6 +13,7 @@ import moment from 'moment';
 import {useGetRequests, useGetTrainning, useGetUser} from 'hooks';
 import VisualStudents from './VisualStudents';
 import {firestore} from 'firebase';
+import {showMessage} from 'react-native-flash-message';
 
 const Students = ({navigation}: any) => {
   const user = useSelector((state: any) => state.auth.user);
@@ -53,37 +54,41 @@ const Students = ({navigation}: any) => {
     if (state !== '') {
       setLoading(true);
     } else {
-      getUser({
-        uid: gym.gym,
-        onComplete: user => {
-          if (user) {
-            setProfileGym(user);
-          }
-        },
-        onFail: err => {},
-      });
+      if (gym && gym.gym !== undefined) {
+        getUser({
+          uid: gym.gym,
+          onComplete: user => {
+            if (user) {
+              setProfileGym(user);
+            }
+          },
+          onFail: err => {},
+        });
 
-      getUserTypeAndAssociate({
-        type: 'common',
-        associate: gym.gym,
-        onComplete: users => {
-          if (users) {
-            setCommons(users);
-          }
-        },
-        onFail: err => {},
-      });
+        getUserTypeAndAssociate({
+          type: 'common',
+          associate: gym.gym,
+          onComplete: users => {
+            if (users) {
+              setCommons(users);
+            }
+          },
+          onFail: err => {},
+        });
 
-      getTrainningTrainner({
-        uid: user.uid,
-        onComplete: trainning => {
-          if (trainning) {
-            setTrainnings(trainning);
-            setLoading(false);
-          }
-        },
-        onFail: err => {},
-      });
+        getTrainningTrainner({
+          uid: user.uid,
+          onComplete: trainning => {
+            if (trainning) {
+              setTrainnings(trainning);
+              setLoading(false);
+            }
+          },
+          onFail: err => {},
+        });
+      } else {
+        setLoading(false);
+      }
     }
   }, [state]);
 
@@ -130,7 +135,56 @@ const Students = ({navigation}: any) => {
           <ActivityIndicator size="large" color={Colors.red} />
         </View>
       )}
-      {!loading && (
+      {!loading && trainnings.length === 0 && (
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
+          }}>
+          {!!request && request.length !== 0 && (
+            <CarouselWarnings data={request} />
+          )}
+          <Space marginVertical={20} />
+          <Text
+            title="Ops! Você não tem nenhum aluno."
+            size={15}
+            weight={500}
+            color={Colors.textGrayLight}
+            center
+          />
+          <Space marginVertical={20} />
+          <View
+            style={{
+              width: '100%',
+              alignItems: 'center',
+              position: 'absolute',
+              bottom: 8,
+            }}>
+            <Button
+              background={Colors.red}
+              title="Criar primeiro treino"
+              size={14}
+              weight={500}
+              color={Colors.textColorWhite}
+              onPress={() => {
+                if (gym && gym.gym !== undefined) {
+                  setState('Criar treino');
+                } else {
+                  showMessage({
+                    type: 'danger',
+                    message: 'Aviso',
+                    description:
+                      'Usuário precisa tá associado a uma academia para criar o treino',
+                  });
+                }
+              }}
+            />
+          </View>
+        </View>
+      )}
+      {!loading && trainnings.length !== 0 && (
         <>
           <Space marginVertical={20} />
           {!!request && request.length !== 0 && (

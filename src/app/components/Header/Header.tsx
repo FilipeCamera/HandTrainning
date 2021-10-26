@@ -28,7 +28,11 @@ const Header = ({navigation}: HeaderProps) => {
   const [gyms, setGyms] = useState<any[]>([]);
 
   useEffect(() => {
-    if (gym === undefined && user.userAssociate.length !== 0) {
+    if (
+      user.type !== 'gym' &&
+      gym === undefined &&
+      user.userAssociate.length !== 0
+    ) {
       setVisible(true);
     }
     if (user.type === 'trainner') {

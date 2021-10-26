@@ -5,9 +5,10 @@ import {InvitesProfileStyle} from './styles';
 import BackRedHeader from 'assets/svg/RedTopBack.svg';
 import LocationIcon from 'assets/svg/locationIcon.svg';
 import BackIcon from 'assets/svg/arrowBackWhite.svg';
-import {ButtonInvite, Space, Text} from 'components';
+import {ButtonGranInvite, ButtonInvite, Space, Text} from 'components';
 import {firestore} from 'firebase';
 import Colors from '@styles';
+import {useGetUser} from 'hooks';
 
 interface InviteProfileProps {
   profile: any;
@@ -15,24 +16,20 @@ interface InviteProfileProps {
   auth: any;
 }
 const InviteProfile = ({profile, onBack, auth}: InviteProfileProps) => {
+  const {getUserTrainner} = useGetUser();
   const [data, setData] = useState<any[]>();
 
   useEffect(() => {
     if (profile.type === 'gym') {
-      firestore()
-        .collection('users')
-        .where('type', '==', 'trainner')
-        .where(
-          'userAssociate',
-          'array-contains',
-          profile.userAssociate || profile.uid,
-        )
-        .get()
-        .then(querySnapshot => {
-          const dados = querySnapshot.docs.map(doc => doc.data());
-          setData(dados);
-        })
-        .catch(error => {});
+      getUserTrainner({
+        uid: profile.uid,
+        onComplete: users => {
+          if (users) {
+            setData(users);
+          }
+        },
+        onFail: err => {},
+      });
     }
     if (profile.type === 'trainner') {
       firestore()
@@ -84,7 +81,7 @@ const InviteProfile = ({profile, onBack, auth}: InviteProfileProps) => {
           style={{position: 'absolute', top: 0}}
         />
         <TouchableOpacity
-          style={{position: 'absolute', top: 30, left: 25}}
+          style={{position: 'absolute', top: 45, left: 25}}
           onPress={() => onBack('')}>
           <BackIcon />
         </TouchableOpacity>
@@ -112,6 +109,17 @@ const InviteProfile = ({profile, onBack, auth}: InviteProfileProps) => {
           weight={600}
           color={Colors.textColorBlack}
         />
+        {!!profile.cnpj && (
+          <>
+            <Text
+              title={profile.cnpj}
+              size={14}
+              weight={600}
+              color={Colors.grayMediumLight}
+            />
+            <Space marginVertical={2} />
+          </>
+        )}
         <View style={{flexDirection: 'row', alignItems: 'flex-start'}}>
           <LocationIcon />
           <Space marginHorizontal={1} />
@@ -145,13 +153,13 @@ const InviteProfile = ({profile, onBack, auth}: InviteProfileProps) => {
             color={Colors.textColorWhite}
           />
         </View>
-        <Space marginVertical={5} />
+        <Space marginVertical={10} />
         {!!profile.slogan && (
           <Text
             title={profile.slogan}
-            size={15}
-            weight={400}
-            color={Colors.grayMediumLight}
+            size={18}
+            weight={500}
+            color={Colors.grayLight}
           />
         )}
       </View>
@@ -214,22 +222,19 @@ const InviteProfile = ({profile, onBack, auth}: InviteProfileProps) => {
             </View>
           </View>
         ))}
-      {!profile.userAssociate && (
-        <>
-          <Space marginVertical={70} />
-          <View style={{height: 56, width: '90%'}}>
-            <ButtonInvite
-              title="Enviar convite"
-              sendTitle="Convite enviado"
-              size={15}
-              weight={500}
-              color="#fff"
-              to={auth}
-              from={profile.uid}
-            />
-          </View>
-        </>
-      )}
+
+      <Space marginVertical={70} />
+      <View style={{height: 56, width: '90%'}}>
+        <ButtonGranInvite
+          title="Enviar convite"
+          sendTitle="Convite enviado"
+          size={14}
+          weight={500}
+          color={Colors.textColorWhite}
+          to={auth}
+          from={profile.uid}
+        />
+      </View>
     </InvitesProfileStyle>
   );
 };

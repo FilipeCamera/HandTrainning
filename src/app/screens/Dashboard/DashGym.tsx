@@ -28,7 +28,7 @@ const DashGym = () => {
           height: 60,
         },
         tabBarLabelStyle: {
-          fontSize: 12,
+          fontSize: 10,
           fontFamily: 'Poppins-Medium',
         },
         tabBarActiveTintColor: Colors.textColorBlack,
@@ -62,12 +62,13 @@ const DashGym = () => {
             <View
               style={{
                 backgroundColor: focused ? Colors.red : Colors.gray,
-                width: 50,
-                height: 50,
-                borderRadius: 25,
+                width: 60,
+                height: 60,
+                borderRadius: 30,
                 alignItems: 'center',
                 justifyContent: 'center',
-                marginTop: 8,
+                marginBottom: 10,
+                elevation: 5,
               }}>
               <AddIcon />
             </View>

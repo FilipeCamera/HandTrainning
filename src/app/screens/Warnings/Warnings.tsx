@@ -47,21 +47,23 @@ const Warnings = ({navigation}: any) => {
       onFail: err => {},
     });
     if (user.type === 'trainner') {
-      getWarningsTrainner({
-        uid: user.userAssociate,
-        onComplete: warnings => {
-          const listWarnings: any[] = [];
-          if (warnings) {
-            warnings.map(wg => {
-              if (wg.finallized !== dateNow && wg.finallized > dateNow) {
-                listWarnings.push(wg);
-              }
-            });
-            setWarnings(listWarnings);
-          }
-        },
-        onFail: err => [],
-      });
+      if (user.userAssociate.length !== 0) {
+        getWarningsTrainner({
+          uid: user.userAssociate,
+          onComplete: warnings => {
+            const listWarnings: any[] = [];
+            if (warnings) {
+              warnings.map(wg => {
+                if (wg.finallized !== dateNow && wg.finallized > dateNow) {
+                  listWarnings.push(wg);
+                }
+              });
+              setWarnings(listWarnings);
+            }
+          },
+          onFail: err => [],
+        });
+      }
     }
     if (user.type === 'common') {
       if (user.userAssociate !== undefined) {

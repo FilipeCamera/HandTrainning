@@ -13,7 +13,9 @@ const Invites = ({navigation}: any) => {
       {user.type === 'common' && (
         <InviteCommon auth={user} navigation={navigation} />
       )}
-      {user.type === 'trainner' && <InviteTrainner auth={user} />}
+      {user.type === 'trainner' && (
+        <InviteTrainner auth={user} navigation={navigation} />
+      )}
     </>
   );
 };

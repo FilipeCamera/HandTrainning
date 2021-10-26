@@ -9,6 +9,7 @@ import {
   CircleButton,
   ButtonInvite,
   ButtonMiniRed,
+  ButtonGranInvite,
 } from './Button';
 import {
   CardStatus,
@@ -99,4 +100,5 @@ export {
   ModalUnbindGym,
   ModalScore,
   ModalUnbindGymTrainner,
+  ButtonGranInvite,
 };

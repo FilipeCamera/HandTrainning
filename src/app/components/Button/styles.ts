@@ -45,6 +45,18 @@ export const ButtonInviteStyle = styled.TouchableOpacity<ButtonInviteProps>`
   justify-content: space-evenly;
 `;
 
+export const ButtonGranInviteStyle = styled.TouchableOpacity<ButtonInviteProps>`
+  align-items: center;
+  justify-content: center;
+  background: ${(props: any) => (props.background ? Colors.gray : Colors.red)};
+  flex-direction: row;
+  align-items: center;
+  flex: 1;
+  border-radius: 5px;
+  padding: 2px 8px;
+  justify-content: center;
+`;
+
 export const CardButtonStyle = styled.TouchableOpacity`
   width: 90%;
   margin: 8px 0;

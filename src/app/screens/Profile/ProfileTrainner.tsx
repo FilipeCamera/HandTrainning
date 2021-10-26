@@ -32,16 +32,18 @@ const ProfileTrainner = ({user, navigation}: any) => {
   const [visible, setVisible] = useState(false);
   const {getUserTypeAndAssociateTrainner} = useGetUser();
   useEffect(() => {
-    getUserTypeAndAssociateTrainner({
-      type: 'gym',
-      associate: user.userAssociate,
-      onComplete: gyms => {
-        if (gyms) {
-          setGym(gyms);
-        }
-      },
-      onFail: err => {},
-    });
+    if (user.userAssociate.length !== 0) {
+      getUserTypeAndAssociateTrainner({
+        type: 'gym',
+        associate: user.userAssociate,
+        onComplete: gyms => {
+          if (gyms) {
+            setGym(gyms);
+          }
+        },
+        onFail: err => {},
+      });
+    }
   }, []);
 
   const handleUnbindGym = uid => {
@@ -156,7 +158,7 @@ const ProfileTrainner = ({user, navigation}: any) => {
         </View>
       </View>
       <Space marginVertical={15} />
-      {!!gym && (
+      {!!gym && gym.length !== 0 && (
         <View
           style={{
             flexDirection: 'row',
@@ -190,25 +192,27 @@ const ProfileTrainner = ({user, navigation}: any) => {
         <LineGray width="100%" />
       </View>
       <Space marginVertical={8} />
-      <View style={{width: '90%'}}>
-        <TouchableOpacity
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-          onPress={() => setVisible(true)}>
-          <Text
-            title="Desvincular da academia"
-            size={16}
-            weight={600}
-            color={Colors.textColorBlack}
-            style={{marginLeft: 5}}
-          />
-          <CloseIcon />
-        </TouchableOpacity>
-        <LineGray width="100%" />
-      </View>
+      {!!gym && gym.length !== 0 && (
+        <View style={{width: '90%'}}>
+          <TouchableOpacity
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+            onPress={() => setVisible(true)}>
+            <Text
+              title="Desvincular da academia"
+              size={16}
+              weight={600}
+              color={Colors.textColorBlack}
+              style={{marginLeft: 5}}
+            />
+            <CloseIcon />
+          </TouchableOpacity>
+          <LineGray width="100%" />
+        </View>
+      )}
       <Space marginVertical={60} />
       <View style={{width: '90%', alignItems: 'center'}}>
         <Button
