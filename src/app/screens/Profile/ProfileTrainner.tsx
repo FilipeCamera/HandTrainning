@@ -20,7 +20,6 @@ import {Logout, removeGymId} from 'functions';
 import Colors from '@styles';
 import {useGetTrainning, useGetUser} from 'hooks';
 import ProfileEdit from './ProfileEdit';
-import {useSelector} from 'react-redux';
 import {firestore} from 'firebase';
 import {showMessage} from 'react-native-flash-message';
 

@@ -5,7 +5,7 @@ import {InvitesProfileStyle} from './styles';
 import BackRedHeader from 'assets/svg/RedTopBack.svg';
 import LocationIcon from 'assets/svg/locationIcon.svg';
 import BackIcon from 'assets/svg/arrowBackWhite.svg';
-import {ButtonGranInvite, ButtonInvite, Space, Text} from 'components';
+import {ButtonGranInvite, Space, Text} from 'components';
 import {firestore} from 'firebase';
 import Colors from '@styles';
 import {useGetUser} from 'hooks';
@@ -148,7 +148,7 @@ const InviteProfile = ({profile, onBack, auth}: InviteProfileProps) => {
                 ? 'treinador'
                 : 'academia'
             }
-            size={10}
+            size={11}
             weight={600}
             color={Colors.textColorWhite}
           />

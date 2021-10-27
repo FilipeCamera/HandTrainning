@@ -10,7 +10,7 @@ import Colors from '@styles';
 import {useSelector} from 'react-redux';
 import {useGetRequests, useGetScore, useGetTrainning, useGetUser} from 'hooks';
 
-const CardTrainner = ({navigation}: any) => {
+const CardTrainner = ({navigation, refresh}: any) => {
   const user = useSelector((state: any) => state.auth.user);
 
   const {getTrainningTrainner} = useGetTrainning();
@@ -55,7 +55,7 @@ const CardTrainner = ({navigation}: any) => {
       },
       onFail: err => {},
     });
-  }, []);
+  }, [refresh]);
 
   useEffect(() => {
     const resultList: any = [];
@@ -83,7 +83,7 @@ const CardTrainner = ({navigation}: any) => {
         }
       },
     });
-  }, []);
+  }, [refresh]);
   return (
     <CardTrainnerStyle style={styles.shadow}>
       <RectangleRed width="100%" style={{position: 'absolute', top: -14}} />

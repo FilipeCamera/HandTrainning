@@ -13,9 +13,10 @@ import {useGetRequests, useGetUser, useGetWarnings} from 'hooks';
 
 interface HeaderProps {
   navigation: any;
+  refresh: boolean;
 }
 
-const Header = ({navigation}: HeaderProps) => {
+const Header = ({navigation, refresh}: HeaderProps) => {
   const user = useSelector((state: any) => state.auth.user);
   const gym = useSelector((state: any) => state.trainner.gym);
   const visualized = useSelector((state: any) => state.visualized.visualized);
@@ -49,7 +50,7 @@ const Header = ({navigation}: HeaderProps) => {
         });
       }
     }
-  }, []);
+  }, [refresh]);
   const dateNow = Date.now();
 
   useEffect(() => {
@@ -110,7 +111,7 @@ const Header = ({navigation}: HeaderProps) => {
         });
       }
     }
-  }, []);
+  }, [refresh]);
 
   return (
     <>

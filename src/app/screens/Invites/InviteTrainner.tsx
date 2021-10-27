@@ -43,6 +43,7 @@ const InviteTrainner = ({auth, navigation}: any) => {
             const {userAssociate} = user;
 
             if (userAssociate) {
+              setAccepted(userAssociate);
               if (userAssociate.length === user.limitGym) {
                 setAssociated(true);
                 setLoading(false);
@@ -119,7 +120,7 @@ const InviteTrainner = ({auth, navigation}: any) => {
   };
 
   if (state === 'profile') {
-    return <InviteProfile profile={user} onBack={setState} />;
+    return <InviteProfile profile={user} onBack={setState} auth={auth} />;
   }
   return (
     <InvitesStyle

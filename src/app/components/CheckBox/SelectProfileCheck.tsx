@@ -22,6 +22,7 @@ const SelectProfileCheck = ({profile, onFunction}: CheckBoxProps) => {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
+        marginBottom: 16,
         width: '95%',
       }}
       onPress={() => {

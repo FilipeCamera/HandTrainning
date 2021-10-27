@@ -11,19 +11,22 @@ import {
 import {firestore} from 'firebase';
 import {useGetUser, useInvites} from 'hooks';
 import React, {useState, useEffect} from 'react';
-import {ActivityIndicator, Image, View} from 'react-native';
+import {ActivityIndicator, Image, TouchableOpacity, View} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
 import {InvitesStyle} from './styles';
 
 import Notify from 'assets/svg/Notify.svg';
 import {userPersist} from 'functions';
 import Colors from '@styles';
+import InviteProfile from './InviteProfile';
 
 const InviteCommon = ({auth, navigation}: any) => {
   const {searchUser, getUsers, getUser, getUserType} = useGetUser();
   const {getInvites, recusedInvite, acceptedInvite} = useInvites();
 
   const [userSearch, setUserSearch] = useState('');
+  const [state, setState] = useState('');
+  const [user, setUser] = useState<any>();
   const [usersSearch, setUsersSearch] = useState<any>([]);
   const [users, setUsers] = useState<any>([]);
   const [invites, setInvites] = useState<any>([]);
@@ -108,6 +111,9 @@ const InviteCommon = ({auth, navigation}: any) => {
     }
   };
 
+  if (state === 'profile') {
+    return <InviteProfile profile={user} onBack={setState} auth={auth} />;
+  }
   return (
     <InvitesStyle
       contentContainerStyle={{
@@ -188,7 +194,12 @@ const InviteCommon = ({auth, navigation}: any) => {
 
                 elevation: 5,
               }}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <TouchableOpacity
+                onPress={() => {
+                  setUser(userInvite);
+                  setState('profile');
+                }}
+                style={{flexDirection: 'row', alignItems: 'center'}}>
                 <View style={{width: 50, height: 50, borderRadius: 25}}>
                   <Image
                     source={{uri: userInvite.avatar}}
@@ -220,7 +231,7 @@ const InviteCommon = ({auth, navigation}: any) => {
                     color={Colors.textColorBlack}
                   />
                 </View>
-              </View>
+              </TouchableOpacity>
               <View style={{height: 30}}>
                 <ButtonInvite
                   title="Enviar convite"
