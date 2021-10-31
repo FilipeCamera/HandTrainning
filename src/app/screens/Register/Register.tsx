@@ -20,6 +20,7 @@ import {userPersist} from 'functions';
 import {emailValidate, fieldPass, equalsPassword} from 'validation';
 import {showMessage} from 'react-native-flash-message';
 import Colors from '@styles';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 const Register = ({navigation}: any) => {
   const [email, setEmail] = useState('');
@@ -79,7 +80,15 @@ const Register = ({navigation}: any) => {
         }
       });
   };
-
+  const signUpGoogle = async () => {
+    const {idToken} = await GoogleSignin.signIn();
+    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+    auth()
+      .signInWithCredential(googleCredential)
+      .then(({user}) => {
+        console.log(user);
+      });
+  };
   const saveUser = (uid: string) => {
     const user = {
       uid: uid,
@@ -132,7 +141,7 @@ const Register = ({navigation}: any) => {
           title="Cadastrar"
           background={Colors.red}
           size={15}
-          color="#fff"
+          color={Colors.background}
           weight={500}
           onPress={() => {
             const validated = validate();
@@ -182,6 +191,7 @@ const Register = ({navigation}: any) => {
         </View>
         <Space marginVertical={16} />
         <Button
+          onPress={signUpGoogle}
           google
           title="sign up with Google"
           border

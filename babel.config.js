@@ -32,6 +32,7 @@ const plugins = [
         hooks: './src/hooks',
         '@styles': './src/styles',
         '@normalize': './src/utils/font',
+        keys: './src/utils/keys',
       },
     },
   ],

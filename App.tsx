@@ -22,6 +22,12 @@ import {useGetUser} from 'hooks';
 import SplashScreen from 'react-native-splash-screen';
 import {Provider as PaperProvider} from 'react-native-paper';
 import normalize from '@normalize';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {Google_key_ID} from 'keys';
+
+GoogleSignin.configure({
+  webClientId: Google_key_ID,
+});
 
 LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',

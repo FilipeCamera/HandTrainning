@@ -131,9 +131,10 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.handtrainning"
+        applicationId "com.handtrainning.handtrainning"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
+        multiDexEnabled true
         versionCode 1
         versionName "1.0"
     }
@@ -152,18 +153,23 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            if (project.hasProperty('MYAPP_UPLOAD_STORE_FILE')) {
+                storeFile file(MYAPP_UPLOAD_STORE_FILE)
+                storePassword MYAPP_UPLOAD_STORE_PASSWORD
+                keyAlias MYAPP_UPLOAD_KEY_ALIAS
+                keyPassword MYAPP_UPLOAD_KEY_PASSWORD
+            }
+        }
     }
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
         }
         release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
-            minifyEnabled enableProguardInReleaseBuilds
-            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            signingConfig signingConfigs.release
         }
+        
     }
 
     // applicationVariants are e.g. debug, release
@@ -192,6 +198,8 @@ dependencies {
     implementation 'com.facebook.fresco:animated-base-support:1.3.0'
     implementation 'com.facebook.fresco:fresco:2.0.0'
     implementation 'com.facebook.fresco:animated-gif:2.0.0'
+
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
 
     implementation project(':react-native-permissions')
     implementation project(':react-native-splash-screen')
@@ -229,3 +237,4 @@ task copyDownloadableDepsToLibs(type: Copy) {
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
+apply plugin: 'com.google.gms.google-services'

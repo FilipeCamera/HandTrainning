@@ -1,4 +1,4 @@
-package com.handtrainning;
+package com.handtrainning.handtrainning;
 
 import android.os.Bundle;
 import com.facebook.react.ReactActivity;
