@@ -33,7 +33,7 @@ const Initial = ({navigation}: any) => {
           weight={500}
           size={16}
           background={Colors.textColorBlack}
-          color="#FFF"
+          color={Colors.textColorWhite}
           onPress={() => navigation.navigate('Register')}
         />
         <Button

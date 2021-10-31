@@ -24,9 +24,10 @@ const useGetTrainning = () => {
       })
       .catch(err => onFail(err));
   };
-  const getTrainningTrainner = ({uid, onComplete, onFail}: any) => {
+  const getTrainningTrainner = ({uid, gym, onComplete, onFail}: any) => {
     firestore()
       .collection('trainnings')
+      .where('gymId', '==', gym)
       .where('trainnerId', '==', uid)
       .get()
       .then(querySnapshot => {

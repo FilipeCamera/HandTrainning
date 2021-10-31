@@ -10,6 +10,7 @@ import {
   SimpleHeader,
   Space,
 } from 'components';
+import Colors from '@styles';
 
 interface StepProps {
   stateChange: () => any;
@@ -25,7 +26,7 @@ const Step3 = ({stateChange, backStateChange, dados, setDados}: StepProps) => {
       <Scroll>
         <SimpleHeader
           title="Escolha o seu plano"
-          color="#fff"
+          color={Colors.textColorWhite}
           size={18}
           weight={600}
         />
@@ -49,14 +50,6 @@ const Step3 = ({stateChange, backStateChange, dados, setDados}: StepProps) => {
                 stateChange();
               }}
             />
-            <CardButton
-              title="Individual - R$ 5,90"
-              desc="Nesse plano você pode escolher o seu treinador de sua preferência, e não precisa se vincular alguma academia."
-              onPress={() => {
-                setDados({...dados, plan: 'individual'});
-                stateChange();
-              }}
-            />
           </>
         )}
         {dados.type === 'trainner' && (
@@ -71,7 +64,7 @@ const Step3 = ({stateChange, backStateChange, dados, setDados}: StepProps) => {
             />
             <CardButton
               title="Individual - R$ 11,90"
-              desc="Nesse plano você pode escolher os seus alunos de sua preferência, e não é obrigatório está associado alguma academia."
+              desc="Nesse plano você precisa está vinculado a uma academia para usar o aplicativo e criar o treino dos seus alunos. Pode associar a várias academias."
               onPress={() => {
                 setDados({...dados, plan: 'individual'});
                 stateChange();
@@ -133,9 +126,13 @@ const Step3 = ({stateChange, backStateChange, dados, setDados}: StepProps) => {
             right: 0,
           }}>
           <CircleButton title="1" onPress={backStateChange} />
-          <View style={{width: 80, height: 2, backgroundColor: '#fff'}} />
+          <View
+            style={{width: 80, height: 2, backgroundColor: Colors.background}}
+          />
           <CircleButton title="2" />
-          <View style={{width: 80, height: 2, backgroundColor: '#fff'}} />
+          <View
+            style={{width: 80, height: 2, backgroundColor: Colors.background}}
+          />
         </View>
       </Scroll>
     </Background>

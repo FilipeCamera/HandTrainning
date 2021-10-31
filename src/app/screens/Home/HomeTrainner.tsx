@@ -36,13 +36,10 @@ const HomeTrainner = ({navigation}: any) => {
       }
       showsVerticalScrollIndicator={false}>
       <Header navigation={navigation} refresh={refresh} />
-      <Carousel />
+      <Carousel refresh={refresh} />
       <CardTrainner navigation={navigation} refresh={refresh} />
     </HomeStyle>
   );
 };
 
 export default HomeTrainner;
-function wait(arg0: number) {
-  throw new Error('Function not implemented.');
-}

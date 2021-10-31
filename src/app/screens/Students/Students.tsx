@@ -1,7 +1,13 @@
 import Colors from '@styles';
 import {Button, Card, CarouselWarnings, Header, Space, Text} from 'components';
-import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, Image, TouchableOpacity, View} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {
+  ActivityIndicator,
+  Image,
+  RefreshControl,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {useSelector} from 'react-redux';
 import CreateTrainning from './CreateTrainning';
 import {StudentStyle} from './styles';
@@ -37,7 +43,16 @@ const Students = ({navigation}: any) => {
     {title: 'Excluir'},
     {title: 'Editar'},
   ];
+  const [refresh, setRefresh] = useState(false);
 
+  const wait = timeout => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+  };
+
+  const onRefresh = useCallback(() => {
+    setRefresh(true);
+    wait(1000).then(() => setRefresh(false));
+  }, []);
   const handleDeleteTrainning = uid => {
     getTrainningId({
       uid,
@@ -53,6 +68,7 @@ const Students = ({navigation}: any) => {
   useEffect(() => {
     if (state !== '') {
       setLoading(true);
+      setMode('');
     } else {
       if (gym && gym.gym !== undefined) {
         getUser({
@@ -78,6 +94,7 @@ const Students = ({navigation}: any) => {
 
         getTrainningTrainner({
           uid: user.uid,
+          gym: gym.gym,
           onComplete: trainning => {
             if (trainning) {
               setTrainnings(trainning);
@@ -90,7 +107,7 @@ const Students = ({navigation}: any) => {
         setLoading(false);
       }
     }
-  }, [state]);
+  }, [state, gym, refresh]);
 
   useEffect(() => {
     getRequests({
@@ -102,7 +119,7 @@ const Students = ({navigation}: any) => {
       },
       onFail: err => {},
     });
-  }, []);
+  }, [refresh]);
 
   if (state === 'Criar treino') {
     return (
@@ -128,6 +145,15 @@ const Students = ({navigation}: any) => {
         alignItems: 'center',
         width: '100%',
       }}
+      refreshControl={
+        <RefreshControl
+          progressViewOffset={50}
+          refreshing={refresh}
+          onRefresh={onRefresh}
+          colors={[Colors.red]}
+          progressBackgroundColor={Colors.background}
+        />
+      }
       showsVerticalScrollIndicator={false}>
       <Header navigation={navigation} />
       {!!loading && (

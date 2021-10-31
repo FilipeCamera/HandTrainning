@@ -17,6 +17,7 @@ import {showMessage} from 'react-native-flash-message';
 import {firestore} from 'firebase';
 
 import SucessIcon from 'assets/svg/sucessIcon.svg';
+import {useSelector} from 'react-redux';
 
 interface ModalProps {
   visible: boolean;
@@ -39,6 +40,7 @@ const ModalCreateTrainning = ({
   commonId,
   trainnerId,
 }: ModalProps) => {
+  const gym = useSelector((state: any) => state.trainner.gym);
   const [expire, setExpire] = useState('');
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
@@ -54,6 +56,7 @@ const ModalCreateTrainning = ({
   const data = {
     trainnerId: trainnerId,
     commonId: commonId,
+    gymId: gym.gym,
     trainning: exercisesSelected,
     categories: categoriesSelected,
     expiredTrainning: expire,

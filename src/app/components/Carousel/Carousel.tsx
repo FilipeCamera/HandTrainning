@@ -7,7 +7,7 @@ import {useSelector} from 'react-redux';
 import {useGetPostAndWarnings} from 'hooks';
 import Colors from '@styles';
 
-const CarouselComponent = () => {
+const CarouselComponent = ({refresh}: any) => {
   const user = useSelector((state: any) => state.auth.user);
   const gym = useSelector((state: any) => state.trainner.gym);
 
@@ -39,7 +39,7 @@ const CarouselComponent = () => {
         onFail: err => {},
       });
     }
-  }, []);
+  }, [refresh, gym]);
 
   const _renderItem = ({item}: any) => (
     <View

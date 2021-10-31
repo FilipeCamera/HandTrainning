@@ -11,6 +11,7 @@ import React from 'react';
 import {View} from 'react-native';
 
 import {Modal, Portal} from 'react-native-paper';
+import {useSelector} from 'react-redux';
 
 interface ModalProps {
   visible: boolean;
@@ -27,6 +28,7 @@ const ModalTrainner = ({
   setGym,
   gyms,
 }: ModalProps) => {
+  const academia = useSelector((state: any) => state.trainner.gym);
   if (gyms.length === 0 || !gyms) {
     return (
       <Portal>
@@ -77,6 +79,7 @@ const ModalTrainner = ({
             <SelectProfileCheck
               key={gym.uid}
               profile={gym}
+              gym={academia.gym}
               onFunction={() => setGym(gym.uid)}
             />
           ))}

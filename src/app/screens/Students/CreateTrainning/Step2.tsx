@@ -9,7 +9,7 @@ import {
   Space,
   Text,
 } from 'components';
-import {firestore} from 'firebase';
+
 import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,

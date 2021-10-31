@@ -7,11 +7,12 @@ import Colors from '@styles';
 
 interface CheckBoxProps {
   profile: any;
+  gym: any;
   onFunction: () => any;
 }
 
-const SelectProfileCheck = ({profile, onFunction}: CheckBoxProps) => {
-  const [value, setValue] = useState(false);
+const SelectProfileCheck = ({gym, profile, onFunction}: CheckBoxProps) => {
+  const [value, setValue] = useState(gym === profile.uid ? true : false);
   return (
     <TouchableOpacity
       style={{
