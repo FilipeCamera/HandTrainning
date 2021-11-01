@@ -9,11 +9,20 @@ const Onboarding = ({navigation}: any) => {
   const user = useSelector((state: any) => state.auth.user);
   const [state, setState] = useState('');
   const [dados, setDados] = useState({});
-  console.log(user);
-  console.log(dados);
+
   useEffect(() => {
-    setDados({...dados, uid: user.uid, email: user.email});
-  }, [user.uid]);
+    if (user.avatar !== undefined) {
+      setDados({
+        ...dados,
+        uid: user.uid,
+        email: user.email,
+        avatar: user.avatar,
+        name: user.name,
+      });
+    } else {
+      setDados({...dados, uid: user.uid, email: user.email});
+    }
+  }, []);
   if (state === 'data') {
     return (
       <>

@@ -86,7 +86,24 @@ const Register = ({navigation}: any) => {
     auth()
       .signInWithCredential(googleCredential)
       .then(({user}) => {
-        console.log(user);
+        const google_user = {
+          uid: user.uid,
+          email: user.email,
+          name: user.displayName,
+          avatar: user.photoURL,
+          completeRegister: false,
+          createdAt: firestore.FieldValue.serverTimestamp(),
+        };
+        firestore()
+          .collection('users')
+          .doc(user.uid)
+          .set(google_user)
+          .then(() => {
+            userPersist(google_user);
+          })
+          .catch(err => {});
+        showMessage({type: 'success', message: 'Cadastro feito com sucesso!'});
+        navigation.navigate('Private');
       });
   };
   const saveUser = (uid: string) => {

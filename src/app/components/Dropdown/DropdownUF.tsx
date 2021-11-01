@@ -19,7 +19,8 @@ const DropdownUF = ({value, onValue, error}: DropDownProps) => {
       .get('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
       .then(response => {
         const data = response.data;
-        let list = [];
+        let list: any = [];
+        console.log(data);
         data.map(item => {
           list.push({label: item.sigla, value: item.sigla});
         });

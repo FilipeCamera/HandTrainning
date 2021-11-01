@@ -30,7 +30,7 @@ const Header = ({navigation, refresh}: HeaderProps) => {
 
   useEffect(() => {
     if (
-      user.type !== 'gym' &&
+      user.type === 'trainner' &&
       gym === undefined &&
       user.userAssociate.length !== 0
     ) {

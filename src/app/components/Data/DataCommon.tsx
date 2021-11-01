@@ -26,39 +26,40 @@ const DataCommon = ({dados, setDados, errors}: DataProps) => {
   const [age, setAge] = useState(dados.age || '');
   const [height, setHeight] = useState(dados.height || '');
   const [lesionText, setLesionText] = useState(
-    dados.problemHealth.lesion.desc || '',
+    dados.problemHealth ? dados.problemHealth.lesion.desc : '',
   );
   const [breathText, setBreathText] = useState(
-    dados.problemHealth.breath.desc || '',
+    dados.problemHealth ? dados.problemHealth.breath.desc : '',
   );
   const [lesion, setLesion] = useState(
-    dados.problemHealth.lesion.value || false,
+    dados.problemHealth ? dados.problemHealth.lesion.value : false,
   );
   const [breath, setBreath] = useState(
-    dados.problemHealth.breath.value || false,
+    dados.problemHealth ? dados.problemHealth.breath.value : false,
   );
   const [diabete, setDiabete] = useState(
-    dados.problemHealth.diabete.value || false,
+    dados.problemHealth ? dados.problemHealth.diabete.value : false,
   );
   const [obesity, setObesity] = useState(
-    dados.problemHealth.obesity.value || false,
+    dados.problemHealth ? dados.problemHealth.obesity.value : false,
   );
   const [hypertension, setHypertension] = useState(
-    dados.problemHealth.hypertension.value || false,
+    dados.problemHealth ? dados.problemHealth.hypertension.value : false,
   );
   const [arthritis, setArthritis] = useState(
-    dados.problemHealth.arthritis.value || false,
+    dados.problemHealth ? dados.problemHealth.arthritis.value : false,
   );
   const [arthrosis, setArthrosis] = useState(
-    dados.problemHealth.arthrosis.value || false,
+    dados.problemHealth ? dados.problemHealth.arthrosis.value : false,
   );
   const [cholesterol, setCholesterol] = useState(
-    dados.problemHealth.cholesterol.value || false,
+    dados.problemHealth ? dados.problemHealth.cholesterol.value : false,
   );
   const [cancer, setCancer] = useState(
-    dados.problemHealth.cancer.value || false,
+    dados.problemHealth ? dados.problemHealth.cancer.value : false,
   );
   useEffect(() => {
+    console.log(breathText);
     if (lesion === false) {
       setLesionText('');
     }

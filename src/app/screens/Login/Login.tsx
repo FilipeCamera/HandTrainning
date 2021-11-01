@@ -20,6 +20,7 @@ import {auth} from 'firebase';
 import {userPersist} from 'functions';
 import {useGetUser} from 'hooks';
 import Colors from '@styles';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 const Login = ({navigation}: any) => {
   const [email, setEmail] = useState('');
@@ -50,6 +51,29 @@ const Login = ({navigation}: any) => {
       },
     });
   };
+
+  const signInGoogle = async () => {
+    const {idToken} = await GoogleSignin.signIn();
+    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+    return auth()
+      .signInWithCredential(googleCredential)
+      .then(() => {
+        getUserLogged({
+          onComplete: (user: any) => {
+            if (user) {
+              save(user);
+            }
+          },
+        });
+        showMessage({
+          type: 'success',
+          message: 'Login efetuado com sucesso!',
+        });
+        navigation.navigate('Private');
+      })
+      .catch(err => {});
+  };
+
   const signIn = () => {
     const validated = validate();
 
@@ -168,6 +192,7 @@ const Login = ({navigation}: any) => {
         </View>
         <Space marginVertical={16} />
         <Button
+          onPress={() => signInGoogle()}
           google
           title="sign in with Google"
           border

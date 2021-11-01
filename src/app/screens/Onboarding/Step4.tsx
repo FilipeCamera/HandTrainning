@@ -1,3 +1,4 @@
+import Colors from '@styles';
 import {
   ButtonRed,
   DataCommon,
@@ -86,11 +87,11 @@ const Step4 = ({
       const sexValidated = fieldValidate(dados.sex);
       const lesionValidated =
         dados.problemHealth.lesion.value === true
-          ? fieldValidate(dados.problemHealth.lesion.lesion)
+          ? fieldValidate(dados.problemHealth.lesion.desc)
           : {value: false, error: ''};
       const breathValidated =
         dados.problemHealth.breath.value === true
-          ? fieldValidate(dados.problemHealth.breath.breath)
+          ? fieldValidate(dados.problemHealth.breath.desc)
           : {value: false, error: ''};
       setErrors({
         ...errors,
@@ -197,7 +198,7 @@ const Step4 = ({
         <Space marginVertical={25} />
         <ButtonRed
           title="Finalizar"
-          color="#fff"
+          color={Colors.textColorWhite}
           size={15}
           weight={500}
           onPress={() => FinallizedSignUp()}
