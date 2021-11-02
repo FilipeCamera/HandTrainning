@@ -3,22 +3,24 @@ import React, {useState, useEffect} from 'react';
 import {BoxContainer, BoxFooter, BoxStyle, ButtonUpload} from './styles';
 
 import FileIcon from 'assets/svg/file.svg';
-import {Platform, View} from 'react-native';
-import {selectImageOrVideo} from 'functions';
-import {firestore} from 'firebase';
+import {Image, Platform, View} from 'react-native';
+import {selectImageUpload} from 'functions';
 import {useSendFile} from 'hooks';
 import {showMessage} from 'react-native-flash-message';
+import Colors from '@styles';
+import {storage} from 'firebase';
 
 interface BoxUploadProps {
   error: string;
   setUrl: any;
+  url: any;
 }
 
-const BoxUpload = ({setUrl, error}: BoxUploadProps) => {
+const BoxUpload = ({setUrl, error, url}: BoxUploadProps) => {
   const {sendFile} = useSendFile();
   const [upload, setUpload] = useState({});
   const handleImageOrVideo = () => {
-    selectImageOrVideo()
+    selectImageUpload()
       .then((res: any) => {
         setUpload(res.data.assets[0]);
       })
@@ -26,11 +28,18 @@ const BoxUpload = ({setUrl, error}: BoxUploadProps) => {
   };
 
   useEffect(() => {
+    if (url !== '' && Object.keys(upload).length !== 0) {
+      const storageRef = storage().refFromURL(url);
+      const imageRef = storage().ref(storageRef.fullPath);
+
+      imageRef
+        .delete()
+        .then(() => {})
+        .catch(err => {});
+    }
     if (Object.keys(upload).length !== 0) {
       const {uri} = upload;
-      const filename =
-        firestore.FieldValue.serverTimestamp() +
-        uri.substring(uri.lastIndexOf('/') + 1);
+      const filename = uri.substring(uri.lastIndexOf('/') + 1);
       const uploadUri =
         Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
       sendFile({
@@ -57,7 +66,12 @@ const BoxUpload = ({setUrl, error}: BoxUploadProps) => {
     <BoxStyle>
       {Object.keys(upload).length !== 0 && (
         <ButtonUpload onPress={handleImageOrVideo}>
-          <Text title={upload.uri} size={14} weight={500} color="#1c2439" />
+          <View style={{height: 160, width: '100%'}}>
+            <Image
+              source={{uri: upload.uri}}
+              style={{width: '100%', height: '100%'}}
+            />
+          </View>
         </ButtonUpload>
       )}
       {Object.keys(upload).length === 0 && (
@@ -69,31 +83,37 @@ const BoxUpload = ({setUrl, error}: BoxUploadProps) => {
                 title="Faça upload do arquivo aqui"
                 size={12}
                 weight={500}
-                color="#1C2439"
+                color={Colors.textColorRX}
                 center
               />
             </View>
             <View style={{width: '90%'}}>
               <Text
-                title="Tamanho máximo suportado 5mb"
+                title="Tamanho máximo suportado 2mb"
                 size={10}
                 weight={400}
-                color="#FF6859"
+                color={Colors.red}
                 center
               />
             </View>
           </View>
         </BoxContainer>
       )}
+      <Space marginVertical={2} />
       <BoxFooter>
         <Text
           title="Formatos suportados:"
           size={12}
           weight={500}
-          color="#090a0a"
+          color={Colors.textColorBlack}
         />
         <Space marginHorizontal={2} />
-        <Text title=".jpg, .gif, .mp4" size={12} weight={400} color="#1C2439" />
+        <Text
+          title=".jpg, .gif"
+          size={12}
+          weight={400}
+          color={Colors.textColorRX}
+        />
       </BoxFooter>
     </BoxStyle>
   );

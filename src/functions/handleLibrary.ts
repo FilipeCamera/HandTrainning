@@ -18,13 +18,12 @@ const selectImage = () => {
   );
 };
 
-const selectImageOrVideo = () => {
+const selectImageUpload = () => {
   return new Promise((resolve, reject) => {
     launchImageLibrary(
       {
-        mediaType: 'mixed',
+        mediaType: 'photo',
         quality: 1,
-        videoQuality: 'high',
         includeBase64: true,
       },
       (response: any) => {
@@ -41,4 +40,4 @@ const selectImageOrVideo = () => {
   });
 };
 
-export {selectImage as default, selectImageOrVideo};
+export {selectImage as default, selectImageUpload};

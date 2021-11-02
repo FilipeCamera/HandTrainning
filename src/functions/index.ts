@@ -1,5 +1,5 @@
 import {Logout, userPersist} from './auth';
-import selectImage, {selectImageOrVideo} from './handleLibrary';
+import selectImage, {selectImageUpload} from './handleLibrary';
 import onPermission from './permissions';
 import {removeGymId, setGymId} from './trainner';
 import {setVisualize, setNotVisualize} from './visualized';
@@ -9,7 +9,7 @@ export {
   userPersist,
   selectImage,
   onPermission,
-  selectImageOrVideo,
+  selectImageUpload,
   setVisualize,
   setNotVisualize,
   setGymId,

@@ -1,3 +1,4 @@
+import Colors from '@styles';
 import {
   BoxUpload,
   ButtonRed,
@@ -6,7 +7,6 @@ import {
   Input,
   SimpleHeader,
   Space,
-  Text,
 } from 'components';
 import {firestore} from 'firebase';
 import React, {useEffect, useState} from 'react';
@@ -25,11 +25,13 @@ const CreateExercise = ({goBack, user}: CreateExerciseProps) => {
   const [type, setType] = useState('');
   const [name, setName] = useState('');
   const [url, setUrl] = useState('');
+  const [urlTwo, setUrlTwo] = useState('');
   const [errors, setErrors] = useState({
     category: '',
     type: '',
     name: '',
     url: '',
+    urlTwo: '',
   });
 
   const handleBack = () => {
@@ -41,6 +43,27 @@ const CreateExercise = ({goBack, user}: CreateExerciseProps) => {
     const typeVerified = fieldValidate(type);
     const nameVerified = fieldValidate(name);
     const urlVerified = fieldValidate(url);
+    if (type === 'double') {
+      const urlTwoVerified = fieldValidate(urlTwo);
+      setErrors({
+        ...errors,
+        category: categoryVerified.error,
+        type: typeVerified.error,
+        name: nameVerified.error,
+        url: urlVerified.error,
+        urlTwo: urlTwoVerified.error,
+      });
+      if (
+        !categoryVerified.value &&
+        !typeVerified.value &&
+        !nameVerified.value &&
+        !urlVerified.value &&
+        !urlTwoVerified.value
+      ) {
+        return true;
+      }
+      return false;
+    }
     setErrors({
       ...errors,
       category: categoryVerified.error,
@@ -69,6 +92,7 @@ const CreateExercise = ({goBack, user}: CreateExerciseProps) => {
         type: type,
         category: category,
         url: url,
+        urlTwo: urlTwo,
       };
       firestore()
         .collection('exercises')
@@ -105,7 +129,7 @@ const CreateExercise = ({goBack, user}: CreateExerciseProps) => {
       <SimpleHeader
         back
         title="Exercícios"
-        color="#090A0A"
+        color={Colors.textColorBlack}
         size={20}
         weight={500}
         onBack={() => goBack(false)}
@@ -131,13 +155,19 @@ const CreateExercise = ({goBack, user}: CreateExerciseProps) => {
         error={errors.name}
       />
       <Space marginVertical={20} />
-      <BoxUpload setUrl={setUrl} error={errors.url} />
+      <BoxUpload setUrl={setUrl} error={errors.url} url={url} />
+      {type === 'double' && (
+        <>
+          <Space marginVertical={15} />
+          <BoxUpload setUrl={setUrlTwo} error={errors.urlTwo} url={urlTwo} />
+        </>
+      )}
       <Space marginVertical={50} />
       <ButtonRed
         title="Criar exercício"
         size={15}
         weight={500}
-        color="#FFF"
+        color={Colors.textColorWhite}
         onPress={handleCreateExercise}
       />
     </ExerciseStyle>

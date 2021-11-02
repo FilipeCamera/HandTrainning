@@ -172,7 +172,7 @@ const Posts = () => {
             setInitial={setInitial}
             error={errors.finallized}
           />
-          <Space marginVertical={30} />
+          <Space marginVertical={25} />
           <ButtonRed
             title="Postar"
             color={Colors.background}
@@ -180,6 +180,7 @@ const Posts = () => {
             weight={500}
             onPress={handleCreatePost}
           />
+          <Space marginVertical={10} />
         </>
       )}
       {type === 'posts' && (
@@ -224,8 +225,8 @@ const Posts = () => {
             setInitial={setInitial}
             error={errors.finallized}
           />
-          <Space marginVertical={30} />
-          <BoxUpload setUrl={setImage} />
+          <Space marginVertical={20} />
+          <BoxUpload setUrl={setImage} url={image} />
           <Space marginVertical={40} />
           <ButtonRed
             title="Postar"
@@ -234,6 +235,7 @@ const Posts = () => {
             weight={500}
             onPress={handleCreatePost}
           />
+          <Space marginVertical={10} />
         </>
       )}
     </PostsStyle>
