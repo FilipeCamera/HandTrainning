@@ -19,7 +19,7 @@ import {InvitesStyle} from './styles';
 
 const InviteGym = ({auth}: any) => {
   const {searchUserTypeGym, getUsers} = useGetUser();
-  const {getInvites, acceptedInvite} = useInvites();
+  const {getInvites, acceptedInvite, recusedInvite} = useInvites();
   const {verifyUserAssociate, verifyUserIsType} = useVerification();
   const [userSearch, setUserSearch] = useState('');
   const [profile, setProfile] = useState('');
@@ -31,6 +31,32 @@ const InviteGym = ({auth}: any) => {
   const [countCommon, setCountCommon] = useState(0);
   const [notAddTrainner, setNotAddTrainer] = useState(false);
   const [notAddCommon, setNotAddCommon] = useState(false);
+
+  const handleAcceptOrRecused = (state: boolean, userId: any) => {
+    if (state) {
+      acceptedInvite({
+        gymId: auth.uid,
+        uid: userId,
+        onComplete: res => {
+          if (res) {
+            // colocar função aqui
+          }
+        },
+        onFail: err => {},
+      });
+    } else {
+      recusedInvite({
+        gymId: auth.uid,
+        uid: userId,
+        onComplete: res => {
+          if (res) {
+            setUsers(users.filter(user => user.uid !== userId));
+          }
+        },
+        onFail: err => {},
+      });
+    }
+  };
 
   useEffect(() => {
     getInvites(auth.uid, {
@@ -66,7 +92,7 @@ const InviteGym = ({auth}: any) => {
         user={userSearch}
         onSearch={e => {
           setUserSearch(e),
-            searchUserTypeGym(e, auth.uid, {
+            searchUserTypeGym(e, 'gym', {
               onComplete: (users: any) => {
                 if (users) {
                   setUsersSearch(users);

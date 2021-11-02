@@ -162,6 +162,18 @@ const useGetUser = () => {
       .catch(err => onFail(err));
   };
 
+  const getUserCommonGym = ({uid, onComplete, onFail}: any) => {
+    firestore()
+      .collection('users')
+      .where('uid', '==', uid)
+      .get()
+      .then(querySnapshot => {
+        const gym = querySnapshot.docs.map(doc => doc.data());
+        onComplete(gym[0]);
+      })
+      .catch(err => onFail(err));
+  };
+
   return {
     getUser,
     getUserLogged,
@@ -173,6 +185,7 @@ const useGetUser = () => {
     getUserTrainner,
     getUserTypeAndAssociateID,
     searchUserTypeGym,
+    getUserCommonGym,
   };
 };
 

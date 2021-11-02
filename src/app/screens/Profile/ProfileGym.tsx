@@ -11,6 +11,7 @@ import {BarChart, Button, Label, Space, Text} from 'components';
 import {Image} from 'react-native';
 import {Logout} from 'functions';
 import ProfileGymStateScreen from './ProfileGymState';
+import Colors from '@styles';
 
 const ProfileGym = ({user, navigation}: any) => {
   const [state, setState] = useState('');
@@ -56,7 +57,7 @@ const ProfileGym = ({user, navigation}: any) => {
             height: 150,
             borderRadius: 75,
             borderWidth: 5,
-            borderColor: '#FFF',
+            borderColor: Colors.background,
             position: 'absolute',
             bottom: 0,
             alignSelf: 'center',

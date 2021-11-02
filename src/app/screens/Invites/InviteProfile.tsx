@@ -4,6 +4,9 @@ import {InvitesProfileStyle} from './styles';
 
 import BackRedHeader from 'assets/svg/RedTopBack.svg';
 import LocationIcon from 'assets/svg/locationIcon.svg';
+import AcademicIcon from 'assets/svg/academicIcon.svg';
+import SkillIcon from 'assets/svg/skillLevelIcon.svg';
+import SpecsIcon from 'assets/svg/specsIcon.svg';
 import BackIcon from 'assets/svg/arrowBackWhite.svg';
 import {ButtonGranInvite, Space, Text} from 'components';
 import {firestore} from 'firebase';
@@ -16,7 +19,7 @@ interface InviteProfileProps {
   auth: any;
 }
 const InviteProfile = ({profile, onBack, auth}: InviteProfileProps) => {
-  const {getUserTrainner} = useGetUser();
+  const {getUserTrainner, getUserCommonGym} = useGetUser();
   const [data, setData] = useState<any[]>();
 
   useEffect(() => {
@@ -43,15 +46,15 @@ const InviteProfile = ({profile, onBack, auth}: InviteProfileProps) => {
         .catch(error => {});
     }
     if (profile.type === 'common') {
-      firestore()
-        .collection('users')
-        .where('uid', '==', profile.userAssociate)
-        .get()
-        .then(querySnapshot => {
-          const dados = querySnapshot.docs.map(doc => doc.data());
-          setData(dados);
-        })
-        .catch(error => {});
+      getUserCommonGym({
+        uid: profile.userAssociate ? profile.userAssociate : '',
+        onComplete: gym => {
+          if (gym) {
+            setData([gym]);
+          }
+        },
+        onFail: err => {},
+      });
     }
   }, []);
   const backChange = () => {
@@ -102,6 +105,7 @@ const InviteProfile = ({profile, onBack, auth}: InviteProfileProps) => {
           />
         </View>
       </View>
+      <Space marginVertical={8} />
       <View style={{alignItems: 'center'}}>
         <Text
           title={profile.name}
@@ -163,6 +167,127 @@ const InviteProfile = ({profile, onBack, auth}: InviteProfileProps) => {
           />
         )}
       </View>
+      {!!profile.course && profile.university && <Space marginVertical={16} />}
+      {!!profile.course && profile.university && (
+        <View
+          style={{
+            padding: 16,
+            backgroundColor: Colors.background,
+            elevation: 5,
+            borderRadius: 8,
+            borderWidth: 0.5,
+            borderColor: Colors.lightGray,
+            width: '85%',
+          }}>
+          <View
+            style={{
+              width: 30,
+              height: 30,
+              borderRadius: 15,
+              backgroundColor: Colors.red,
+              alignItems: 'center',
+              justifyContent: 'center',
+              position: 'absolute',
+              top: -15,
+              left: -15,
+              elevation: 5,
+            }}>
+            <AcademicIcon />
+          </View>
+          <View>
+            <Text
+              title={profile.university}
+              size={14}
+              weight={400}
+              color={Colors.textColorBlack}
+              center
+            />
+            <Text
+              title={profile.course}
+              size={14}
+              weight={400}
+              color={Colors.textColorBlack}
+              center
+            />
+          </View>
+        </View>
+      )}
+      {!!profile.specs && <Space marginVertical={16} />}
+      {!!profile.specs && (
+        <View
+          style={{
+            padding: 16,
+            backgroundColor: Colors.background,
+            elevation: 5,
+            borderRadius: 8,
+            borderWidth: 0.5,
+            borderColor: Colors.lightGray,
+            width: '85%',
+          }}>
+          <View
+            style={{
+              width: 30,
+              height: 30,
+              borderRadius: 15,
+              backgroundColor: Colors.red,
+              alignItems: 'center',
+              justifyContent: 'center',
+              position: 'absolute',
+              top: -15,
+              left: -15,
+              elevation: 5,
+            }}>
+            <SpecsIcon />
+          </View>
+          <View>
+            <Text
+              title={profile.specs}
+              size={14}
+              weight={400}
+              color={Colors.textColorBlack}
+              center
+            />
+          </View>
+        </View>
+      )}
+      {!!profile.experience && <Space marginVertical={16} />}
+      {!!profile.experience && (
+        <View
+          style={{
+            padding: 16,
+            backgroundColor: Colors.background,
+            elevation: 5,
+            borderRadius: 8,
+            borderWidth: 0.5,
+            borderColor: Colors.lightGray,
+            width: '85%',
+          }}>
+          <View
+            style={{
+              width: 30,
+              height: 30,
+              borderRadius: 15,
+              backgroundColor: Colors.red,
+              alignItems: 'center',
+              justifyContent: 'center',
+              position: 'absolute',
+              top: -15,
+              left: -15,
+              elevation: 5,
+            }}>
+            <SkillIcon />
+          </View>
+          <View>
+            <Text
+              title={profile.experience}
+              size={14}
+              weight={400}
+              color={Colors.textColorBlack}
+              center
+            />
+          </View>
+        </View>
+      )}
       <Space marginVertical={25} />
       {!!data &&
         data.map(item => (
@@ -190,7 +315,7 @@ const InviteProfile = ({profile, onBack, auth}: InviteProfileProps) => {
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <View style={{width: 50, height: 50, borderRadius: 25}}>
                 <Image
-                  source={{uri: data[0].avatar}}
+                  source={{uri: item.avatar}}
                   style={{width: '100%', height: '100%', borderRadius: 999}}
                 />
               </View>
@@ -223,7 +348,7 @@ const InviteProfile = ({profile, onBack, auth}: InviteProfileProps) => {
           </View>
         ))}
 
-      <Space marginVertical={70} />
+      <Space marginVertical={50} />
       <View style={{height: 56, width: '90%'}}>
         <ButtonGranInvite
           title="Enviar convite"
