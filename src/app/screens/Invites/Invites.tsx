@@ -9,7 +9,7 @@ const Invites = ({navigation}: any) => {
   const user = useSelector((state: any) => state.auth.user);
   return (
     <>
-      {user.type === 'gym' && <InviteGym auth={user} />}
+      {user.type === 'gym' && <InviteGym auth={user} navigation={navigation} />}
       {user.type === 'common' && (
         <InviteCommon auth={user} navigation={navigation} />
       )}

@@ -209,12 +209,15 @@ const Exercise = () => {
                         </View>
                       )}
                     </View>
-                    <Text
-                      title={exercise.name}
-                      size={15}
-                      weight={600}
-                      color={Colors.textColorBlack}
-                    />
+                    <Space marginHorizontal={4} />
+                    <View style={{flex: 1}}>
+                      <Text
+                        title={exercise.name}
+                        size={15}
+                        weight={600}
+                        color={Colors.textColorBlack}
+                      />
+                    </View>
                     <TouchableOpacity
                       style={{
                         backgroundColor: Colors.lightRed2,

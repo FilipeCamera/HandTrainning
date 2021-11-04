@@ -9,45 +9,87 @@ import {
   Space,
   Text,
 } from 'components';
-import {firestore} from 'firebase';
 import {useGetUser, useInvites, useVerification} from 'hooks';
-import React, {useState, useEffect} from 'react';
-import {Image, TouchableOpacity, View} from 'react-native';
+import React, {useState, useEffect, useCallback} from 'react';
+import {Image, RefreshControl, TouchableOpacity, View} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
 import InviteProfile from './InviteProfile';
 import {InvitesStyle} from './styles';
 
-const InviteGym = ({auth}: any) => {
+const InviteGym = ({auth, navigation}: any) => {
   const {searchUserTypeGym, getUsers} = useGetUser();
   const {getInvites, acceptedInvite, recusedInvite} = useInvites();
-  const {verifyUserAssociate, verifyUserIsType} = useVerification();
+  const {verifyUserAssociate, updateUserAssociate} = useVerification();
   const [userSearch, setUserSearch] = useState('');
   const [profile, setProfile] = useState('');
   const [user, setUser] = useState<any>();
   const [usersSearch, setUsersSearch] = useState<any>([]);
   const [users, setUsers] = useState<any>([]);
   const [invites, setInvites] = useState<any>([]);
+  const [refresh, setRefresh] = useState(false);
   const [countTrainner, setCountTrainner] = useState(0);
   const [countCommon, setCountCommon] = useState(0);
   const [notAddTrainner, setNotAddTrainer] = useState(false);
   const [notAddCommon, setNotAddCommon] = useState(false);
 
-  const handleAcceptOrRecused = (state: boolean, userId: any) => {
+  const wait = timeout => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+  };
+
+  const onRefresh = useCallback(() => {
+    setRefresh(true);
+    wait(100).then(() => setRefresh(false));
+  }, []);
+
+  const handleAcceptOrRecused = (
+    state: boolean,
+    userId: string,
+    type: string,
+    userAssociate: any,
+  ) => {
     if (state) {
-      acceptedInvite({
-        gymId: auth.uid,
+      verifyUserAssociate({
         uid: userId,
-        onComplete: res => {
-          if (res) {
-            // colocar função aqui
+        onComplete: (error, bool) => {
+          if (bool) {
+            acceptedInvite({
+              gymId: userId,
+              uid: auth.uid,
+              onComplete: res => {
+                if (res) {
+                  updateUserAssociate({
+                    uid: userId,
+                    type: type,
+                    associate: userAssociate,
+                    gym: auth.uid,
+                    onComplete: msg => {
+                      if (msg) {
+                        showMessage({
+                          type: 'success',
+                          message: 'Aceito',
+                          description: msg,
+                        });
+                        setUsers(users.filter(user => user.uid !== userId));
+                      }
+                    },
+                    onFail: err => {},
+                  });
+                }
+              },
+            });
+          } else {
+            showMessage({
+              type: 'info',
+              message: 'Aviso',
+              description: error,
+            });
           }
         },
-        onFail: err => {},
       });
     } else {
       recusedInvite({
-        gymId: auth.uid,
-        uid: userId,
+        gymId: userId,
+        uid: auth.uid,
         onComplete: res => {
           if (res) {
             setUsers(users.filter(user => user.uid !== userId));
@@ -73,10 +115,16 @@ const InviteGym = ({auth}: any) => {
       },
       onFail: (error: any) => console.log(error),
     });
-  }, []);
+  }, [refresh]);
 
   if (profile === 'profile') {
-    return <InviteProfile profile={user} onBack={setProfile} />;
+    return (
+      <InviteProfile
+        profile={user}
+        onBack={setProfile}
+        handleAcceptOrRecused={handleAcceptOrRecused}
+      />
+    );
   }
   return (
     <InvitesStyle
@@ -84,10 +132,20 @@ const InviteGym = ({auth}: any) => {
         flexGrow: 1,
         padding: 16,
         alignItems: 'center',
+        paddingBottom: 50,
         width: '100%',
       }}
+      refreshControl={
+        <RefreshControl
+          progressViewOffset={50}
+          refreshing={refresh}
+          onRefresh={onRefresh}
+          colors={[Colors.red]}
+          progressBackgroundColor={Colors.background}
+        />
+      }
       showsVerticalScrollIndicator={false}>
-      <Header />
+      <Header navigation={navigation} refresh={refresh} />
       <Search
         user={userSearch}
         onSearch={e => {
@@ -108,7 +166,7 @@ const InviteGym = ({auth}: any) => {
       {usersSearch.length !== 0 &&
         usersSearch.map((userInvite: any) => {
           return (
-            <TouchableOpacity
+            <View
               key={userInvite.uid}
               style={{
                 width: '100%',
@@ -128,12 +186,13 @@ const InviteGym = ({auth}: any) => {
                 shadowRadius: 3.84,
 
                 elevation: 5,
-              }}
-              onPress={() => {
-                setUser(userInvite);
-                setProfile('profile');
               }}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <TouchableOpacity
+                style={{flexDirection: 'row', alignItems: 'center'}}
+                onPress={() => {
+                  setUser(userInvite);
+                  setProfile('profile');
+                }}>
                 <View style={{width: 50, height: 50, borderRadius: 25}}>
                   <Image
                     source={{uri: userInvite.avatar}}
@@ -165,7 +224,7 @@ const InviteGym = ({auth}: any) => {
                     color={Colors.textColorBlack}
                   />
                 </View>
-              </View>
+              </TouchableOpacity>
               <View style={{height: 30}}>
                 <ButtonInvite
                   title="Enviar convite"
@@ -177,7 +236,7 @@ const InviteGym = ({auth}: any) => {
                   from={userInvite.uid}
                 />
               </View>
-            </TouchableOpacity>
+            </View>
           );
         })}
       <Space marginVertical={5} />
@@ -261,7 +320,9 @@ const InviteGym = ({auth}: any) => {
                       onPress={() =>
                         handleAcceptOrRecused({
                           state: true,
-                          uid: userInvite.uid,
+                          userId: userInvite.uid,
+                          type: userInvite.type,
+                          userAssociate: userInvite.userAssociate,
                         })
                       }
                     />
@@ -272,10 +333,12 @@ const InviteGym = ({auth}: any) => {
                       size={11}
                       color={Colors.red}
                       onPress={() =>
-                        handleAcceptOrRecused({
-                          state: false,
-                          uid: userInvite.uid,
-                        })
+                        handleAcceptOrRecused(
+                          false,
+                          userInvite.uid,
+                          userInvite.type,
+                          userInvite.userAssociate,
+                        )
                       }
                     />
                   </View>
@@ -317,7 +380,7 @@ const InviteGym = ({auth}: any) => {
                   }}>
                   <TouchableOpacity
                     onPress={() => {
-                      setUser(userInvite);
+                      setUser({...userInvite, invite: true});
                       setProfile('profile');
                     }}
                     style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -367,7 +430,14 @@ const InviteGym = ({auth}: any) => {
                       weight={600}
                       size={11}
                       color={Colors.textColorWhite}
-                      onPress={() => {}}
+                      onPress={() =>
+                        handleAcceptOrRecused(
+                          true,
+                          userInvite.uid,
+                          userInvite.type,
+                          userInvite.userAssociate,
+                        )
+                      }
                     />
                     <Space marginVertical={5} />
                     <ButtonText
@@ -375,7 +445,14 @@ const InviteGym = ({auth}: any) => {
                       weight={400}
                       size={11}
                       color={Colors.red}
-                      onPress={() => {}}
+                      onPress={() =>
+                        handleAcceptOrRecused(
+                          false,
+                          userInvite.uid,
+                          userInvite.type,
+                          userInvite.userAssociate,
+                        )
+                      }
                     />
                   </View>
                 </View>

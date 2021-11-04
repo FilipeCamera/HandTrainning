@@ -70,7 +70,7 @@ const HomeGym = ({navigation}: any) => {
         width: '100%',
       }}
       showsVerticalScrollIndicator={false}>
-      <Header />
+      <Header navigation={navigation} />
       <BarChart />
       <Row>
         <CardTrainnerStatus />

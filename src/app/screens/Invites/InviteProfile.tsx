@@ -8,7 +8,7 @@ import AcademicIcon from 'assets/svg/academicIcon.svg';
 import SkillIcon from 'assets/svg/skillLevelIcon.svg';
 import SpecsIcon from 'assets/svg/specsIcon.svg';
 import BackIcon from 'assets/svg/arrowBackWhite.svg';
-import {ButtonGranInvite, Space, Text} from 'components';
+import {Button, ButtonGranInvite, ButtonText, Space, Text} from 'components';
 import {firestore} from 'firebase';
 import Colors from '@styles';
 import {useGetUser} from 'hooks';
@@ -17,8 +17,14 @@ interface InviteProfileProps {
   profile: any;
   onBack: any;
   auth: any;
+  handleAcceptOrRecused: any;
 }
-const InviteProfile = ({profile, onBack, auth}: InviteProfileProps) => {
+const InviteProfile = ({
+  profile,
+  onBack,
+  auth,
+  handleAcceptOrRecused,
+}: InviteProfileProps) => {
   const {getUserTrainner, getUserCommonGym} = useGetUser();
   const [data, setData] = useState<any[]>();
 
@@ -349,17 +355,54 @@ const InviteProfile = ({profile, onBack, auth}: InviteProfileProps) => {
         ))}
 
       <Space marginVertical={50} />
-      <View style={{height: 56, width: '90%'}}>
-        <ButtonGranInvite
-          title="Enviar convite"
-          sendTitle="Convite enviado"
-          size={14}
-          weight={500}
-          color={Colors.textColorWhite}
-          to={auth}
-          from={profile.uid}
-        />
-      </View>
+      {!profile.invite && (
+        <View style={{height: 56, width: '90%'}}>
+          <ButtonGranInvite
+            title="Enviar convite"
+            sendTitle="Convite enviado"
+            size={14}
+            weight={500}
+            color={Colors.textColorWhite}
+            to={auth}
+            from={profile.uid}
+          />
+        </View>
+      )}
+      {!!profile.invite && (
+        <>
+          <Button
+            title="Aceitar"
+            size={14}
+            weight={500}
+            color={Colors.textColorWhite}
+            background={Colors.red}
+            onPress={() =>
+              handleAcceptOrRecused(
+                true,
+                profile.uid,
+                profile.type,
+                profile.userAssociate,
+              )
+            }
+          />
+          <Space marginVertical={8} />
+          <ButtonText
+            title="Recusar"
+            size={14}
+            weight={500}
+            color={Colors.redMedium}
+            onPress={() =>
+              handleAcceptOrRecused(
+                false,
+                profile.uid,
+                profile.type,
+                profile.userAssociate,
+              )
+            }
+          />
+          <Space marginVertical={8} />
+        </>
+      )}
     </InvitesProfileStyle>
   );
 };
