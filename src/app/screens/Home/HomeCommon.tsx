@@ -34,6 +34,7 @@ const HomeCommon = ({navigation}: any) => {
     const data = {
       commonId: user.uid,
       trainnerId: trainner,
+      gym: user.userAssociate,
       title: 'Novo treino',
       desc: `${user.name} solicitou um novo treino`,
       createdAt: firestore.FieldValue.serverTimestamp(),

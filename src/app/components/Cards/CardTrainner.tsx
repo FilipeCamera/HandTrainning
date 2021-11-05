@@ -14,7 +14,7 @@ const CardTrainner = ({navigation, refresh}: any) => {
   const user = useSelector((state: any) => state.auth.user);
   const gym = useSelector((state: any) => state.trainner.gym);
   const {getTrainningTrainner} = useGetTrainning();
-  const getRequests = useGetRequests();
+  const {getRequestsByGym} = useGetRequests();
   const {getUserType} = useGetUser();
   const {getTrainnerScore} = useGetScore();
   const [trainnings, setTrainnings] = useState(0);
@@ -35,10 +35,12 @@ const CardTrainner = ({navigation, refresh}: any) => {
         },
         onFail: err => {},
       });
-      getRequests({
+      getRequestsByGym({
         uid: user.uid,
+        gym: gym.gym,
         onComplete: request => {
           if (request) {
+            console.log(request);
             setRequests(request.length);
           }
         },
@@ -79,6 +81,8 @@ const CardTrainner = ({navigation, refresh}: any) => {
                   });
                 });
                 setCommons(resultList);
+                setLoading(false);
+              } else {
                 setLoading(false);
               }
             },

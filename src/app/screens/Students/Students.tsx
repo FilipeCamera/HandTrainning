@@ -25,7 +25,7 @@ const Students = ({navigation}: any) => {
   const user = useSelector((state: any) => state.auth.user);
   const gym = useSelector((state: any) => state.trainner.gym);
 
-  const getRequests = useGetRequests();
+  const {getRequestsByGym} = useGetRequests();
   const {getUserTypeAndAssociate, getUser} = useGetUser();
   const {getTrainningTrainner, getTrainningId} = useGetTrainning();
 
@@ -110,15 +110,18 @@ const Students = ({navigation}: any) => {
   }, [state, gym, refresh]);
 
   useEffect(() => {
-    getRequests({
-      uid: user.uid,
-      onComplete: requests => {
-        if (requests) {
-          setRequest(requests);
-        }
-      },
-      onFail: err => {},
-    });
+    if (!!gym && gym.gym !== undefined) {
+      getRequestsByGym({
+        uid: user.uid,
+        gym: gym.gym,
+        onComplete: requests => {
+          if (requests) {
+            setRequest(requests);
+          }
+        },
+        onFail: err => {},
+      });
+    }
   }, [refresh]);
 
   if (state === 'Criar treino') {
@@ -169,6 +172,7 @@ const Students = ({navigation}: any) => {
             justifyContent: 'center',
             width: '100%',
           }}>
+          <Space marginVertical={20} />
           {!!request && request.length !== 0 && (
             <CarouselWarnings data={request} />
           )}
@@ -216,6 +220,7 @@ const Students = ({navigation}: any) => {
           {!!request && request.length !== 0 && (
             <CarouselWarnings data={request} />
           )}
+          <Space marginVertical={20} />
           <Card>
             <View style={{alignItems: 'flex-end'}}>
               <Text

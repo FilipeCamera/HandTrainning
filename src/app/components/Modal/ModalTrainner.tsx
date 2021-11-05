@@ -79,7 +79,7 @@ const ModalTrainner = ({
             <SelectProfileCheck
               key={gym.uid}
               profile={gym}
-              gym={academia.gym}
+              gym={academia ? academia.gym : ''}
               onFunction={() => setGym(gym.uid)}
             />
           ))}

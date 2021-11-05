@@ -39,6 +39,9 @@ const CarouselComponent = ({refresh}: any) => {
         onFail: err => {},
       });
     }
+    return function cleanup() {
+      setData([]);
+    };
   }, [refresh, gym]);
 
   const _renderItem = ({item}: any) => (

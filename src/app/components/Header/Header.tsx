@@ -23,7 +23,7 @@ const Header = ({navigation, refresh}: HeaderProps) => {
 
   const {getUserTypeAndAssociateTrainner} = useGetUser();
   const {getWarnings, getWarningsTrainner} = useGetWarnings();
-  const getRequests = useGetRequests();
+  const {getRequests} = useGetRequests();
   const [info, setInfo] = useState(false);
   const [visible, setVisible] = useState(false);
   const [gyms, setGyms] = useState<any[]>([]);

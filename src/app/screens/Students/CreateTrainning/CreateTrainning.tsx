@@ -31,7 +31,7 @@ const CreateTrainning = ({setState, setButtonTitle}: CreateTrainningProps) => {
   const gym = useSelector((state: any) => state.trainner.gym);
 
   const getCategories = useGetCategories();
-  const getExerciseByGym = useGetExercise();
+  const {getExerciseByGym} = useGetExercise();
   const [error, setError] = useState({aluno: ''});
   const [trainningStep, setTrainningStep] = useState('');
   const [student, setStudent] = useState('');

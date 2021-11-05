@@ -18,6 +18,7 @@ import {firestore} from 'firebase';
 
 import SucessIcon from 'assets/svg/sucessIcon.svg';
 import {useSelector} from 'react-redux';
+import {useGetRequests, useGetTrainning} from 'hooks';
 
 interface ModalProps {
   visible: boolean;
@@ -41,6 +42,8 @@ const ModalCreateTrainning = ({
   trainnerId,
 }: ModalProps) => {
   const gym = useSelector((state: any) => state.trainner.gym);
+  const {removeRequestByCommonId} = useGetRequests();
+  const {getTrainningId} = useGetTrainning();
   const [expire, setExpire] = useState('');
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
@@ -85,34 +88,31 @@ const ModalCreateTrainning = ({
   };
 
   const createTr = () => {
-    firestore()
-      .collection('trainnings')
-      .where('commonId', '==', commonId)
-      .get()
-      .then(querySnapshot => {
-        const trainning = querySnapshot.docs.map(doc => doc.id);
-        if (trainning[0]) {
+    getTrainningId({
+      uid: commonId,
+      onComplete: trainning => {
+        if (trainning) {
           firestore()
             .collection('trainnings')
-            .doc(trainning[0])
+            .doc(trainning)
             .update(updatedData)
             .then(res => {
-              firestore()
-                .collection('requests')
-                .where('commonId', '==', commonId)
-                .get()
-                .then(querySnapshot => {
-                  querySnapshot.forEach(function (doc) {
-                    doc.ref.delete();
-                  });
-                  setLoading(false);
-                  showMessage({
-                    type: 'success',
-                    message: 'Treino criado com sucesso!',
-                  });
-                  setCreated(true);
-                })
-                .catch(err => {});
+              removeRequestByCommonId({
+                uid: commonId,
+                onComplete: res => {
+                  if (res) {
+                    setLoading(false);
+                    setCreated(true);
+                  }
+                },
+                onFail: err => {},
+              });
+              setLoading(false);
+              showMessage({
+                type: 'success',
+                message: 'Treino criado com sucesso!',
+              });
+              setCreated(true);
             })
             .catch(err => {});
         } else {
@@ -121,27 +121,29 @@ const ModalCreateTrainning = ({
             .doc()
             .set(data)
             .then(res => {
-              firestore()
-                .collection('requests')
-                .where('commonId', '==', commonId)
-                .get()
-                .then(querySnapshot => {
-                  querySnapshot.forEach(function (doc) {
-                    doc.ref.delete();
-                  });
-                  setLoading(false);
-                  showMessage({
-                    type: 'success',
-                    message: 'Treino criado com sucesso!',
-                  });
-                  setCreated(true);
-                })
-                .catch(err => {});
+              removeRequestByCommonId({
+                uid: commonId,
+                onComplete: res => {
+                  if (res) {
+                    setLoading(false);
+
+                    setCreated(true);
+                  }
+                },
+                onFail: err => {},
+              });
+              setLoading(false);
+              showMessage({
+                type: 'success',
+                message: 'Treino criado com sucesso!',
+              });
+              setCreated(true);
             })
             .catch(err => {});
         }
-      })
-      .catch(err => {});
+      },
+      onFail: err => {},
+    });
   };
   return (
     <Portal>

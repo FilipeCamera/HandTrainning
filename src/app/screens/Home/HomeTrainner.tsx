@@ -5,8 +5,10 @@ import React, {useCallback, useState} from 'react';
 
 import {HomeStyle} from './styles';
 import Colors from '@styles';
+import {useSelector} from 'react-redux';
 
 const HomeTrainner = ({navigation}: any) => {
+  const gym = useSelector((state: any) => state.trainner.gym);
   const [refresh, setRefresh] = useState(false);
 
   const wait = timeout => {
@@ -36,8 +38,12 @@ const HomeTrainner = ({navigation}: any) => {
       }
       showsVerticalScrollIndicator={false}>
       <Header navigation={navigation} refresh={refresh} />
-      <Carousel refresh={refresh} />
-      <CardTrainner navigation={navigation} refresh={refresh} />
+      {!!gym && !!gym.gym && (
+        <>
+          <Carousel refresh={refresh} />
+          <CardTrainner navigation={navigation} refresh={refresh} />
+        </>
+      )}
     </HomeStyle>
   );
 };

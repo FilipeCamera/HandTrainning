@@ -1,9 +1,7 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useRef} from 'react';
 import {View, Dimensions, Image} from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import {Text} from 'components';
-import {styles} from './styles';
-import {firestore} from 'firebase';
 import Colors from '@styles';
 
 interface CarouselWarningsProps {
@@ -17,8 +15,7 @@ const CarouselWarnings = ({data}: CarouselWarningsProps) => {
   const _renderItem = ({item}: any) => (
     <View
       style={{
-        width: '100%',
-        height: '100%',
+        flex: 1,
       }}>
       {!!item.image && (
         <View style={{width: 50, height: 50, borderRadius: 25}}>
@@ -62,7 +59,6 @@ const CarouselWarnings = ({data}: CarouselWarningsProps) => {
             borderStyle: 'dashed',
             borderColor: Colors.grayLight,
             borderRadius: 20,
-            height: 80,
           }}
           autoplay={true}
           horizontal={true}
@@ -75,8 +71,6 @@ const CarouselWarnings = ({data}: CarouselWarningsProps) => {
           renderItem={_renderItem}
           sliderWidth={width}
           itemWidth={width - 100}
-          sliderHeight={90}
-          itemHeight={80}
           lockScrollWhileSnapping={true}
           enableMomentum={false}
           enableSnap={false}

@@ -13,7 +13,7 @@ import {useGetRequests, useGetWarnings} from 'hooks';
 const Warnings = ({navigation}: any) => {
   const user = useSelector((state: any) => state.auth.user);
 
-  const getRequests = useGetRequests();
+  const {getRequests} = useGetRequests();
   const {getWarningsTrainner, getWarnings} = useGetWarnings();
   const [requests, setRequests] = useState<any[]>([]);
   const [warnings, setWarnings] = useState<any[]>([]);

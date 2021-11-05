@@ -7,7 +7,6 @@ import {
   Space,
   Text,
 } from 'components';
-import {firestore} from 'firebase';
 import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
@@ -40,7 +39,7 @@ const Step1 = ({
   setExercisesSelected,
 }: StepProps) => {
   const gym = useSelector((state: any) => state.trainner.gym);
-  const getExerciseByGym = useGetExercise();
+  const {getExerciseByGym} = useGetExercise();
   const {getUser} = useGetUser();
   const [student, setStudent] = useState<any>();
   const [category, setCategory] = useState<any[]>(categorySelected);
