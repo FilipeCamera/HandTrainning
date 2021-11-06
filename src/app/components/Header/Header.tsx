@@ -32,12 +32,13 @@ const Header = ({navigation, refresh}: HeaderProps) => {
     if (
       user.type === 'trainner' &&
       gym === undefined &&
+      !!user.userAssociate &&
       user.userAssociate.length !== 0
     ) {
       setVisible(true);
     }
     if (user.type === 'trainner') {
-      if (user.userAssociate.length !== 0) {
+      if (!!user.userAssociate && user.userAssociate.length !== 0) {
         getUserTypeAndAssociateTrainner({
           type: 'gym',
           associate: user.userAssociate,
@@ -55,7 +56,7 @@ const Header = ({navigation, refresh}: HeaderProps) => {
 
   useEffect(() => {
     if (user.type === 'trainner') {
-      if (user.userAssociate.length !== 0) {
+      if (!!user.userAssociate && user.userAssociate.length !== 0) {
         getRequests({
           uid: user.uid,
           onComplete: request => {

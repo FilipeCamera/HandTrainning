@@ -59,7 +59,6 @@ const DataCommon = ({dados, setDados, errors}: DataProps) => {
     dados.problemHealth ? dados.problemHealth.cancer.value : false,
   );
   useEffect(() => {
-    console.log(breathText);
     if (lesion === false) {
       setLesionText('');
     }

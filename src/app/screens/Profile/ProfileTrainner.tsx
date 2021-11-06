@@ -31,7 +31,7 @@ const ProfileTrainner = ({user, navigation}: any) => {
   const [visible, setVisible] = useState(false);
   const {getUserTypeAndAssociateTrainner} = useGetUser();
   useEffect(() => {
-    if (user.userAssociate.length !== 0) {
+    if (!!user.userAssociate && user.userAssociate.length !== 0) {
       getUserTypeAndAssociateTrainner({
         type: 'gym',
         associate: user.userAssociate,

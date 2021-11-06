@@ -139,6 +139,9 @@ const Trainning = ({navigation}: any) => {
         onFail: err => {},
       });
     }
+    return function cleanup() {
+      setTrainningId('');
+    };
   }, []);
 
   const handleRequestTrainner = () => {

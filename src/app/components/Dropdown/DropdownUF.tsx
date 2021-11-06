@@ -20,7 +20,7 @@ const DropdownUF = ({value, onValue, error}: DropDownProps) => {
       .then(response => {
         const data = response.data;
         let list: any = [];
-        console.log(data);
+
         data.map(item => {
           list.push({label: item.sigla, value: item.sigla});
         });

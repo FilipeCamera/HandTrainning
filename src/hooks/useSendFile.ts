@@ -27,7 +27,7 @@ const useSendFile = () => {
       },
     );
   };
-  return {sendFile};
+  return sendFile;
 };
 
 export default useSendFile;

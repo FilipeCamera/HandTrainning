@@ -47,7 +47,7 @@ const Warnings = ({navigation}: any) => {
       onFail: err => {},
     });
     if (user.type === 'trainner') {
-      if (user.userAssociate.length !== 0) {
+      if (!!user.userAssociate && user.userAssociate.length !== 0) {
         getWarningsTrainner({
           uid: user.userAssociate,
           onComplete: warnings => {

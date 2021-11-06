@@ -56,7 +56,7 @@ const ModalCommon = ({
                   <Notify width="100%" height="100%" />
                 </View>
                 <Text
-                  title="Usuário precisa está associado a alguma academia"
+                  title="Usuário ainda não está associado a academia ou academia ainda não tem treinadores associados"
                   size={14}
                   weight={500}
                   color={Colors.textGrayMedium}

@@ -5,6 +5,7 @@ import {BoardStyle, ButtonTap, styles} from './styles';
 import {Image, View} from 'react-native';
 import moment from 'moment';
 import {firestore} from 'firebase';
+import Colors from '@styles';
 
 interface BoardProps {
   title: string;
@@ -23,12 +24,17 @@ const Board = ({title, data, visualPress}: BoardProps) => {
   return (
     <BoardStyle style={styles.shadow}>
       <Row noMargin>
-        <Text title={title} size={18} weight={600} color="#090A0A" />
+        <Text
+          title={title}
+          size={18}
+          weight={600}
+          color={Colors.textColorBlack}
+        />
         <ButtonText
           title="Visualizar todos"
           size={12}
           weight={500}
-          color="#FF6859"
+          color={Colors.red}
           onPress={visualPress}
         />
       </Row>
@@ -40,7 +46,7 @@ const Board = ({title, data, visualPress}: BoardProps) => {
             title="Hoje"
             size={13}
             weight={500}
-            color={active.today ? '#FF6859' : '#C4C4C4'}
+            color={active.today ? Colors.red : Colors.gray}
           />
         </ButtonTap>
         <ButtonTap
@@ -50,7 +56,7 @@ const Board = ({title, data, visualPress}: BoardProps) => {
             title="Semana"
             size={13}
             weight={500}
-            color={active.week ? '#FF6859' : '#C4C4C4'}
+            color={active.week ? Colors.red : Colors.gray}
           />
         </ButtonTap>
       </View>
@@ -93,7 +99,7 @@ const Board = ({title, data, visualPress}: BoardProps) => {
                     title={item.title}
                     size={12}
                     weight={500}
-                    color="#090a0a"
+                    color={Colors.textColorBlack}
                   />
                 </View>
                 {moment(date).isAfter(
@@ -101,7 +107,7 @@ const Board = ({title, data, visualPress}: BoardProps) => {
                 ) && (
                   <View
                     style={{
-                      backgroundColor: '#DCFFB2',
+                      backgroundColor: Colors.lightGreen,
                       paddingVertical: 4,
                       paddingHorizontal: 8,
                       borderRadius: 8,
@@ -110,7 +116,7 @@ const Board = ({title, data, visualPress}: BoardProps) => {
                       title="Finalizado"
                       weight={500}
                       size={10}
-                      color="#4CAF50"
+                      color={Colors.green}
                     />
                   </View>
                 )}
@@ -151,7 +157,7 @@ const Board = ({title, data, visualPress}: BoardProps) => {
                       title={item.title}
                       size={12}
                       weight={500}
-                      color="#090a0a"
+                      color={Colors.textColorBlack}
                     />
                   </View>
                 </View>
@@ -159,7 +165,7 @@ const Board = ({title, data, visualPress}: BoardProps) => {
                   moment(Date.now()).format('DD/MM/YYYY') && (
                   <View
                     style={{
-                      backgroundColor: '#DCFFB2',
+                      backgroundColor: Colors.lightGreen,
                       paddingVertical: 4,
                       paddingHorizontal: 8,
                       borderRadius: 8,
@@ -168,7 +174,7 @@ const Board = ({title, data, visualPress}: BoardProps) => {
                       title="Finalizado"
                       weight={500}
                       size={10}
-                      color="#4CAF50"
+                      color={Colors.green}
                     />
                   </View>
                 )}

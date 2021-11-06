@@ -16,7 +16,7 @@ interface AvatarProps {
 }
 
 const Avatar = ({edit, dados, setDados, error}: AvatarProps) => {
-  const {sendFile} = useSendFile();
+  const sendFile = useSendFile();
   const [image, setImage] = useState<any>({});
 
   const handleImage = () => {
@@ -27,7 +27,12 @@ const Avatar = ({edit, dados, setDados, error}: AvatarProps) => {
       .catch((error: any) => {});
   };
   useEffect(() => {
-    if (dados.avatar !== '' && Object.keys(image).length !== 0) {
+    console.log(dados.avatar);
+    if (
+      !!dados.avatar &&
+      dados.avatar !== '' &&
+      Object.keys(image).length !== 0
+    ) {
       const storageRef = storage().refFromURL(dados.avatar);
       const imageRef = storage().ref(storageRef.fullPath);
 
