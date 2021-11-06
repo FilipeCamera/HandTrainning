@@ -3,8 +3,25 @@ import {useSelector} from 'react-redux';
 
 const useVerification = () => {
   const auth = useSelector((state: any) => state.auth.user);
+
+  const verifyUserType = ({uid, onComplete, onFail}: any) => {
+    return firestore()
+      .collection('users')
+      .where('uid', '==', uid)
+      .get()
+      .then(querySnapshot => {
+        const user = querySnapshot.docs.map(doc => doc.data());
+
+        if (user[0].type !== 'gym') {
+          onComplete(true);
+        } else {
+          onComplete(false);
+        }
+      })
+      .catch(err => onFail(err));
+  };
   const verifyUserAssociate = async ({uid, onComplete, onFail}: any) => {
-    firestore()
+    return firestore()
       .collection('users')
       .where('uid', '==', uid)
       .get()
@@ -67,7 +84,7 @@ const useVerification = () => {
     }
   };
 
-  return {verifyUserAssociate, updateUserAssociate};
+  return {verifyUserAssociate, updateUserAssociate, verifyUserType};
 };
 
 export default useVerification;
