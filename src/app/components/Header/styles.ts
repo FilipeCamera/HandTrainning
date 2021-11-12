@@ -1,15 +1,16 @@
 import styled from 'styled-components/native';
-
+import {getStatusBarHeight} from 'react-native-status-bar-height';
 interface HeaderProps {
   marginBottom: number;
 }
 
 export const Container = styled.View<HeaderProps>`
   width: 100%;
+  margin-top: ${getStatusBarHeight()}px;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  padding: 16px;
+  padding: 0px 16px 0px 16px;
   ${props =>
     props.marginBottom ? `margin-bottom: ${props.marginBottom}px` : ''}
 `;

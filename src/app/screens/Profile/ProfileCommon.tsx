@@ -7,7 +7,7 @@ import PlayIcon from 'assets/svg/PlayIcon.svg';
 import CloseIcon from 'assets/svg/CloseIcon.svg';
 import LocationIcon from 'assets/svg/locationIcon.svg';
 import LineGray from 'assets/svg/LineGran.svg';
-import {TouchableOpacity, View} from 'react-native';
+import {Dimensions, TouchableOpacity, View} from 'react-native';
 import {Button, CardMini, ModalUnbindGym, Space, Text} from 'components';
 import {Image} from 'react-native';
 import {Logout} from 'functions';
@@ -16,6 +16,8 @@ import {useGetTrainning, useGetUser} from 'hooks';
 import {firestore} from 'firebase';
 import {showMessage} from 'react-native-flash-message';
 import ProfileEdit from './ProfileEdit';
+
+const {width} = Dimensions.get('window');
 
 const ProfileCommon = ({user, navigation}: any) => {
   const [gym, setGym] = useState<any>();
@@ -120,7 +122,7 @@ const ProfileCommon = ({user, navigation}: any) => {
         desc="Você perderá o seu treino caso faça isso."
         onFunction={handleUnbindGym}
       />
-      <View style={{width: '100%', height: 200}}>
+      <View style={{width: '100%', height: width > 360 ? 228 : 200}}>
         <BackRedHeader
           width="100%"
           height="100%"

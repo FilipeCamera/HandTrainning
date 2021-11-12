@@ -66,6 +66,7 @@ const HomeGym = ({navigation}: any) => {
       contentContainerStyle={{
         flexGrow: 1,
         padding: 16,
+        paddingBottom: 50,
         alignItems: 'center',
         width: '100%',
       }}

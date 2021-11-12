@@ -7,7 +7,7 @@ import PlayIcon from 'assets/svg/PlayIcon.svg';
 import CloseIcon from 'assets/svg/CloseIcon.svg';
 import LocationIcon from 'assets/svg/locationIcon.svg';
 import LineGray from 'assets/svg/LineGran.svg';
-import {TouchableOpacity, View} from 'react-native';
+import {Dimensions, StatusBar, TouchableOpacity, View} from 'react-native';
 import {
   Button,
   CardMini,
@@ -22,6 +22,8 @@ import {useGetTrainning, useGetUser} from 'hooks';
 import ProfileEdit from './ProfileEdit';
 import {firestore} from 'firebase';
 import {showMessage} from 'react-native-flash-message';
+
+const {width} = Dimensions.get('window');
 
 const ProfileTrainner = ({user, navigation}: any) => {
   const {getUserTypeAndAssociateID} = useGetUser();
@@ -97,7 +99,7 @@ const ProfileTrainner = ({user, navigation}: any) => {
         gyms={gym}
         onFunction={uid => handleUnbindGym(uid)}
       />
-      <View style={{width: '100%', height: 200}}>
+      <View style={{width: '100%', height: width > 360 ? 228 : 200}}>
         <BackRedHeader
           width="100%"
           height="100%"

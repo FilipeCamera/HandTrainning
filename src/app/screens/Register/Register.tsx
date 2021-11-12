@@ -133,6 +133,7 @@ const Register = ({navigation}: any) => {
           onBack={() => navigation.goBack()}
           marginBottom={16}
         />
+        <Space marginVertical={4} />
         <Input
           value={email}
           onText={setEmail}

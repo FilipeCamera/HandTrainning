@@ -6,12 +6,14 @@ import BackRedHeader from 'assets/svg/RedTopBack.svg';
 import PlayIcon from 'assets/svg/PlayIcon.svg';
 import LineGray from 'assets/svg/LineGran.svg';
 import LocationIcon from 'assets/svg/locationIcon.svg';
-import {TouchableOpacity, View} from 'react-native';
+import {Dimensions, TouchableOpacity, View} from 'react-native';
 import {BarChart, Button, Label, Space, Text} from 'components';
 import {Image} from 'react-native';
 import {Logout} from 'functions';
 import ProfileGymStateScreen from './ProfileGymState';
 import Colors from '@styles';
+
+const {width} = Dimensions.get('window');
 
 const ProfileGym = ({user, navigation}: any) => {
   const [state, setState] = useState('');
@@ -45,7 +47,7 @@ const ProfileGym = ({user, navigation}: any) => {
         paddingBottom: 16,
       }}
       showsVerticalScrollIndicator={false}>
-      <View style={{width: '100%', height: 200}}>
+      <View style={{width: '100%', height: width > 360 ? 228 : 200}}>
         <BackRedHeader
           width="100%"
           height="100%"
@@ -70,9 +72,19 @@ const ProfileGym = ({user, navigation}: any) => {
       </View>
       <Space marginVertical={8} />
       <View style={{alignItems: 'center'}}>
-        <Text title={user.name} size={22} weight={600} color="#090A0A" />
+        <Text
+          title={user.name}
+          size={22}
+          weight={600}
+          color={Colors.textColorBlack}
+        />
         {user.type === 'gym' && (
-          <Text title={user.cnpj} size={15} weight={500} color="#c4c4c4" />
+          <Text
+            title={user.cnpj}
+            size={15}
+            weight={500}
+            color={Colors.grayMediumLight}
+          />
         )}
         <View style={{flexDirection: 'row', alignItems: 'flex-start'}}>
           <LocationIcon />
@@ -81,7 +93,7 @@ const ProfileGym = ({user, navigation}: any) => {
             title={`${user.city}, ${user.uf}`}
             size={15}
             weight={500}
-            color="#c4c4c4"
+            color={Colors.grayMediumLight}
           />
         </View>
         <Space marginVertical={5} />
@@ -92,9 +104,14 @@ const ProfileGym = ({user, navigation}: any) => {
             borderRadius: 13,
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: '#FF6859',
+            backgroundColor: Colors.red,
           }}>
-          <Text title={user.plan} size={10} weight={600} color="#FFF" />
+          <Text
+            title={user.plan}
+            size={10}
+            weight={600}
+            color={Colors.background}
+          />
         </View>
         <Space marginVertical={10} />
       </View>
@@ -106,32 +123,47 @@ const ProfileGym = ({user, navigation}: any) => {
           width: '95%',
         }}>
         <View style={{flexDirection: 'column', alignItems: 'center'}}>
-          <Text title="78" weight={900} size={22} color="#090A0A" />
-          <Text title="Total" weight={500} size={14} color="#FF6859" />
+          <Text
+            title="78"
+            weight={900}
+            size={22}
+            color={Colors.textColorBlack}
+          />
+          <Text title="Total" weight={500} size={14} color={Colors.red} />
         </View>
         <View
           style={{
             height: 50,
             width: 2,
-            backgroundColor: '#dedede',
+            backgroundColor: Colors.grayLight,
             borderRadius: 2,
           }}
         />
         <View style={{flexDirection: 'column', alignItems: 'center'}}>
-          <Text title="8" weight={900} size={22} color="#090A0A" />
-          <Text title="Treinadores" weight={500} size={14} color="#FF6859" />
+          <Text
+            title="8"
+            weight={900}
+            size={22}
+            color={Colors.textColorBlack}
+          />
+          <Text title="Treinadores" weight={500} size={14} color={Colors.red} />
         </View>
         <View
           style={{
             height: 50,
             width: 2,
-            backgroundColor: '#dedede',
+            backgroundColor: Colors.grayLight,
             borderRadius: 2,
           }}
         />
         <View style={{flexDirection: 'column', alignItems: 'center'}}>
-          <Text title="70" weight={900} size={22} color="#090A0A" />
-          <Text title="Alunos" weight={500} size={14} color="#FF6859" />
+          <Text
+            title="70"
+            weight={900}
+            size={22}
+            color={Colors.textColorBlack}
+          />
+          <Text title="Alunos" weight={500} size={14} color={Colors.red} />
         </View>
       </View>
       <Space marginVertical={30} />
@@ -147,7 +179,7 @@ const ProfileGym = ({user, navigation}: any) => {
             title="Alunos"
             size={18}
             weight={600}
-            color="#090a0a"
+            color={Colors.textColorBlack}
             style={{marginLeft: 5}}
           />
           <PlayIcon />
@@ -176,24 +208,24 @@ const ProfileGym = ({user, navigation}: any) => {
       </View>
       <Space marginVertical={40} />
       <View style={{width: '90%'}}>
-        <Label title="Engajamento da academia" color="#d2d3d7" />
+        <Label title="Engajamento da academia" color={Colors.grayMediumLight} />
       </View>
       <BarChart />
       <Space marginVertical={20} />
       <View style={{width: '90%', alignItems: 'center'}}>
         <Button
           title="Editar Dados"
-          background="#fff"
+          background={Colors.background}
           size={15}
           weight={500}
-          color="#090A0A"
+          color={Colors.textColorBlack}
         />
         <Button
           title="Sair"
-          background="#FF6859"
+          background={Colors.red}
           size={15}
           weight={500}
-          color="#fff"
+          color={Colors.textColorWhite}
           onPress={() => Logout().then(_ => navigation.navigate('Public'))}
         />
       </View>

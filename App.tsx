@@ -24,6 +24,7 @@ import {Provider as PaperProvider} from 'react-native-paper';
 import normalize from '@normalize';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {Google_key_ID} from 'keys';
+import {getStatusBarHeight} from 'react-native-status-bar-height';
 
 GoogleSignin.configure({
   webClientId: Google_key_ID,
@@ -78,7 +79,7 @@ const App = () => {
             </NavigationContainer>
           </SafeAreaView>
           <FlashMessage
-            statusBarHeight={16}
+            statusBarHeight={getStatusBarHeight()}
             position="top"
             duration={3000}
             titleStyle={{fontFamily: 'Poppins-Medium', fontSize: normalize(16)}}

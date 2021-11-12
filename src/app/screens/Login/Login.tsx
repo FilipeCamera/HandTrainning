@@ -126,6 +126,7 @@ const Login = ({navigation}: any) => {
           onBack={() => navigation.goBack()}
           marginBottom={16}
         />
+        <Space marginVertical={4} />
         <Input
           placeholder="E-mail"
           value={email}
