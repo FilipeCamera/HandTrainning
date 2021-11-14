@@ -7,3 +7,9 @@ export const HomeStyle = styled.ScrollView`
   background: ${Colors.background};
   padding-top: ${getStatusBarHeight()}px;
 `;
+
+export const NotifyStyle = styled.View`
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+`;

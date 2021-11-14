@@ -31,19 +31,26 @@ const ButtonInvite = ({
   const [send, setSend] = useState(false);
   const {sendInvite} = useInvites();
   const {verifyUserAssociate, verifyUserType} = useVerification();
-  const verify = (uid: any) => {
-    return verifyUserType({
+  const handleVerifySendInvite = (user, uid) => {
+    verifyUserType({
       uid: uid,
-      onComplete: associate => {
+      onComplete: (associate: boolean) => {
         if (associate) {
-          return verifyUserAssociate({
+          verifyUserAssociate({
             uid: uid,
             onComplete: (error: any, value: boolean) => {
+              console.log(value);
               if (value) {
                 showMessage({type: 'warning', message: error});
-                return false;
               } else {
-                return true;
+                sendInvite({
+                  to: user.uid,
+                  from: from,
+                  onComplete: () => {
+                    setSend(true);
+                  },
+                  onFail: err => {},
+                });
               }
             },
             onFail: error => {
@@ -51,27 +58,23 @@ const ButtonInvite = ({
             },
           });
         } else {
-          return true;
+          sendInvite({
+            to: user.uid,
+            from: from,
+            onComplete: () => {
+              setSend(true);
+            },
+            onFail: err => {},
+          });
         }
       },
       onFail: err => {},
     });
   };
 
-  const handleInviteSend = async (to, from) => {
-    const status = await verify(from);
-
-    if (status) {
-      sendInvite(to.uid, from, {
-        onComplete: () => {
-          setSend(true);
-        },
-      });
-    }
-  };
   return (
     <ButtonInviteStyle
-      onPress={() => handleInviteSend(to, from)}
+      onPress={() => handleVerifySendInvite(to, from)}
       disabled={send}
       background={send}>
       <Telegram />

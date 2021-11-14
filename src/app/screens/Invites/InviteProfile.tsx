@@ -40,7 +40,11 @@ const InviteProfile = ({
         onFail: err => {},
       });
     }
-    if (profile.type === 'trainner') {
+    if (
+      profile.type === 'trainner' &&
+      !!profile.userAssociate &&
+      profile.userAssociate.length !== 0
+    ) {
       firestore()
         .collection('users')
         .where('uid', 'in', profile.userAssociate)

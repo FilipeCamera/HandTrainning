@@ -50,8 +50,14 @@ const InviteGym = ({auth, navigation}: any) => {
     if (state) {
       verifyUserAssociate({
         uid: userId,
-        onComplete: (error, bool) => {
+        onComplete: (error: string, bool: boolean) => {
           if (bool) {
+            showMessage({
+              type: 'info',
+              message: 'Aviso',
+              description: error,
+            });
+          } else {
             acceptedInvite({
               gymId: userId,
               uid: auth.uid,
@@ -76,12 +82,6 @@ const InviteGym = ({auth, navigation}: any) => {
                   });
                 }
               },
-            });
-          } else {
-            showMessage({
-              type: 'info',
-              message: 'Aviso',
-              description: error,
             });
           }
         },
@@ -121,6 +121,7 @@ const InviteGym = ({auth, navigation}: any) => {
     return (
       <InviteProfile
         profile={user}
+        auth={auth}
         onBack={setProfile}
         handleAcceptOrRecused={handleAcceptOrRecused}
       />
@@ -318,12 +319,12 @@ const InviteGym = ({auth, navigation}: any) => {
                       size={11}
                       color={Colors.textColorWhite}
                       onPress={() =>
-                        handleAcceptOrRecused({
-                          state: true,
-                          userId: userInvite.uid,
-                          type: userInvite.type,
-                          userAssociate: userInvite.userAssociate,
-                        })
+                        handleAcceptOrRecused(
+                          true,
+                          userInvite.uid,
+                          userInvite.type,
+                          userInvite.userAssociate,
+                        )
                       }
                     />
                     <Space marginVertical={5} />

@@ -5,7 +5,7 @@ const useVerification = () => {
   const auth = useSelector((state: any) => state.auth.user);
 
   const verifyUserType = ({uid, onComplete, onFail}: any) => {
-    return firestore()
+    firestore()
       .collection('users')
       .where('uid', '==', uid)
       .get()
@@ -20,36 +20,37 @@ const useVerification = () => {
       })
       .catch(err => onFail(err));
   };
-  const verifyUserAssociate = async ({uid, onComplete, onFail}: any) => {
-    return firestore()
+  const verifyUserAssociate = ({uid, onComplete, onFail}: any) => {
+    firestore()
       .collection('users')
       .where('uid', '==', uid)
       .get()
       .then(querySnapshot => {
         const user = querySnapshot.docs.map(users => users.data());
         if (user[0].type === 'trainner') {
-          if (user[0].userAssociate) {
-            if (user[0].userAssociate.length > 2) {
-              onComplete('Usuário já possui o máximo de associações', false);
+          if (!!user[0].userAssociate && user[0].userAssociate.length !== 0) {
+            if (user[0].userAssociate.length >= 2) {
+              onComplete('Usuário já possui o máximo de associações', true);
+            } else {
+              user[0].userAssociate.map(associate => {
+                if (associate === auth.uid) {
+                  onComplete('Usuário já é associado a sua academia', true);
+                }
+              });
             }
-            user[0].userAssociate.map(associate => {
-              if (associate === auth.uid) {
-                onComplete('Usuário já é associado a sua academia', false);
-              }
-            });
           } else {
-            onComplete('', true);
+            onComplete('', false);
           }
         }
 
         if (user[0].type === 'common') {
-          if (user[0].userAssociate) {
+          if (!!user[0].userAssociate && user[0].userAssociate !== '') {
             onComplete(
               'Usuário já é associado alguma academia ou treinador',
-              false,
+              true,
             );
           } else {
-            onComplete('', true);
+            onComplete('', false);
           }
         }
       })

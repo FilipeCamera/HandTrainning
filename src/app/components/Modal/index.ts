@@ -5,6 +5,7 @@ import ModalVisualTrainning from './ModalVisualTrainning';
 import ModalUnbindGym from './ModalUnbindGym';
 import ModalScore from './ModalScore';
 import ModalUnbindGymTrainner from './ModalUnbindGymTrainner';
+import ModalObservation from './ModalObservation';
 
 export {
   Modal as default,
@@ -14,4 +15,5 @@ export {
   ModalUnbindGym,
   ModalScore,
   ModalUnbindGymTrainner,
+  ModalObservation,
 };

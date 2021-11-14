@@ -24,7 +24,7 @@ const CardTrainnerStatus = () => {
       .catch(error => console.log(error));
   }, []);
   return (
-    <CardTrainnerStatusStyle style={styles.shadow}>
+    <CardTrainnerStatusStyle>
       {trainners.length !== 0 &&
         trainners.map(trainner => (
           <AvatarActive

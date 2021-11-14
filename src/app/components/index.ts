@@ -47,6 +47,7 @@ import Modal, {
   ModalUnbindGym,
   ModalScore,
   ModalUnbindGymTrainner,
+  ModalObservation,
 } from './Modal';
 
 export {
@@ -101,4 +102,5 @@ export {
   ModalScore,
   ModalUnbindGymTrainner,
   ButtonGranInvite,
+  ModalObservation,
 };

@@ -1,11 +1,12 @@
 import {CardTrainner, Carousel, Header} from 'components';
 
-import {RefreshControl} from 'react-native';
+import {RefreshControl, View} from 'react-native';
 import React, {useCallback, useState} from 'react';
 
-import {HomeStyle} from './styles';
+import {HomeStyle, NotifyStyle} from './styles';
 import Colors from '@styles';
 import {useSelector} from 'react-redux';
+import Notify from 'assets/svg/Notify.svg';
 
 const HomeTrainner = ({navigation}: any) => {
   const gym = useSelector((state: any) => state.trainner.gym);
@@ -43,6 +44,11 @@ const HomeTrainner = ({navigation}: any) => {
           <Carousel refresh={refresh} />
           <CardTrainner navigation={navigation} refresh={refresh} />
         </>
+      )}
+      {!gym && (
+        <NotifyStyle>
+          <Notify />
+        </NotifyStyle>
       )}
     </HomeStyle>
   );

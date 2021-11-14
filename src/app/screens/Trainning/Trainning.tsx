@@ -2,6 +2,7 @@ import {
   Card,
   Header,
   Modal,
+  ModalObservation,
   ModalScore,
   ModalVisualTrainning,
   Space,
@@ -62,6 +63,8 @@ const Trainning = ({navigation}: any) => {
   const [categories, setCategories] = useState<any[]>([]);
   const [send, setSend] = useState(false);
   const [scoreValue, setScoreValue] = useState('');
+  const [visibleObs, setVisibleObs] = useState(false);
+  const [observation, setObservation] = useState('');
 
   const handleSelect = (index, value) => {
     setSelected(index);
@@ -224,6 +227,12 @@ const Trainning = ({navigation}: any) => {
         setTrainner={setTrainner}
         title="Escolha um novo treinador"
         onFunction={() => handleRequestTrainner()}
+      />
+      <ModalObservation
+        visible={visibleObs}
+        setVisible={setVisibleObs}
+        title="Observação"
+        observation={observation}
       />
       <ModalScore
         visible={scoreVisible}
@@ -465,6 +474,10 @@ const Trainning = ({navigation}: any) => {
                         </View>
                         <Space marginHorizontal={2} />
                         <TouchableOpacity
+                          onPress={() => {
+                            setObservation(exercise.instruction.desc);
+                            setVisibleObs(true);
+                          }}
                           disabled={
                             exercise.instruction.value === 'OBS' ? false : true
                           }

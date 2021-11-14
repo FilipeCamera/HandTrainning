@@ -31,48 +31,41 @@ const ButtonGranInvite = ({
 }: ButtonProps) => {
   const [send, setSend] = useState(false);
   const {sendInvite} = useInvites();
-  const {verifyUserAssociate, verifyUserIsType} = useVerification();
-  const verify = async ({user, uid}: any) => {
-    return await verifyUserIsType(user, uid, {
-      onComplete: async (error: any) => {
-        if (error) {
-          showMessage({type: 'warning', message: error});
-          return false;
-        } else {
-          return await verifyUserAssociate(uid, {
-            onComplete: (error: any) => {
-              if (error) {
+  const {verifyUserAssociate, verifyUserType} = useVerification();
+  const handleVerifySendInvite = (user, uid) => {
+    verifyUserType({
+      uid: uid,
+      onComplete: (associate: boolean) => {
+        if (associate) {
+          verifyUserAssociate({
+            uid: uid,
+            onComplete: (error: string, value: boolean) => {
+              console.log(value);
+              if (value) {
                 showMessage({type: 'warning', message: error});
-                return false;
               } else {
-                return true;
+                sendInvite({
+                  to: user.uid,
+                  from: from,
+                  onComplete: () => {
+                    setSend(true);
+                  },
+                  onFail: err => {},
+                });
               }
             },
             onFail: error => {
-              console.log(error);
+              console.log('Erro:', error);
             },
           });
         }
       },
-      onFail: error => console.log(error),
+      onFail: err => {},
     });
-  };
-
-  const handleInviteSend = async (to, from) => {
-    const status = await verify({user: to, uid: from});
-    console.log(status);
-    if (status) {
-      sendInvite(to.uid, from, {
-        onComplete: () => {
-          setSend(true);
-        },
-      });
-    }
-    console.log('send:', send);
   };
   return (
     <ButtonGranInviteStyle
-      onPress={() => handleInviteSend(to, from)}
+      onPress={() => handleVerifySendInvite(to, from)}
       disabled={send}
       background={send}>
       <View style={{position: 'absolute', left: 25, width: 25, height: 25}}>

@@ -136,46 +136,49 @@ const Exercise = () => {
         </View>
       )}
       {!loading && exercises.length !== 0 && categories.length !== 0 && (
-        <View style={{height: 50}}>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{
-              alignItems: 'center',
-              flexGrow: 1,
-            }}>
-            {categories.map((category: any, index: any) => {
-              return (
-                <TouchableOpacity
-                  key={category.name}
-                  style={{
-                    backgroundColor: categories[index].selected
-                      ? Colors.redMedium
-                      : Colors.grayLight,
-                    paddingVertical: 8,
-                    paddingHorizontal: 12,
-                    borderRadius: 8,
-                    marginHorizontal: 8,
-                  }}
-                  onPress={() => {
-                    setCatego(category.value);
-                    handleSelect(index);
-                  }}>
-                  <Text
-                    title={category.name}
-                    size={12}
-                    weight={500}
-                    color={
-                      categories[index].selected
-                        ? Colors.textColorWhite
-                        : Colors.textColorRX
-                    }
-                  />
-                </TouchableOpacity>
-              );
-            })}
-          </ScrollView>
-        </View>
+        <>
+          <Space marginVertical={8} />
+          <View style={{height: 50}}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{
+                alignItems: 'center',
+                flexGrow: 1,
+              }}>
+              {categories.map((category: any, index: any) => {
+                return (
+                  <TouchableOpacity
+                    key={category.name}
+                    style={{
+                      backgroundColor: categories[index].selected
+                        ? Colors.redMedium
+                        : Colors.grayLight,
+                      paddingVertical: 8,
+                      paddingHorizontal: 12,
+                      borderRadius: 8,
+                      marginHorizontal: 8,
+                    }}
+                    onPress={() => {
+                      setCatego(category.value);
+                      handleSelect(index);
+                    }}>
+                    <Text
+                      title={category.name}
+                      size={14}
+                      weight={500}
+                      color={
+                        categories[index].selected
+                          ? Colors.textColorWhite
+                          : Colors.textColorRX
+                      }
+                    />
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+          </View>
+        </>
       )}
       <Space marginVertical={20} />
       {!loading &&
@@ -228,7 +231,7 @@ const Exercise = () => {
                       onPress={() => handleRemoveExercise(exercise)}>
                       <Text
                         title="Excluir"
-                        size={12}
+                        size={13}
                         weight={500}
                         color={Colors.redMedium}
                       />

@@ -65,7 +65,7 @@ const useInvites = () => {
       })
       .catch(err => onFail(err));
   };
-  const sendInvite = async (to: any, from: any, {onComplete}: any) => {
+  const sendInvite = async ({to, from, onComplete, onFail}: any) => {
     const data = {
       createdAt: firestore.FieldValue.serverTimestamp(),
       accept: null,
@@ -79,7 +79,7 @@ const useInvites = () => {
       .then((res: any) => {
         onComplete(res);
       })
-      .catch(error => console.log(error));
+      .catch(error => onFail(error));
   };
   return {sendInvite, getInvites, acceptedInvite, recusedInvite};
 };

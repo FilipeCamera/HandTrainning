@@ -1,3 +1,4 @@
+import Colors from '@styles';
 import {Dimensions, StyleSheet} from 'react-native';
 import styled from 'styled-components/native';
 
@@ -27,7 +28,7 @@ export const CardBoxTwoStyle = styled.View`
 
 export const CardTrainnerStatusStyle = styled.View`
   padding: 8px 0;
-  background: #fff;
+  background: ${Colors.background};
   border-radius: 20px;
   flex: 1;
   margin-right: 16px;
@@ -35,6 +36,8 @@ export const CardTrainnerStatusStyle = styled.View`
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
+  border: 1px solid ${Colors.grayMediumLight};
+  border-style: dashed;
 `;
 
 export const CardCommonStyle = styled.View`
@@ -46,7 +49,7 @@ export const CardCommonStyle = styled.View`
 `;
 
 export const CardTrainnerStyle = styled.View`
-  background: #fff;
+  background: ${Colors.background};
   width: 100%;
   margin: 40px 0;
   border-radius: 25px;
