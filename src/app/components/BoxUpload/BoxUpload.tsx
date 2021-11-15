@@ -17,7 +17,7 @@ interface BoxUploadProps {
 }
 
 const BoxUpload = ({setUrl, error, url}: BoxUploadProps) => {
-  const {sendFile} = useSendFile();
+  const sendFile = useSendFile();
   const [upload, setUpload] = useState({});
   const handleImageOrVideo = () => {
     selectImageUpload()
