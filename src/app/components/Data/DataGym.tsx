@@ -10,11 +10,11 @@ interface DataProps {
 }
 
 const DataGym = ({dados, setDados, errors}: DataProps) => {
-  const [name, setName] = useState('');
-  const [slogan, setSlogan] = useState('');
-  const [cnpj, setCnpj] = useState('');
-  const [uf, setUF] = useState(null);
-  const [city, setCity] = useState('');
+  const [name, setName] = useState(dados.name || '');
+  const [slogan, setSlogan] = useState(dados.slogan || '');
+  const [cnpj, setCnpj] = useState(dados.cnpj || '');
+  const [uf, setUF] = useState(dados.uf || null);
+  const [city, setCity] = useState(dados.city || '');
 
   useEffect(() => {
     setDados({

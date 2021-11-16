@@ -7,7 +7,11 @@ const useGetExercise = () => {
       .where('gym', '==', uid)
       .get()
       .then(querySnapshot => {
-        const list = querySnapshot.docs.map(doc => doc.data());
+        const list = querySnapshot.docs.map(doc => {
+          const data = doc.data();
+          const id = doc.id;
+          return {...data, id};
+        });
         onComplete(list);
       })
       .catch(err => onFail(err));

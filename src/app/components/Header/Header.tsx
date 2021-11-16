@@ -81,7 +81,10 @@ const Header = ({navigation, refresh}: HeaderProps) => {
           onComplete: warnings => {
             if (warnings) {
               warnings.map(wg => {
-                if (wg.finallized !== dateNow && wg.finallized > dateNow) {
+                if (
+                  moment(wg.initial).format('DD/MM/YYYY') ===
+                  moment(dateNow).format('DD/MM/YYYY')
+                ) {
                   setInfo(true);
                   setNotVisualize();
                 }

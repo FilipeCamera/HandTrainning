@@ -5,7 +5,6 @@ import {BackHandler, ScrollView, View} from 'react-native';
 import GranLine from 'assets/svg/LineGran.svg';
 import moment from 'moment';
 import Colors from '@styles';
-import {firestore} from 'firebase';
 import {useSelector} from 'react-redux';
 import {setVisualize} from 'functions';
 import {useGetRequests, useGetWarnings} from 'hooks';
@@ -71,9 +70,14 @@ const Warnings = ({navigation}: any) => {
           uid: user.userAssociate,
           onComplete: warnings => {
             const listWarnings: any[] = [];
+
             if (warnings) {
               warnings.map(wg => {
-                if (wg.finallized !== dateNow && wg.finallized > dateNow) {
+                if (
+                  moment(wg.initial).format('DD/MM/YYYY') ===
+                    moment(dateNow).format('DD/MM/YYYY') ||
+                  moment(wg.finallized).isAfter(dateNow)
+                ) {
                   listWarnings.push(wg);
                 }
               });

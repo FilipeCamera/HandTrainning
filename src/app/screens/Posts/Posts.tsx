@@ -226,7 +226,7 @@ const Posts = () => {
             error={errors.finallized}
           />
           <Space marginVertical={20} />
-          <BoxUpload setUrl={setImage} url={image} />
+          <BoxUpload setUrl={setImage} url={image} type="posts" />
           <Space marginVertical={40} />
           <ButtonRed
             title="Postar"

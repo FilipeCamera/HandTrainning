@@ -149,7 +149,7 @@ const Exercise = () => {
               {categories.map((category: any, index: any) => {
                 return (
                   <TouchableOpacity
-                    key={category.name}
+                    key={category.id}
                     style={{
                       backgroundColor: categories[index].selected
                         ? Colors.redMedium
@@ -187,7 +187,7 @@ const Exercise = () => {
           if (exercise.category === categoExer) {
             return (
               <>
-                <View key={exercise.name} style={{width: '100%'}}>
+                <View key={exercise.id} style={{width: '100%'}}>
                   <View
                     style={{
                       flexDirection: 'row',

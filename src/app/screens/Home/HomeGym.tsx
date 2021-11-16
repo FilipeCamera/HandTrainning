@@ -6,7 +6,8 @@ import {
   Header,
   Row,
 } from 'components';
-import {firestore} from 'firebase';
+
+import {useGetPostAndWarnings, useGetWarnings} from 'hooks';
 import React, {useState, useEffect} from 'react';
 import {useSelector} from 'react-redux';
 import HomeStateGym from './HomeStateGym';
@@ -14,29 +15,32 @@ import {HomeStyle} from './styles';
 
 const HomeGym = ({navigation}: any) => {
   const user = useSelector((state: any) => state.auth.user);
+  const {getPosts} = useGetPostAndWarnings();
+  const {getWarnings} = useGetWarnings();
   const [warnings, setWarnings] = useState<any[]>([]);
   const [posts, setPosts] = useState<any[]>([]);
   const [state, setState] = useState('');
 
   useEffect(() => {
-    firestore()
-      .collection('warning')
-      .where('gym', '==', user.uid)
-      .get()
-      .then(querySnapshot => {
-        const warningList = querySnapshot.docs.map(doc => doc.data());
-        setWarnings(warningList);
-      })
-      .catch(error => {});
-    firestore()
-      .collection('posts')
-      .where('gym', '==', user.uid)
-      .get()
-      .then(querySnapshot => {
-        const postsList = querySnapshot.docs.map(doc => doc.data());
-        setPosts(postsList);
-      })
-      .catch(error => {});
+    getWarnings({
+      uid: user.uid,
+      onComplete: (warning: any) => {
+        if (warning) {
+          setWarnings(warning);
+        }
+      },
+      onFail: err => {},
+    });
+
+    getPosts({
+      uid: user.uid,
+      onComplete: (post: any) => {
+        if (post) {
+          setPosts(post);
+        }
+      },
+      onFail: err => {},
+    });
   }, []);
 
   if (state === 'warnings') {

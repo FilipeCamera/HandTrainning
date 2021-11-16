@@ -13,7 +13,21 @@ const useGetPostAndWarnings = () => {
       .catch(err => onFail(err));
   };
 
-  return {getPosts};
+  const deletePostOrWarning = ({type, title, onComplete, onFail}: any) => {
+    firestore()
+      .collection(`${type}`)
+      .where('title', '==', title)
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.docs.forEach(doc => {
+          firestore().collection(`${type}`).doc(doc.id).delete();
+          onComplete(true);
+        });
+      })
+      .catch(error => onFail(error));
+  };
+
+  return {getPosts, deletePostOrWarning};
 };
 
 export default useGetPostAndWarnings;

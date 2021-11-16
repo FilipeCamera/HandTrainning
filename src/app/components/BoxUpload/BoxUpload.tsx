@@ -11,12 +11,13 @@ import Colors from '@styles';
 import {storage} from 'firebase';
 
 interface BoxUploadProps {
+  type: string;
   error: string;
   setUrl: any;
   url: any;
 }
 
-const BoxUpload = ({setUrl, error, url}: BoxUploadProps) => {
+const BoxUpload = ({type, setUrl, error, url}: BoxUploadProps) => {
   const sendFile = useSendFile();
   const [upload, setUpload] = useState({});
   const handleImageOrVideo = () => {
@@ -45,7 +46,7 @@ const BoxUpload = ({setUrl, error, url}: BoxUploadProps) => {
       sendFile({
         uri: uploadUri,
         filename,
-        path: 'exercises',
+        path: type,
         onComplete: (url: string) => {
           setUrl(url);
         },
@@ -89,7 +90,7 @@ const BoxUpload = ({setUrl, error, url}: BoxUploadProps) => {
             </View>
             <View style={{width: '90%'}}>
               <Text
-                title="Tamanho máximo suportado 2mb"
+                title="Tamanho máximo da imagem tem que ser até 5mb"
                 size={10}
                 weight={400}
                 color={Colors.red}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View} from 'react-native';
 import {Text} from 'components';
 import {
@@ -10,7 +10,7 @@ import {
 import Colors from '@styles';
 
 const BarChart = () => {
-  const currentDate = Date.now();
+  const [currentDate, setCurrentDate] = useState(Date.now());
   const data = [
     {
       label: 'Jan',

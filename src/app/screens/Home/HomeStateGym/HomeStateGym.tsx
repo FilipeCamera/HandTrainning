@@ -1,12 +1,12 @@
 import {ButtonText, SimpleHeader, Space, Text} from 'components';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {BackHandler, Image, View} from 'react-native';
 import {CardStyle, HomeStateStyle} from './styles';
 
 import GranLine from 'assets/svg/LineGran.svg';
 import moment from 'moment';
-import {firestore} from 'firebase';
 import Colors from '@styles';
+import {useGetPostAndWarnings} from 'hooks';
 
 interface HomeStateGymProps {
   title: string;
@@ -23,6 +23,7 @@ const HomeStateGym = ({
   type,
   setData,
 }: HomeStateGymProps) => {
+  const {deletePostOrWarning} = useGetPostAndWarnings();
   const backChange = () => {
     onBack('');
     return true;
@@ -35,17 +36,17 @@ const HomeStateGym = ({
     return () => backHandler.remove();
   }, []);
 
-  const handleDelete = (type: any, title: any, index: number) => {
-    firestore()
-      .collection(`${type}`)
-      .where('title', '==', title)
-      .get()
-      .then(querySnapshot => {
-        const doc = querySnapshot.docs.map(doc => doc.id);
-        firestore().collection(`${type}`).doc(doc[0]).delete();
-        data.splice(index, 1);
-      })
-      .catch(error => {});
+  const handleDelete = (type: any, title: any) => {
+    deletePostOrWarning({
+      type: type,
+      title: title,
+      onComplete: (res: boolean) => {
+        if (res) {
+          setData(data.filter(dta => dta.title !== title));
+        }
+      },
+      onFail: err => {},
+    });
   };
   return (
     <HomeStateStyle

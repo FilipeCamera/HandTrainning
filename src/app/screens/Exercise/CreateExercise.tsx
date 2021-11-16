@@ -155,7 +155,12 @@ const CreateExercise = ({goBack, user}: CreateExerciseProps) => {
         error={errors.name}
       />
       <Space marginVertical={20} />
-      <BoxUpload setUrl={setUrl} error={errors.url} url={url} />
+      <BoxUpload
+        setUrl={setUrl}
+        error={errors.url}
+        url={url}
+        type="exercises"
+      />
       {type === 'double' && (
         <>
           <Space marginVertical={15} />

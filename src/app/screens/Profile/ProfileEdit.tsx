@@ -206,6 +206,7 @@ const ProfileEdit = ({setState, user}: StepProps) => {
               weight={500}
               onPress={() => handleUpdateProfile()}
             />
+            <Space marginVertical={6} />
           </>
         )}
       </Scroll>

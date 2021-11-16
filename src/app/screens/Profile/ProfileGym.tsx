@@ -12,6 +12,7 @@ import {Image} from 'react-native';
 import {Logout} from 'functions';
 import ProfileGymStateScreen from './ProfileGymState';
 import Colors from '@styles';
+import ProfileEdit from './ProfileEdit';
 
 const {width} = Dimensions.get('window');
 
@@ -37,6 +38,10 @@ const ProfileGym = ({user, navigation}: any) => {
         title="Treinadores"
       />
     );
+  }
+
+  if (state === 'edit') {
+    return <ProfileEdit setState={setState} user={user} />;
   }
   return (
     <ProfileContainer
@@ -219,6 +224,7 @@ const ProfileGym = ({user, navigation}: any) => {
           size={15}
           weight={500}
           color={Colors.textColorBlack}
+          onPress={() => setState('edit')}
         />
         <Button
           title="Sair"

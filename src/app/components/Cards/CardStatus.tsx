@@ -32,7 +32,7 @@ const CardStatus = () => {
           <RectangleLine />
         </View>
         <View>
-          <View>
+          <View style={{width: 130}}>
             <Text
               title="Ganhos de usuários"
               size={16}
