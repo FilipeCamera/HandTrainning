@@ -53,6 +53,7 @@ const Login = ({navigation}: any) => {
   };
 
   const signInGoogle = async () => {
+    await GoogleSignin.hasPlayServices();
     const {idToken} = await GoogleSignin.signIn();
     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
     return auth()

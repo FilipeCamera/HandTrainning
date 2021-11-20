@@ -135,8 +135,8 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled true
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "1.0.1-beta"
     }
     splits {
         abi {
@@ -201,7 +201,7 @@ dependencies {
     implementation 'com.facebook.fresco:animated-gif:2.0.0'
 
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
-
+    
     implementation project(':react-native-permissions')
     implementation project(':react-native-splash-screen')
     implementation project(':@react-native-community_datetimepicker')

@@ -2,6 +2,7 @@ import {firebase} from 'firebase';
 
 import {authActions} from '@actions/auth';
 import {dispatchAction} from 'store';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 const userPersist = (user: any) => {
   dispatchAction(authActions.setUser, {
@@ -32,12 +33,12 @@ const userPersist = (user: any) => {
   });
 };
 
-const Logout = () => {
+const Logout = async () => {
   return new Promise(async (resolve, reject) => {
     await firebase
       .auth()
       .signOut()
-      .then(() => {
+      .then(async () => {
         dispatchAction(authActions.logout, {
           uid: undefined,
           email: undefined,
@@ -63,7 +64,14 @@ const Logout = () => {
           limitTrainner: undefined,
           completeRegister: undefined,
         });
-        resolve(true);
+        const currentUser = await GoogleSignin.getCurrentUser();
+        if (currentUser) {
+          await GoogleSignin.revokeAccess();
+          await GoogleSignin.signOut();
+          resolve(true);
+        } else {
+          resolve(true);
+        }
       })
       .catch((error: any) => {
         reject(error);
