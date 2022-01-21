@@ -4,118 +4,20 @@ import {HeaderStyle, ButtonAlert} from './styles';
 
 import Alert from 'assets/svg/bell-outline.svg';
 import ArrowExchange from 'assets/svg/arrowExchange.svg';
-import {Modal, Space, Text} from 'components';
+import {Space, Text} from 'components';
 import {useSelector} from 'react-redux';
 import Colors from '@styles';
-import {setGymId, setNotVisualize} from 'functions';
-import moment from 'moment';
-import {useGetRequests, useGetUser, useGetWarnings} from 'hooks';
 
 interface HeaderProps {
   navigation: any;
-  refresh: boolean;
+  refresh?: boolean;
 }
 
 const Header = ({navigation, refresh}: HeaderProps) => {
   const user = useSelector((state: any) => state.auth.user);
-  const gym = useSelector((state: any) => state.trainner.gym);
   const visualized = useSelector((state: any) => state.visualized.visualized);
 
-  const {getUserTypeAndAssociateTrainner} = useGetUser();
-  const {getWarnings, getWarningsTrainner} = useGetWarnings();
-  const {getRequests} = useGetRequests();
   const [info, setInfo] = useState(false);
-  const [visible, setVisible] = useState(false);
-  const [gyms, setGyms] = useState<any[]>([]);
-
-  useEffect(() => {
-    if (
-      user.type === 'trainner' &&
-      gym === undefined &&
-      !!user.userAssociate &&
-      user.userAssociate.length !== 0
-    ) {
-      setVisible(true);
-    }
-    if (user.type === 'trainner') {
-      if (!!user.userAssociate && user.userAssociate.length !== 0) {
-        getUserTypeAndAssociateTrainner({
-          type: 'gym',
-          associate: user.userAssociate,
-          onComplete: gym => {
-            if (gym) {
-              setGyms(gym);
-            }
-          },
-          onFail: err => {},
-        });
-      }
-    }
-  }, [refresh]);
-  const dateNow = Date.now();
-
-  useEffect(() => {
-    if (user.type === 'trainner') {
-      if (!!user.userAssociate && user.userAssociate.length !== 0) {
-        getRequests({
-          uid: user.uid,
-          onComplete: request => {
-            if (request) {
-              if (request.length !== 0) {
-                request.map(req => {
-                  if (
-                    moment.unix(req.createdAt).format('DD/MM/YYYY') ===
-                    moment(dateNow).format('DD/MM/YYYY')
-                  ) {
-                    setInfo(true);
-                    setNotVisualize();
-                  }
-                });
-              }
-            }
-          },
-          onFail: err => {},
-        });
-        getWarningsTrainner({
-          uid: user.userAssociate,
-          onComplete: warnings => {
-            if (warnings) {
-              warnings.map(wg => {
-                if (
-                  moment(wg.initial).format('DD/MM/YYYY') ===
-                  moment(dateNow).format('DD/MM/YYYY')
-                ) {
-                  setInfo(true);
-                  setNotVisualize();
-                }
-              });
-            }
-          },
-          onFail: err => [],
-        });
-      }
-    }
-    if (user.type === 'common') {
-      if (user.userAssociate !== undefined) {
-        getWarnings({
-          uid: user.userAssociate,
-          onComplete: warnings => {
-            if (warnings) {
-              if (warnings.length !== 0) {
-                warnings.map(wg => {
-                  if (wg.finallized !== dateNow && wg.finallized > dateNow) {
-                    setInfo(true);
-                    setNotVisualize();
-                  }
-                });
-              }
-            }
-          },
-          onFail: err => {},
-        });
-      }
-    }
-  }, [refresh]);
 
   return (
     <>
@@ -144,11 +46,6 @@ const Header = ({navigation, refresh}: HeaderProps) => {
             alignItems: 'center',
             justifyContent: 'space-between',
           }}>
-          {user.type === 'trainner' && (
-            <ButtonAlert onPress={() => setVisible(true)}>
-              <ArrowExchange />
-            </ButtonAlert>
-          )}
           <Space marginHorizontal={8} />
           <ButtonAlert onPress={() => navigation.navigate('Warnings')}>
             {!visualized && !!info && (
@@ -171,16 +68,6 @@ const Header = ({navigation, refresh}: HeaderProps) => {
           </ButtonAlert>
         </View>
       </HeaderStyle>
-      {user.type === 'trainner' && (
-        <Modal
-          user={user}
-          visible={visible}
-          setVisible={setVisible}
-          gyms={gyms}
-          setGym={setGymId}
-          title="Trocar academia"
-        />
-      )}
     </>
   );
 };

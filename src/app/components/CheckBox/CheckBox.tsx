@@ -8,9 +8,10 @@ interface CheckBoxProps {
   title: string;
   setValue: any;
   value: boolean;
+  size?: number;
 }
 
-const Check = ({title, setValue, value}: CheckBoxProps) => {
+const Check = ({title, setValue, value, size}: CheckBoxProps) => {
   return (
     <CheckBoxStyle>
       <CheckBox
@@ -19,7 +20,12 @@ const Check = ({title, setValue, value}: CheckBoxProps) => {
         value={value}
         onValueChange={newValue => setValue(newValue)}
       />
-      <Text title={title} weight={500} size={16} color="#090A0A" />
+      <Text
+        title={title}
+        weight={500}
+        size={size ? size : 16}
+        color="#090A0A"
+      />
     </CheckBoxStyle>
   );
 };

@@ -9,6 +9,8 @@ interface TextProps {
   color: string;
   center: boolean;
   style: any;
+  numberOfLines: number;
+  ellipsizeMode: string;
 }
 
 const Text = ({title, ...props}: TextProps) => {

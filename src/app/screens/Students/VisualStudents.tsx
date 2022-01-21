@@ -4,6 +4,7 @@ import {
   InputNota,
   ModalInstruction,
   ModalVisualTrainning,
+  ModalObservation,
   SimpleHeader,
   Space,
   Text,
@@ -56,9 +57,12 @@ const VisualStudents = ({
   const [trainning, setTrainning] = useState<any>();
   const [visible, setVisible] = useState(false);
   const [instruct, setInstruct] = useState(false);
+  const [observation, setObservation] = useState(false);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [title, setTitle] = useState('');
+  const [desc, setDesc] = useState('');
   const [categories, setCategories] = useState<any[]>([]);
   const [selectedExercise, setSelectedExercise] = useState<any>();
   const handleSelect = (index, value) => {
@@ -156,11 +160,22 @@ const VisualStudents = ({
         title="Criar instrução"
         visible={instruct}
         setVisible={setInstruct}
+        exercises={selectedExercise}
+        exerciseSelected={
+          selectedExercise ? selectedExercise.instruction.selected : ''
+        }
         instruct={selectedExercise ? selectedExercise.instruction.value : ''}
-        onFunction={(instruction, desc) => {
+        onFunction={(instruction, desc, exerciseSelected) => {
           selectedExercise.instruction.value = instruction;
           selectedExercise.instruction.desc = desc;
+          selectedExercise.instruction.selected = exerciseSelected;
         }}
+      />
+      <ModalObservation
+        visible={observation}
+        setVisible={setObservation}
+        title={title}
+        observation={desc}
       />
       <ModalVisualTrainning
         visible={visible}
@@ -567,6 +582,7 @@ const VisualStudents = ({
                         <Space marginHorizontal={2} />
                         <TouchableOpacity
                           disabled={
+                            exercise.instruction.value === 'BST' ||
                             exercise.instruction.value === 'OBS' ||
                             mode === 'Editar'
                               ? false
@@ -577,7 +593,13 @@ const VisualStudents = ({
                             alignItems: 'center',
                             justifyContent: 'center',
                             backgroundColor:
-                              exercise.instruction.value === 'OBS'
+                              exercise.instruction.value === 'DRP'
+                                ? Colors.grayLight
+                                : exercise.instruction.value === 'PIR'
+                                ? Colors.greenLight
+                                : exercise.instruction.value === 'BST'
+                                ? Colors.lightRed
+                                : exercise.instruction.value === 'OBS'
                                 ? Colors.backYellowLight
                                 : exercise.instruction.value === 'MIN'
                                 ? Colors.colorBackRgba
@@ -592,6 +614,20 @@ const VisualStudents = ({
                             if (mode === 'Editar') {
                               setSelectedExercise(exercise);
                               setInstruct(true);
+                            } else if (
+                              mode !== 'Editar' &&
+                              exercise.instruction.value === 'BST'
+                            ) {
+                              setTitle('Exercício');
+                              setDesc(exercise.instruction.selected);
+                              setObservation(true);
+                            } else if (
+                              mode !== 'Editar' &&
+                              exercise.instruction.value === 'OBS'
+                            ) {
+                              setTitle('Observação');
+                              setDesc(exercise.instruction.desc);
+                              setObservation(true);
                             }
                           }}>
                           <View
@@ -612,7 +648,13 @@ const VisualStudents = ({
                               size={13}
                               weight={600}
                               color={
-                                exercise.instruction.value === 'OBS'
+                                exercise.instruction.value === 'DRP'
+                                  ? Colors.textGrayMedium
+                                  : exercise.instruction.value === 'PIR'
+                                  ? Colors.green
+                                  : exercise.instruction.value === 'BST'
+                                  ? Colors.redDark
+                                  : exercise.instruction.value === 'OBS'
                                   ? Colors.textYellow
                                   : exercise.instruction.value === 'MIN'
                                   ? Colors.textColorRXC
@@ -631,6 +673,97 @@ const VisualStudents = ({
           </Card>
           <Space marginVertical={20} />
           <Card>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-around',
+              }}>
+              <View
+                style={{
+                  width: 45,
+                  height: 25,
+                  borderRadius: 8,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: Colors.lightRed,
+                }}>
+                <Text
+                  title="BST"
+                  weight={600}
+                  color={Colors.redDark}
+                  size={14}
+                />
+              </View>
+              <View style={{width: '80%'}}>
+                <Text
+                  title="Realização de dois exercícios sem descanso entre eles para o mesmo músculo"
+                  weight={500}
+                  color={Colors.inputColorText}
+                  size={14}
+                />
+              </View>
+            </View>
+            <Space marginVertical={8} />
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-around',
+              }}>
+              <View
+                style={{
+                  width: 45,
+                  height: 25,
+                  borderRadius: 8,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: Colors.greenLight,
+                }}>
+                <Text title="PIR" weight={600} color={Colors.green} size={14} />
+              </View>
+              <View style={{width: '80%'}}>
+                <Text
+                  title="Realizar exercício com o peso mais baixo e ir aumentando a cada série, reduzindo o número de repetições. (Pode ser feito o contrário)"
+                  weight={500}
+                  color={Colors.inputColorText}
+                  size={14}
+                />
+              </View>
+            </View>
+            <Space marginVertical={8} />
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-around',
+              }}>
+              <View
+                style={{
+                  width: 45,
+                  height: 25,
+                  borderRadius: 8,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: Colors.grayLight,
+                }}>
+                <Text
+                  title="DRP"
+                  weight={600}
+                  color={Colors.textGrayMedium}
+                  size={14}
+                />
+              </View>
+              <View style={{width: '80%'}}>
+                <Text
+                  title="Realizar o número de repetições no seu limite de esforço e ir diminuindo o peso"
+                  weight={500}
+                  color={Colors.inputColorText}
+                  size={14}
+                />
+              </View>
+            </View>
+            <Space marginVertical={8} />
             <View
               style={{
                 flexDirection: 'row',
@@ -659,7 +792,6 @@ const VisualStudents = ({
                   weight={500}
                   color={Colors.inputColorText}
                   size={14}
-                  center
                 />
               </View>
             </View>
@@ -692,7 +824,6 @@ const VisualStudents = ({
                   weight={500}
                   color={Colors.inputColorText}
                   size={14}
-                  center
                 />
               </View>
             </View>
@@ -725,7 +856,6 @@ const VisualStudents = ({
                   weight={500}
                   color={Colors.inputColorText}
                   size={14}
-                  center
                 />
               </View>
             </View>

@@ -17,6 +17,8 @@ interface ButtonProps {
   onPress: () => any;
   to: any;
   from: any;
+  inviteSend: any[];
+  setInviteSend: any;
 }
 
 const ButtonInvite = ({
@@ -27,60 +29,57 @@ const ButtonInvite = ({
   sendTitle,
   to,
   from,
+  inviteSend,
+  setInviteSend,
 }: ButtonProps) => {
   const [send, setSend] = useState(false);
+  const [sends, setSends] = useState(
+    inviteSend.length !== 0 ? inviteSend.some(invite => invite === from) : send,
+  );
   const {sendInvite} = useInvites();
-  const {verifyUserAssociate, verifyUserType} = useVerification();
+  const {verifyUserAssociate} = useVerification();
   const handleVerifySendInvite = (user, uid) => {
-    verifyUserType({
+    verifyUserAssociate({
       uid: uid,
-      onComplete: (associate: boolean) => {
-        if (associate) {
-          verifyUserAssociate({
-            uid: uid,
-            onComplete: (error: any, value: boolean) => {
-              console.log(value);
-              if (value) {
-                showMessage({type: 'warning', message: error});
-              } else {
-                sendInvite({
-                  to: user.uid,
-                  from: from,
-                  onComplete: () => {
-                    setSend(true);
-                  },
-                  onFail: err => {},
-                });
-              }
-            },
-            onFail: error => {
-              console.log('Erro:', error);
-            },
-          });
+      onComplete: (error: any, value: boolean) => {
+        if (value) {
+          showMessage({type: 'warning', message: error});
         } else {
           sendInvite({
             to: user.uid,
             from: from,
             onComplete: () => {
+              setInviteSend([...inviteSend, from]);
               setSend(true);
             },
             onFail: err => {},
           });
         }
       },
-      onFail: err => {},
+      onFail: error => {},
     });
   };
-
   return (
     <ButtonInviteStyle
       onPress={() => handleVerifySendInvite(to, from)}
-      disabled={send}
-      background={send}>
+      disabled={
+        inviteSend.length !== 0
+          ? inviteSend.some(invite => invite === from)
+          : send
+      }
+      background={
+        inviteSend.length !== 0
+          ? inviteSend.some(invite => invite === from)
+          : send
+      }>
       <Telegram />
       <Space marginHorizontal={2} />
       <Text
-        title={send ? sendTitle : title}
+        title={
+          inviteSend.length !== 0 && inviteSend.some(invite => invite === from)
+            ? sendTitle
+            : title
+        }
         size={size}
         weight={weight}
         color={color}

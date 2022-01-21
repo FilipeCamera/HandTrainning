@@ -23,6 +23,7 @@ interface CardCommonProps {
   setVisible: any;
   setSend: any;
   setLoading: any;
+  refresh: boolean;
 }
 
 const CardCommon = ({
@@ -30,6 +31,7 @@ const CardCommon = ({
   setVisible,
   setSend,
   setLoading,
+  refresh,
 }: CardCommonProps) => {
   const user = useSelector((state: any) => state.auth.user);
   const {getTrainning, getTrainningId} = useGetTrainning();
@@ -83,7 +85,7 @@ const CardCommon = ({
         setLoadCard(false);
       },
     });
-  }, []);
+  }, [refresh]);
   return (
     <>
       {!!loadCard && (
@@ -219,6 +221,7 @@ const CardCommon = ({
                       size={13}
                       weight={500}
                       color={Colors.textColorBlack}
+                      numberOfLines={1}
                     />
                   </View>
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -234,6 +237,7 @@ const CardCommon = ({
                       size={13}
                       weight={500}
                       color={Colors.textColorBlack}
+                      numberOfLines={1}
                     />
                   </View>
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -249,6 +253,7 @@ const CardCommon = ({
                       size={13}
                       weight={500}
                       color={Colors.textColorBlack}
+                      numberOfLines={1}
                     />
                   </View>
                 </View>

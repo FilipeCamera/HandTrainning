@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Background} from './styles';
 
 import Runner from 'assets/svg/Runner.svg';
-import {Dimensions, View} from 'react-native';
+import {Dimensions, Platform, View} from 'react-native';
 import {
   CardButton,
   CircleButton,
@@ -11,6 +11,7 @@ import {
   Space,
 } from 'components';
 import Colors from '@styles';
+import {requestSubscription, listAvailableSubscriptions} from 'payments';
 
 interface StepProps {
   stateChange: () => any;
@@ -19,8 +20,34 @@ interface StepProps {
   setDados: any;
 }
 
+const itemsSubs = Platform.select({
+  android: [
+    'android.test.purchased',
+    'android.test.canceled',
+    'android.test.refunded',
+  ],
+});
+
+const defaultSubId = 'android.test.purchased';
+
 const Step3 = ({stateChange, backStateChange, dados, setDados}: StepProps) => {
   const {width, height} = Dimensions.get('screen');
+
+  useEffect(() => {
+    listAvailableSubscriptions(itemsSubs);
+  }, []);
+  const handleSubscription = async (plan: string, productId: any) => {
+    if (plan === 'individual') {
+      const res = await requestSubscription(productId);
+      if (res) {
+        setDados({...dados, plan: plan});
+        stateChange();
+      }
+    } else {
+      setDados({...dados, plan: plan});
+      stateChange();
+    }
+  };
   return (
     <Background>
       <Scroll>
@@ -36,19 +63,20 @@ const Step3 = ({stateChange, backStateChange, dados, setDados}: StepProps) => {
           style={{
             position: 'absolute',
             right: 0,
-            top:
-              dados.type === 'gym' ? (height / 100) * 25 : (height / 100) * 10,
+            top: (height / 100) * 10,
           }}
         />
         {dados.type === 'common' && (
           <>
             <CardButton
               title="Básico - Grátis"
-              desc="Nesse plano você precisa está vinculado a uma academia para usar o aplicativo. Além disso, você só pode ter vínculo a uma academia."
-              onPress={() => {
-                setDados({...dados, plan: 'basic', limitGym: 1});
-                stateChange();
-              }}
+              desc="Você tem acesso ao aplicativo, mas contém propaganda."
+              onPress={() => handleSubscription('basic', defaultSubId)}
+            />
+            <CardButton
+              title="Individual - R$ 8,90 / mês"
+              desc="Você tem acesso ao aplicativo sem propaganda."
+              onPress={() => handleSubscription('individual', defaultSubId)}
             />
           </>
         )}
@@ -56,59 +84,20 @@ const Step3 = ({stateChange, backStateChange, dados, setDados}: StepProps) => {
           <>
             <CardButton
               title="Básico - Grátis"
-              desc="Nesse plano você precisa está vinculado a uma academia para usar o aplicativo e criar o treino dos seus alunos. Pode associar até 2 academia no máximo."
+              desc="Nesse plano você tem acesso ao aplicativo, porém vai ter propagande e um limite de criação de 20 treinos"
               onPress={() => {
-                setDados({...dados, plan: 'basic', limitGym: 2});
+                setDados({...dados, plan: 'basic', limitTrainning: 20});
                 stateChange();
               }}
             />
             <CardButton
-              title="Individual - R$ 11,90"
-              desc="Nesse plano você precisa está vinculado a uma academia para usar o aplicativo e criar o treino dos seus alunos. Pode associar a várias academias."
-              onPress={() => {
-                setDados({...dados, plan: 'individual'});
-                stateChange();
-              }}
-            />
-          </>
-        )}
-        {dados.type === 'gym' && (
-          <>
-            <CardButton
-              title="Básico - R$ 19,90"
-              desc="Nesse plano você pode associar até 250 alunos e 3 treinadores."
+              title="Individual - R$ 11,90 / mês"
+              desc="Nesse plano você tem acesso ao aplicativo sem propagandas e um limite infinito para criar treinos."
               onPress={() => {
                 setDados({
                   ...dados,
-                  plan: 'basic',
-                  limitTrainner: 3,
-                  limitCommon: 250,
-                });
-                stateChange();
-              }}
-            />
-            <CardButton
-              title="Intermediário - R$ 29,90"
-              desc="Nesse plano você pode associar até 350 alunos e 5 treinadores."
-              onPress={() => {
-                setDados({
-                  ...dados,
-                  plan: 'intermediary',
-                  limitTrainner: 5,
-                  limitCommon: 350,
-                });
-                stateChange();
-              }}
-            />
-            <CardButton
-              title="Ultimate - R$ 39,90"
-              desc="Nesse plano você pode associar até 500 alunos e 8 treinadores."
-              onPress={() => {
-                setDados({
-                  ...dados,
-                  plan: 'ultimate',
-                  limitTrainner: 8,
-                  limitCommon: 500,
+                  plan: 'individual',
+                  limitTrainning: 'infinito',
                 });
                 stateChange();
               }}

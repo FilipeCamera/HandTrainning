@@ -2,7 +2,6 @@ import Colors from '@styles';
 import {
   ButtonRed,
   DataCommon,
-  DataGym,
   DataTrainner,
   Scroll,
   SimpleHeader,
@@ -12,7 +11,7 @@ import {firestore} from 'firebase';
 import {userPersist} from 'functions';
 import React, {useState, useEffect} from 'react';
 import {showMessage} from 'react-native-flash-message';
-import {cnpjValidate, fieldValidate} from 'validation';
+import {fieldValidate} from 'validation';
 import {ContainerTwo} from './styles';
 
 interface StepProps {
@@ -35,9 +34,6 @@ const Step4 = ({
     name: '',
     slogan: '',
     avatar: '',
-    cnpj: '',
-    city: '',
-    uf: '',
     course: '',
     university: '',
     weight: '',
@@ -57,29 +53,7 @@ const Step4 = ({
   const validate = () => {
     const nameValidated = fieldValidate(dados.name);
     const avatarValidated = fieldValidate(dados.avatar);
-    const cityValidated = fieldValidate(dados.city);
-    const ufValidated = fieldValidate(dados.uf);
-    if (dados.type === 'gym') {
-      const cnpjValidated = cnpjValidate(dados.cnpj);
-      setErrors({
-        ...errors,
-        name: nameValidated.error,
-        cnpj: cnpjValidated.error,
-        avatar: avatarValidated.error,
-        city: cityValidated.error,
-        uf: ufValidated.error,
-      });
-      if (
-        !nameValidated.value &&
-        !cnpjValidated.value &&
-        !avatarValidated.value &&
-        !cityValidated.value &&
-        !ufValidated.value
-      ) {
-        return true;
-      }
-      return false;
-    }
+
     if (dados.type === 'common') {
       const ageValidated = fieldValidate(dados.age);
       const weightValidated = fieldValidate(dados.weight);
@@ -97,8 +71,6 @@ const Step4 = ({
         ...errors,
         name: nameValidated.error,
         avatar: avatarValidated.error,
-        city: cityValidated.error,
-        uf: ufValidated.error,
         age: ageValidated.error,
         weight: weightValidated.error,
         height: heightValidated.error,
@@ -110,8 +82,6 @@ const Step4 = ({
         !nameValidated.value &&
         !ageValidated.value &&
         !avatarValidated.value &&
-        !cityValidated.value &&
-        !ufValidated.value &&
         !weightValidated.value &&
         !heightValidated.value &&
         !lesionValidated.value &&
@@ -129,16 +99,12 @@ const Step4 = ({
         ...errors,
         name: nameValidated.error,
         avatar: avatarValidated.error,
-        city: cityValidated.error,
-        uf: ufValidated.error,
         course: courseValidated.error,
         university: universityValidated.error,
       });
       if (
         !nameValidated.value &&
         !avatarValidated.value &&
-        !cityValidated.value &&
-        !ufValidated.value &&
         !courseValidated.value &&
         !universityValidated.value
       ) {
@@ -156,12 +122,6 @@ const Step4 = ({
         .update(dados)
         .then(res => {
           userPersist(dados);
-          if (dados.type === 'gym') {
-            firestore()
-              .collection('statistic')
-              .doc(user.uid)
-              .set({total: 0, trainner: 0, common: 0, data: []});
-          }
           showMessage({
             type: 'success',
             message: 'Cadastro completo!',
@@ -171,8 +131,7 @@ const Step4 = ({
     }
     return showMessage({
       type: 'danger',
-      message:
-        errors.cnpj !== '' ? 'CNPJ inválido' : 'Preencha todos os campos!',
+      message: 'Preencha todos os campos!',
     });
   };
   return (
@@ -192,9 +151,7 @@ const Step4 = ({
         {dados.type === 'trainner' && (
           <DataTrainner dados={dados} setDados={setDados} errors={errors} />
         )}
-        {dados.type === 'gym' && (
-          <DataGym dados={dados} setDados={setDados} errors={errors} />
-        )}
+
         <Space marginVertical={25} />
         <ButtonRed
           title="Finalizar"

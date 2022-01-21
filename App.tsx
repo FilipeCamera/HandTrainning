@@ -28,6 +28,7 @@ import {getStatusBarHeight} from 'react-native-status-bar-height';
 
 LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
+  'Require cycle',
 ]);
 
 const App = () => {

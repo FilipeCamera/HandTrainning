@@ -71,6 +71,7 @@ const Register = ({navigation}: any) => {
         navigation.navigate('Private');
       })
       .catch((error: any) => {
+        console.log(error);
         switch (error.code) {
           case 'auth/email-already-in-use':
             return showMessage({

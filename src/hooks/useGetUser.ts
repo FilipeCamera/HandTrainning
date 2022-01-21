@@ -56,36 +56,6 @@ const useGetUser = () => {
       .catch(error => onFail(error));
   };
 
-  const searchUserTypeGym = async (
-    value: string,
-    type: string,
-    {onComplete, onFail}: any,
-  ) => {
-    await firestore()
-      .collection('users')
-      .where('name', '>=', value)
-      .where('name', '<=', value + '\uf8ff')
-      .get()
-      .then(querySnapshot => {
-        const users = querySnapshot.docs.map(res => res.data());
-        const usersUpdted = users.filter(
-          user => user.type !== type && value !== '',
-        );
-        onComplete(usersUpdted);
-      })
-      .catch(error => onFail(error));
-  };
-  const getUsers = async ({onComplete, onFail}: any) => {
-    await firestore()
-      .collection('users')
-      .get()
-      .then(res => {
-        const users = res.docs.map(doc => doc.data());
-        onComplete(users);
-      })
-      .catch(error => onFail(error));
-  };
-
   const getUserType = ({type, onComplete, onFail}: any) => {
     firestore()
       .collection('users')
@@ -97,50 +67,12 @@ const useGetUser = () => {
       })
       .catch(err => onFail(err));
   };
-  const getUserTypeAndAssociate = ({
-    type,
-    associate,
-    onComplete,
-    onFail,
-  }: any) => {
+
+  const getUserCommonsTrainner = ({commons, onComplete, onFail}: any) => {
     firestore()
       .collection('users')
-      .where('type', '==', type)
-      .where('userAssociate', '==', associate)
-      .get()
-      .then(querySnapshot => {
-        const list = querySnapshot.docs.map(doc => doc.data());
-        onComplete(list);
-      })
-      .catch(err => onFail(err));
-  };
-  const getUserTypeAndAssociateID = ({
-    type,
-    associate,
-    onComplete,
-    onFail,
-  }: any) => {
-    firestore()
-      .collection('users')
-      .where('type', '==', type)
-      .where('userAssociate', '==', associate)
-      .get()
-      .then(querySnapshot => {
-        const list = querySnapshot.docs.map(doc => doc.id);
-        onComplete(list);
-      })
-      .catch(err => onFail(err));
-  };
-  const getUserTypeAndAssociateTrainner = ({
-    type,
-    associate,
-    onComplete,
-    onFail,
-  }: any) => {
-    firestore()
-      .collection('users')
-      .where('type', '==', type)
-      .where('uid', 'in', associate)
+      .where('type', '==', 'common')
+      .where('uid', 'in', commons)
       .get()
       .then(querySnapshot => {
         const list = querySnapshot.docs.map(doc => doc.data());
@@ -149,11 +81,11 @@ const useGetUser = () => {
       .catch(err => onFail(err));
   };
 
-  const getUserTrainner = ({uid, onComplete, onFail}: any) => {
+  const getUserCommonsTrainnerId = ({uid, onComplete, onFail}: any) => {
     firestore()
       .collection('users')
-      .where('type', '==', 'trainner')
-      .where('userAssociate', 'array-contains', uid)
+      .where('type', '==', 'common')
+      .where('trainnerAssociate', '==', uid)
       .get()
       .then(querySnapshot => {
         const list = querySnapshot.docs.map(doc => doc.data());
@@ -162,14 +94,14 @@ const useGetUser = () => {
       .catch(err => onFail(err));
   };
 
-  const getUserCommonGym = ({uid, onComplete, onFail}: any) => {
+  const getTrainnerAssociate = ({uid, onComplete, onFail}: any) => {
     firestore()
       .collection('users')
       .where('uid', '==', uid)
       .get()
       .then(querySnapshot => {
-        const gym = querySnapshot.docs.map(doc => doc.data());
-        onComplete(gym[0]);
+        const trainner = querySnapshot.docs.map(doc => doc.data());
+        onComplete(trainner[0]);
       })
       .catch(err => onFail(err));
   };
@@ -178,14 +110,10 @@ const useGetUser = () => {
     getUser,
     getUserLogged,
     searchUser,
-    getUsers,
     getUserType,
-    getUserTypeAndAssociate,
-    getUserTypeAndAssociateTrainner,
-    getUserTrainner,
-    getUserTypeAndAssociateID,
-    searchUserTypeGym,
-    getUserCommonGym,
+    getUserCommonsTrainner,
+    getUserCommonsTrainnerId,
+    getTrainnerAssociate,
   };
 };
 

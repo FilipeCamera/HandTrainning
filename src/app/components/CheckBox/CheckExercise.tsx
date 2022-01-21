@@ -19,6 +19,7 @@ const CheckExercise = ({valor, title, onFunction}: CheckBoxProps) => {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-start',
+        marginBottom: 5,
       }}>
       <CheckBox
         value={value}
@@ -28,12 +29,14 @@ const CheckExercise = ({valor, title, onFunction}: CheckBoxProps) => {
         }}
       />
       <Space marginHorizontal={4} />
-      <Text
-        title={title}
-        size={15}
-        weight={500}
-        color={Colors.inputColorText}
-      />
+      <View style={{flex: 1}}>
+        <Text
+          title={title}
+          size={15}
+          weight={500}
+          color={Colors.inputColorText}
+        />
+      </View>
     </View>
   );
 };

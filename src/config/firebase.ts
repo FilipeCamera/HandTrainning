@@ -6,7 +6,7 @@ import messaging from '@react-native-firebase/messaging';
 import message from '@react-native-firebase/in-app-messaging';
 
 const credentials = {
-  apiKey: 'AIzaSyB0DJbbzj0V3jqAxkGLV6vKtAWzBYBvJaA',
+  apiKey: 'AIzaSyCAvSxbCE1W0z6u7ItVgEEVC4U0-rU01SU',
   databaseURL: 'https://handtrainning.firebaseio.com',
   authDomain: 'handtrainning.firebaseapp.com',
   projectId: 'handtrainning',

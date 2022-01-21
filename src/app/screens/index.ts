@@ -1,14 +1,14 @@
-export {default as Initial} from './Initial';
-export {default as Register} from './Register';
-export {default as Login} from './Login';
-export {default as Onboarding} from './Onboarding';
-export {default as Home} from './Home';
-export {default as Dashboard} from './Dashboard';
-export {default as Exercise} from './Exercise';
-export {default as Invites} from './Invites';
-export {default as Profile} from './Profile';
-export {default as Posts} from './Posts';
-export {default as Trainning} from './Trainning';
-export {default as Students} from './Students';
-export {default as Warnings} from './Warnings';
-export {default as Loading} from './Loading';
+export * from './Initial';
+export * from './Register';
+export * from './Login';
+export * from './Onboarding';
+export * from './Home';
+export * from './Dashboard';
+
+export * from './Invites';
+export * from './Profile';
+
+export * from './Trainning';
+export * from './Students';
+export * from './Warnings';
+export * from './Loading';

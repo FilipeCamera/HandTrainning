@@ -1,9 +1,10 @@
 import Colors from '@styles';
-import {ButtonText, Space, Text} from 'components';
+import {Label, Space, Text} from 'components';
 import React from 'react';
 import {View} from 'react-native';
 
 import {Modal, Portal} from 'react-native-paper';
+import {Button, ButtonText} from '../Button';
 
 interface ModalProps {
   visible: boolean;
@@ -13,7 +14,7 @@ interface ModalProps {
   onFunction: () => any;
 }
 
-const ModalUnbindGym = ({
+const ModalRemoveTrainner = ({
   visible,
   setVisible,
   title,
@@ -34,16 +35,17 @@ const ModalUnbindGym = ({
           flexDirection: 'column',
           justifyContent: 'flex-start',
         }}>
-        <Text
-          title={title}
-          size={16}
-          weight={500}
-          color={Colors.textColorBlack}
-          center
-        />
-        <Space marginVertical={4} />
-        <Text title={desc} size={13} color={Colors.textColorBlack} center />
-        <Space marginVertical={12} />
+        <Label title={title} size={15} color={Colors.textColorBlack} center />
+        <Space marginVertical={8} />
+        <View style={{alignItems: 'center', width: '100%'}}>
+          <Text
+            title={desc}
+            size={14}
+            weight={500}
+            color={Colors.inputColorText}
+          />
+        </View>
+        <Space marginVertical={8} />
         <View
           style={{
             flexDirection: 'row',
@@ -52,18 +54,18 @@ const ModalUnbindGym = ({
             width: '100%',
           }}>
           <ButtonText
-            title="Cancelar"
-            size={14}
+            title="cancelar"
+            color={Colors.texyGray}
+            size={13}
             weight={500}
-            color={Colors.textGrayMedium}
             onPress={() => setVisible(false)}
           />
           <ButtonText
+            title="remover"
             color={Colors.red}
-            title="Desvincular"
-            size={14}
+            size={13}
             weight={600}
-            onPress={() => onFunction()}
+            onPress={onFunction}
           />
         </View>
       </Modal>
@@ -71,4 +73,4 @@ const ModalUnbindGym = ({
   );
 };
 
-export default ModalUnbindGym;
+export default ModalRemoveTrainner;

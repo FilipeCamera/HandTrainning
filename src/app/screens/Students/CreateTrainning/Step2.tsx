@@ -121,10 +121,19 @@ const Step2 = ({
         title="Criar instrução"
         visible={visible}
         setVisible={setVisible}
+        exercises={
+          exercise
+            ? exercisesSelected.filter(
+                exercises => exercises.name !== exercise.name,
+              )
+            : []
+        }
+        exerciseSelected={exercise ? exercise.instruction.selected : ''}
         instruct={exercise ? exercise.instruction.value : ''}
-        onFunction={(instruction, desc) => {
+        onFunction={(instruction, desc, selectedExercise) => {
           exercise.instruction.value = instruction;
           exercise.instruction.desc = desc;
+          exercise.instruction.selected = selectedExercise;
         }}
       />
       <SimpleHeader
@@ -409,6 +418,7 @@ const Step2 = ({
                         <View
                           style={{
                             width: 35,
+                            maxHeight: 50,
                             alignItems: 'center',
                             justifyContent: 'center',
                           }}>
@@ -422,6 +432,7 @@ const Step2 = ({
                         <View
                           style={{
                             width: 35,
+                            height: 50,
                             alignItems: 'center',
                             justifyContent: 'center',
                           }}>
@@ -435,6 +446,7 @@ const Step2 = ({
                         <View
                           style={{
                             width: 35,
+                            height: 50,
                             alignItems: 'center',
                             justifyContent: 'center',
                           }}>
@@ -448,6 +460,7 @@ const Step2 = ({
                         <View
                           style={{
                             width: 35,
+                            height: 50,
                             alignItems: 'center',
                             justifyContent: 'center',
                           }}>
@@ -461,10 +474,17 @@ const Step2 = ({
                         <View
                           style={{
                             width: 35,
+                            height: 50,
                             alignItems: 'center',
                             justifyContent: 'center',
                             backgroundColor:
-                              exercise.instruction.value === 'OBS'
+                              exercise.instruction.value === 'DRP'
+                                ? Colors.grayLight
+                                : exercise.instruction.value === 'PIR'
+                                ? Colors.greenLight
+                                : exercise.instruction.value === 'BST'
+                                ? Colors.lightRed
+                                : exercise.instruction.value === 'OBS'
                                 ? Colors.backYellowLight
                                 : exercise.instruction.value === 'MIN'
                                 ? Colors.colorBackRgba
@@ -494,7 +514,13 @@ const Step2 = ({
                               size={13}
                               weight={600}
                               color={
-                                exercise.instruction.value === 'OBS'
+                                exercise.instruction.value === 'DRP'
+                                  ? Colors.textGrayMedium
+                                  : exercise.instruction.value === 'PIR'
+                                  ? Colors.green
+                                  : exercise.instruction.value === 'BST'
+                                  ? Colors.redDark
+                                  : exercise.instruction.value === 'OBS'
                                   ? Colors.textYellow
                                   : exercise.instruction.value === 'MIN'
                                   ? Colors.textColorRXC
@@ -514,6 +540,97 @@ const Step2 = ({
 
           <Space marginVertical={20} />
           <Card>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-around',
+              }}>
+              <View
+                style={{
+                  width: 45,
+                  height: 25,
+                  borderRadius: 8,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: Colors.lightRed,
+                }}>
+                <Text
+                  title="BST"
+                  weight={600}
+                  color={Colors.redDark}
+                  size={14}
+                />
+              </View>
+              <View style={{width: '80%'}}>
+                <Text
+                  title="Realização de dois exercícios sem descanso entre eles para o mesmo músculo"
+                  weight={500}
+                  color={Colors.inputColorText}
+                  size={14}
+                />
+              </View>
+            </View>
+            <Space marginVertical={8} />
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-around',
+              }}>
+              <View
+                style={{
+                  width: 45,
+                  height: 25,
+                  borderRadius: 8,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: Colors.greenLight,
+                }}>
+                <Text title="PIR" weight={600} color={Colors.green} size={14} />
+              </View>
+              <View style={{width: '80%'}}>
+                <Text
+                  title="Realizar exercício com o peso mais baixo e ir aumentando a cada série, reduzindo o número de repetições. (Pode ser feito o contrário)"
+                  weight={500}
+                  color={Colors.inputColorText}
+                  size={14}
+                />
+              </View>
+            </View>
+            <Space marginVertical={8} />
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-around',
+              }}>
+              <View
+                style={{
+                  width: 45,
+                  height: 25,
+                  borderRadius: 8,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: Colors.grayLight,
+                }}>
+                <Text
+                  title="DRP"
+                  weight={600}
+                  color={Colors.textGrayMedium}
+                  size={14}
+                />
+              </View>
+              <View style={{width: '80%'}}>
+                <Text
+                  title="Realizar o número de repetições no seu limite de esforço e ir diminuindo o peso"
+                  weight={500}
+                  color={Colors.inputColorText}
+                  size={14}
+                />
+              </View>
+            </View>
+            <Space marginVertical={8} />
             <View
               style={{
                 flexDirection: 'row',
@@ -542,7 +659,6 @@ const Step2 = ({
                   weight={500}
                   color={Colors.inputColorText}
                   size={14}
-                  center
                 />
               </View>
             </View>
@@ -571,11 +687,10 @@ const Step2 = ({
               </View>
               <View style={{width: '80%'}}>
                 <Text
-                  title="A contagem do descanco é por minutos"
+                  title="A contagem do descanco é feita em minuto"
                   weight={500}
                   color={Colors.inputColorText}
                   size={14}
-                  center
                 />
               </View>
             </View>
@@ -608,7 +723,6 @@ const Step2 = ({
                   weight={500}
                   color={Colors.inputColorText}
                   size={14}
-                  center
                 />
               </View>
             </View>

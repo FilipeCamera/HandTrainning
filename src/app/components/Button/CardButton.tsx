@@ -18,7 +18,7 @@ const CardButton = ({title, desc, onPress}: CardButtonProps) => {
           <Text
             title={title}
             weight={600}
-            size={20}
+            size={18}
             color={Colors.textColorWhite}
           />
         )}

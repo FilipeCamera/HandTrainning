@@ -33,6 +33,7 @@ const plugins = [
         '@styles': './src/styles',
         '@normalize': './src/utils/font',
         keys: './src/utils/keys',
+        payments: './src/services/payment.ts',
       },
     },
   ],

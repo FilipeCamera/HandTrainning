@@ -1,6 +1,7 @@
 import normalize from '@normalize';
 import Colors from '@styles';
 import {firestore} from 'firebase';
+import {useGetUser} from 'hooks';
 import React, {useEffect, useState} from 'react';
 
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -14,26 +15,25 @@ interface DropDownProps {
 
 const DropdownStudents = ({value, onValue, error}: DropDownProps) => {
   const [open, setOpen] = useState(false);
+  const {getUserCommonsTrainnerId} = useGetUser();
   const [items, setItems] = useState<any>([]);
-  const gym = useSelector((state: any) => state.trainner.gym);
+  const user = useSelector((state: any) => state.auth.user);
 
   useEffect(() => {
-    async function loadCategories() {
-      await firestore()
-        .collection('users')
-        .where('type', '==', 'common')
-        .where('userAssociate', '==', gym.gym)
-        .get()
-        .then(res => {
-          const list: any = [];
-          const item = res.docs.map(doc => doc.data());
-          item.map(student => {
-            list.push({value: student.uid, label: student.name});
+    getUserCommonsTrainnerId({
+      uid: user.uid,
+      onComplete: commons => {
+        const list: any = [];
+        if (commons) {
+          commons.map(common => {
+            list.push({value: common.uid, label: common.name});
           });
+
           setItems(list);
-        });
-    }
-    loadCategories();
+        }
+      },
+      onFail: err => {},
+    });
   }, []);
 
   return (

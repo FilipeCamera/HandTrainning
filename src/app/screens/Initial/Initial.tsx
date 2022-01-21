@@ -6,9 +6,9 @@ import {Dimensions} from 'react-native';
 
 import LogoText from 'assets/svg/LogoText.svg';
 import Runner from 'assets/svg/Runner.svg';
-import {Button, Scroll} from 'components';
 import {View} from 'react-native';
 import Colors from '@styles';
+import {Button, Scroll} from 'components';
 
 const Initial = ({navigation}: any) => {
   const {width, height} = Dimensions.get('screen');

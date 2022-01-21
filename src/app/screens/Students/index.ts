@@ -1,3 +1,3 @@
 import Students from './Students';
 
-export default Students;
+export {Students};

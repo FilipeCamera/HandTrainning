@@ -1,3 +1,3 @@
 import BoxUpload from './BoxUpload';
 
-export default BoxUpload;
+export {BoxUpload};

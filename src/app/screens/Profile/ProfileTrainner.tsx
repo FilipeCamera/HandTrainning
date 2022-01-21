@@ -1,83 +1,24 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 
 import {ProfileContainer} from './styles';
 
 import BackRedHeader from 'assets/svg/RedTopBack.svg';
 import PlayIcon from 'assets/svg/PlayIcon.svg';
-import CloseIcon from 'assets/svg/CloseIcon.svg';
-import LocationIcon from 'assets/svg/locationIcon.svg';
 import LineGray from 'assets/svg/LineGran.svg';
-import {Dimensions, StatusBar, TouchableOpacity, View} from 'react-native';
-import {
-  Button,
-  CardMini,
-  ModalUnbindGymTrainner,
-  Space,
-  Text,
-} from 'components';
+import {Dimensions, TouchableOpacity, View} from 'react-native';
+import {Button, Space, Text} from 'components';
 import {Image} from 'react-native';
-import {Logout, removeGymId} from 'functions';
+import {Logout} from 'functions';
 import Colors from '@styles';
-import {useGetTrainning, useGetUser} from 'hooks';
+
 import ProfileEdit from './ProfileEdit';
-import {firestore} from 'firebase';
-import {showMessage} from 'react-native-flash-message';
+import {BannerAd, BannerAdSize, TestIds} from '@react-native-admob/admob';
 
 const {width} = Dimensions.get('window');
 
 const ProfileTrainner = ({user, navigation}: any) => {
-  const {getUserTypeAndAssociateID} = useGetUser();
-  const {getTrainningDeleteUnbindGymCT} = useGetTrainning();
-  const [gym, setGym] = useState<any>([]);
   const [state, setState] = useState<any>('');
-  const [visible, setVisible] = useState(false);
-  const {getUserTypeAndAssociateTrainner} = useGetUser();
-  useEffect(() => {
-    if (!!user.userAssociate && user.userAssociate.length !== 0) {
-      getUserTypeAndAssociateTrainner({
-        type: 'gym',
-        associate: user.userAssociate,
-        onComplete: gyms => {
-          if (gyms) {
-            setGym(gyms);
-          }
-        },
-        onFail: err => {},
-      });
-    }
-  }, []);
 
-  const handleUnbindGym = uid => {
-    const userAssociate = user.userAssociate.filter(uidGym => uidGym !== uid);
-
-    getUserTypeAndAssociateID({
-      type: 'common',
-      associate: uid,
-      onComplete: ids => {
-        if (ids) {
-          getTrainningDeleteUnbindGymCT({
-            uid: user.uid,
-            listUid: ids,
-            onFail: err => {},
-          });
-        }
-      },
-      onFail: err => {},
-    });
-    firestore()
-      .collection('users')
-      .doc(user.uid)
-      .update({userAssociate: userAssociate})
-      .then(res => {
-        setVisible(false);
-        removeGymId();
-        showMessage({
-          type: 'success',
-          message: 'Você não faz mais parte dessa academia',
-        });
-      })
-      .catch(err => {});
-  };
   if (state === 'edit') {
     return <ProfileEdit user={user} setState={setState} />;
   }
@@ -91,14 +32,6 @@ const ProfileTrainner = ({user, navigation}: any) => {
         paddingBottom: 16,
       }}
       showsVerticalScrollIndicator={false}>
-      <ModalUnbindGymTrainner
-        title="Deseja realmente desvincular?"
-        desc="Caso se desvincule da academia escolhida, você irá perder seus alunos"
-        visible={visible}
-        setVisible={setVisible}
-        gyms={gym}
-        onFunction={uid => handleUnbindGym(uid)}
-      />
       <View style={{width: '100%', height: width > 360 ? 228 : 200}}>
         <BackRedHeader
           width="100%"
@@ -130,16 +63,6 @@ const ProfileTrainner = ({user, navigation}: any) => {
           weight={600}
           color={Colors.textColorBlack}
         />
-        <View style={{flexDirection: 'row', alignItems: 'flex-start'}}>
-          <LocationIcon />
-          <Space marginHorizontal={1} />
-          <Text
-            title={`${user.city}, ${user.uf}`}
-            size={14}
-            weight={500}
-            color={Colors.grayMediumLight}
-          />
-        </View>
         <Space marginVertical={5} />
         <View
           style={{
@@ -159,19 +82,7 @@ const ProfileTrainner = ({user, navigation}: any) => {
         </View>
       </View>
       <Space marginVertical={15} />
-      {!!gym && gym.length !== 0 && (
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-around',
-            width: '100%',
-          }}>
-          {gym.map(item => (
-            <CardMini key={item.uid} avatar={item.avatar} name={item.name} />
-          ))}
-        </View>
-      )}
+
       <Space marginVertical={30} />
       <View style={{width: '90%'}}>
         <TouchableOpacity
@@ -193,27 +104,7 @@ const ProfileTrainner = ({user, navigation}: any) => {
         <LineGray width="100%" />
       </View>
       <Space marginVertical={8} />
-      {!!gym && gym.length !== 0 && (
-        <View style={{width: '90%'}}>
-          <TouchableOpacity
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}
-            onPress={() => setVisible(true)}>
-            <Text
-              title="Desvincular da academia"
-              size={16}
-              weight={600}
-              color={Colors.textColorBlack}
-              style={{marginLeft: 5}}
-            />
-            <CloseIcon />
-          </TouchableOpacity>
-          <LineGray width="100%" />
-        </View>
-      )}
+
       <Space marginVertical={60} />
       <View style={{width: '90%', alignItems: 'center'}}>
         <Button
@@ -232,6 +123,12 @@ const ProfileTrainner = ({user, navigation}: any) => {
           color={Colors.textColorWhite}
           onPress={() => Logout().then(_ => navigation.navigate('Public'))}
         />
+        {!!user && user.plan === 'basic' && (
+          <>
+            <Space marginVertical={8} />
+            <BannerAd size={BannerAdSize.FULL_BANNER} unitId={TestIds.BANNER} />
+          </>
+        )}
       </View>
     </ProfileContainer>
   );

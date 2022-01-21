@@ -27,7 +27,6 @@ const Avatar = ({edit, dados, setDados, error}: AvatarProps) => {
       .catch((error: any) => {});
   };
   useEffect(() => {
-    console.log(dados.avatar);
     if (
       !!dados.avatar &&
       dados.avatar !== '' &&
@@ -53,9 +52,7 @@ const Avatar = ({edit, dados, setDados, error}: AvatarProps) => {
         onComplete: (url: string) => {
           setDados({...dados, avatar: url});
         },
-        onFail: error => {
-          console.log(error);
-        },
+        onFail: error => {},
       });
     }
   }, [image]);

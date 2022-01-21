@@ -18,55 +18,19 @@ interface InviteProfileProps {
   onBack: any;
   auth: any;
   handleAcceptOrRecused: any;
+  setInviteSend: any;
+  inviteSend: any[];
 }
 const InviteProfile = ({
   profile,
   onBack,
   auth,
   handleAcceptOrRecused,
+  setInviteSend,
+  inviteSend,
 }: InviteProfileProps) => {
-  const {getUserTrainner, getUserCommonGym} = useGetUser();
   const [data, setData] = useState<any[]>();
 
-  useEffect(() => {
-    if (profile.type === 'gym') {
-      getUserTrainner({
-        uid: profile.uid,
-        onComplete: users => {
-          if (users) {
-            setData(users);
-          }
-        },
-        onFail: err => {},
-      });
-    }
-    if (
-      profile.type === 'trainner' &&
-      !!profile.userAssociate &&
-      profile.userAssociate.length !== 0
-    ) {
-      firestore()
-        .collection('users')
-        .where('uid', 'in', profile.userAssociate)
-        .get()
-        .then(querySnapshot => {
-          const dados = querySnapshot.docs.map(doc => doc.data());
-          setData(dados);
-        })
-        .catch(error => {});
-    }
-    if (profile.type === 'common') {
-      getUserCommonGym({
-        uid: profile.userAssociate ? profile.userAssociate : '',
-        onComplete: gym => {
-          if (gym) {
-            setData([gym]);
-          }
-        },
-        onFail: err => {},
-      });
-    }
-  }, []);
   const backChange = () => {
     onBack('');
     return true;
@@ -123,27 +87,7 @@ const InviteProfile = ({
           weight={600}
           color={Colors.textColorBlack}
         />
-        {!!profile.cnpj && (
-          <>
-            <Text
-              title={profile.cnpj}
-              size={14}
-              weight={600}
-              color={Colors.grayMediumLight}
-            />
-            <Space marginVertical={2} />
-          </>
-        )}
-        <View style={{flexDirection: 'row', alignItems: 'flex-start'}}>
-          <LocationIcon />
-          <Space marginHorizontal={1} />
-          <Text
-            title={`${profile.city}, ${profile.uf}`}
-            size={15}
-            weight={500}
-            color={Colors.grayMediumLight}
-          />
-        </View>
+
         <Space marginVertical={5} />
         <View
           style={{
@@ -155,13 +99,7 @@ const InviteProfile = ({
             backgroundColor: Colors.red,
           }}>
           <Text
-            title={
-              profile.type === 'common'
-                ? 'aluno'
-                : profile.type === 'trainner'
-                ? 'treinador'
-                : 'academia'
-            }
+            title={profile.type === 'common' ? 'aluno' : 'treinador'}
             size={11}
             weight={600}
             color={Colors.textColorWhite}
@@ -369,6 +307,8 @@ const InviteProfile = ({
             color={Colors.textColorWhite}
             to={auth}
             from={profile.uid}
+            setSendInvite={setInviteSend}
+            sendInviteId={inviteSend}
           />
         </View>
       )}

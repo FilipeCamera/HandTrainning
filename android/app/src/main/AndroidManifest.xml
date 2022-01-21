@@ -2,20 +2,22 @@
 
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+  <uses-permission android:name="com.android.vending.BILLING" />
 
   <application android:name=".MainApplication" android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_rounded" android:allowBackup="false" android:theme="@style/AppTheme">
-    <activity android:name=".SplashActivity" android:label="@string/app_name" android:theme="@style/SplashTheme">
+    <activity android:name=".SplashActivity" android:exported="true" android:label="@string/app_name" android:theme="@style/SplashTheme">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
 
-    <activity android:screenOrientation="portrait" android:name=".MainActivity" android:label="@string/app_name" android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode" android:launchMode="singleTask" android:windowSoftInputMode="adjustResize">
+    <activity android:screenOrientation="portrait" android:name=".MainActivity" android:exported="true" android:label="@string/app_name" android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode" android:launchMode="singleTask" android:windowSoftInputMode="adjustResize">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.DEFAULT" />
       </intent-filter>
     </activity>
+    <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-4288571417280592~3777899261" />
   </application>
 </manifest>

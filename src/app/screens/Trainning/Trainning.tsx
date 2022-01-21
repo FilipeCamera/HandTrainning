@@ -28,12 +28,7 @@ import {
   View,
 } from 'react-native';
 import Colors from '@styles';
-import {
-  useGetCategories,
-  useGetScore,
-  useGetTrainning,
-  useGetUser,
-} from 'hooks';
+import {useGetScore, useGetTrainning, useGetUser} from 'hooks';
 import {useSelector} from 'react-redux';
 
 import Clock from 'assets/svg/clockGray.svg';
@@ -41,12 +36,12 @@ import Clock from 'assets/svg/clockGray.svg';
 import moment from 'moment';
 import {firestore} from 'firebase';
 import {showMessage} from 'react-native-flash-message';
+import {BannerAd, BannerAdSize, TestIds} from '@react-native-admob/admob';
 
 const Trainning = ({navigation}: any) => {
   const user = useSelector((state: any) => state.auth.user);
   const {getTrainning, getTrainningId} = useGetTrainning();
-  const {getUser, getUserTrainner} = useGetUser();
-  const getCategories = useGetCategories();
+  const {getUser} = useGetUser();
   const {getScore} = useGetScore();
   const [visible, setVisible] = useState(false);
   const [scoreVisible, setScoreVisible] = useState(false);
@@ -55,7 +50,6 @@ const Trainning = ({navigation}: any) => {
   const [loading, setLoading] = useState(true);
   const [trainner, setTrainner] = useState<any>();
   const [selected, setSelected] = useState(0);
-  const [trainners, setTrainners] = useState<any[]>([]);
   const [selectedExercise, setSelectedExercise] = useState<any>();
   const [selectedCategory, setSelectedCategory] = useState('');
   const [score, setScore] = useState<any>();
@@ -64,6 +58,7 @@ const Trainning = ({navigation}: any) => {
   const [send, setSend] = useState(false);
   const [scoreValue, setScoreValue] = useState('');
   const [visibleObs, setVisibleObs] = useState(false);
+  const [title, setTitle] = useState('Observação');
   const [observation, setObservation] = useState('');
 
   const handleSelect = (index, value) => {
@@ -72,6 +67,13 @@ const Trainning = ({navigation}: any) => {
   };
 
   const handleScore = () => {
+    if (scoreValue === '') {
+      return showMessage({
+        type: 'warning',
+        message: 'Aviso',
+        description: 'Você não colocou uma nota válida.',
+      });
+    }
     const data = {
       trainnerId: trainner.uid,
       score: scoreValue,
@@ -113,25 +115,42 @@ const Trainning = ({navigation}: any) => {
     }
   };
   useEffect(() => {
-    if (user.userAssociate !== undefined) {
-      getUserTrainner({
-        uid: user.userAssociate,
-        onComplete: users => {
-          if (users) {
-            setTrainners(users);
-          }
-        },
-        onFail: err => {},
-      });
-      getTrainningId({
-        uid: user.uid,
-        onComplete: id => {
-          if (id) {
-            setTrainningId(id);
-          }
-        },
-        onFail: err => {},
-      });
+    getTrainning({
+      uid: user.uid,
+      onComplete: (trainningUser: any) => {
+        const list: any = [];
+        if (trainningUser) {
+          setTrainning(trainningUser);
+          setCategories(trainningUser.categories);
+          setSelectedCategory(trainningUser.categories[0].value);
+          getUser({
+            uid: trainningUser.trainnerId,
+            onComplete: (users: any) => {
+              if (users) {
+                setTrainner(users);
+                setLoading(false);
+              }
+            },
+            onFail: err => {},
+          });
+          getTrainningId({
+            uid: user.uid,
+            onComplete: id => {
+              if (id) {
+                setTrainningId(id);
+              }
+            },
+            onFail: err => {},
+          });
+        } else {
+          setLoading(false);
+        }
+      },
+      onFail: err => {},
+    });
+  }, []);
+  useEffect(() => {
+    if (user.trainnerAssociate) {
       getScore({
         uid: trainningId,
         onComplete: scores => {
@@ -147,13 +166,14 @@ const Trainning = ({navigation}: any) => {
     };
   }, []);
 
-  const handleRequestTrainner = () => {
+  const handleRequestTrainner = (description: any) => {
     setLoading(!loading);
     const data = {
       commonId: user.uid,
-      trainnerId: trainner,
+      trainnerId: trainner.uid,
       title: 'Novo treino',
       desc: `${user.name} solicitou um novo treino`,
+      preference: description,
       createdAt: firestore.FieldValue.serverTimestamp(),
     };
 
@@ -162,52 +182,12 @@ const Trainning = ({navigation}: any) => {
       .doc()
       .set(data)
       .then(res => {
-        setLoading(!loading);
+        setLoading(false);
         setSend(!send);
       })
-      .catch(err => console.log(err));
+      .catch(err => {});
   };
 
-  useEffect(() => {
-    getTrainning({
-      uid: user.uid,
-      onComplete: trainningUser => {
-        const list: any = [];
-        if (trainningUser) {
-          setTrainning(trainningUser);
-          getCategories({
-            onComplete: category => {
-              if (category) {
-                category.map(cat => {
-                  trainningUser.trainning.map(tr => {
-                    if (tr.category === cat.value) {
-                      list.push(cat);
-                    }
-                  });
-                });
-                setCategories(list);
-                setSelectedCategory(list[0].value);
-                setLoading(false);
-              }
-            },
-            onFail: err => {},
-          });
-          getUser({
-            uid: trainningUser.trainnerId,
-            onComplete: users => {
-              if (users) {
-                setTrainner(users);
-              }
-            },
-            onFail: err => {},
-          });
-        } else {
-          setLoading(false);
-        }
-      },
-      onFail: err => {},
-    });
-  }, []);
   return (
     <TrainningStyle
       contentContainerStyle={{
@@ -221,17 +201,16 @@ const Trainning = ({navigation}: any) => {
       <Modal
         visible={visibleSelect}
         setVisible={setVisibleSelect}
-        trainners={trainners}
+        trainner={trainner}
         loading={loading}
         send={send}
-        setTrainner={setTrainner}
         title="Escolha um novo treinador"
-        onFunction={() => handleRequestTrainner()}
+        onFunction={(e: string | any) => handleRequestTrainner(e)}
       />
       <ModalObservation
         visible={visibleObs}
         setVisible={setVisibleObs}
-        title="Observação"
+        title={title}
         observation={observation}
       />
       <ModalScore
@@ -407,6 +386,8 @@ const Trainning = ({navigation}: any) => {
                             size={14}
                             weight={500}
                             color={Colors.inputColorText}
+                            numberOfLines={2}
+                            ellipsizeMode="tail"
                           />
                         </TouchableOpacity>
                         <View
@@ -475,18 +456,34 @@ const Trainning = ({navigation}: any) => {
                         <Space marginHorizontal={2} />
                         <TouchableOpacity
                           onPress={() => {
-                            setObservation(exercise.instruction.desc);
-                            setVisibleObs(true);
+                            if (exercise.instruction.value === 'BST') {
+                              setTitle('Exercício');
+                              setObservation(exercise.instruction.selected);
+                              setVisibleObs(true);
+                            } else {
+                              setTitle('Observação');
+                              setObservation(exercise.instruction.desc);
+                              setVisibleObs(true);
+                            }
                           }}
                           disabled={
-                            exercise.instruction.value === 'OBS' ? false : true
+                            exercise.instruction.value === 'BST' ||
+                            exercise.instruction.value === 'OBS'
+                              ? false
+                              : true
                           }
                           style={{
                             width: 35,
                             alignItems: 'center',
                             justifyContent: 'center',
                             backgroundColor:
-                              exercise.instruction.value === 'OBS'
+                              exercise.instruction.value === 'DRP'
+                                ? Colors.grayLight
+                                : exercise.instruction.value === 'PIR'
+                                ? Colors.greenLight
+                                : exercise.instruction.value === 'BST'
+                                ? Colors.lightRed
+                                : exercise.instruction.value === 'OBS'
                                 ? Colors.backYellowLight
                                 : exercise.instruction.value === 'MIN'
                                 ? Colors.colorBackRgba
@@ -511,7 +508,13 @@ const Trainning = ({navigation}: any) => {
                               size={13}
                               weight={600}
                               color={
-                                exercise.instruction.value === 'OBS'
+                                exercise.instruction.value === 'DRP'
+                                  ? Colors.textGrayMedium
+                                  : exercise.instruction.value === 'PIR'
+                                  ? Colors.green
+                                  : exercise.instruction.value === 'BST'
+                                  ? Colors.redDark
+                                  : exercise.instruction.value === 'OBS'
                                   ? Colors.textYellow
                                   : exercise.instruction.value === 'MIN'
                                   ? Colors.textColorRXC
@@ -530,6 +533,98 @@ const Trainning = ({navigation}: any) => {
           </Card>
           <Space marginVertical={20} />
           <Card>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-around',
+              }}>
+              <View
+                style={{
+                  width: 45,
+                  height: 25,
+                  borderRadius: 8,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: Colors.lightRed,
+                }}>
+                <Text
+                  title="BST"
+                  weight={600}
+                  color={Colors.redDark}
+                  size={14}
+                />
+              </View>
+              <View style={{width: '80%'}}>
+                <Text
+                  title="Realização de dois exercícios sem descanso entre eles para o mesmo músculo"
+                  weight={500}
+                  color={Colors.inputColorText}
+                  size={14}
+                />
+              </View>
+            </View>
+            <Space marginVertical={8} />
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-around',
+              }}>
+              <View
+                style={{
+                  width: 45,
+                  height: 25,
+                  borderRadius: 8,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: Colors.greenLight,
+                }}>
+                <Text title="PIR" weight={600} color={Colors.green} size={14} />
+              </View>
+              <View style={{width: '80%'}}>
+                <Text
+                  title="Realizar exercício com o peso mais baixo e ir aumentando a cada série, reduzindo o número de repetições. (Pode ser feito o contrário)"
+                  weight={500}
+                  color={Colors.inputColorText}
+                  size={14}
+                />
+              </View>
+            </View>
+            <Space marginVertical={8} />
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-around',
+              }}>
+              <View
+                style={{
+                  width: 45,
+                  height: 25,
+                  borderRadius: 8,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: Colors.grayLight,
+                }}>
+                <Text
+                  title="DRP"
+                  weight={600}
+                  color={Colors.textGrayMedium}
+                  size={14}
+                />
+              </View>
+              <View style={{width: '80%'}}>
+                <Text
+                  title="Realizar o número de repetições no seu limite de esforço e ir diminuindo o peso"
+                  weight={500}
+                  color={Colors.inputColorText}
+                  size={14}
+                />
+              </View>
+            </View>
+            <Space marginVertical={8} />
+
             <View
               style={{
                 flexDirection: 'row',
@@ -558,7 +653,6 @@ const Trainning = ({navigation}: any) => {
                   weight={500}
                   color={Colors.inputColorText}
                   size={14}
-                  center
                 />
               </View>
             </View>
@@ -591,7 +685,6 @@ const Trainning = ({navigation}: any) => {
                   weight={500}
                   color={Colors.inputColorText}
                   size={14}
-                  center
                 />
               </View>
             </View>
@@ -624,7 +717,6 @@ const Trainning = ({navigation}: any) => {
                   weight={500}
                   color={Colors.inputColorText}
                   size={14}
-                  center
                 />
               </View>
             </View>
@@ -644,6 +736,11 @@ const Trainning = ({navigation}: any) => {
             center
           />
         </View>
+      )}
+      {!!user && user.plan === 'basic' && (
+        <>
+          <BannerAd size={BannerAdSize.FULL_BANNER} unitId={TestIds.BANNER} />
+        </>
       )}
     </TrainningStyle>
   );

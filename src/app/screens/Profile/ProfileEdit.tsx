@@ -2,7 +2,6 @@ import Colors from '@styles';
 import {
   ButtonRed,
   DataCommon,
-  DataGym,
   DataTrainner,
   Scroll,
   SimpleHeader,
@@ -14,7 +13,7 @@ import {useGetUser} from 'hooks';
 import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, View} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
-import {cnpjValidate, fieldValidate} from 'validation';
+import {fieldValidate} from 'validation';
 
 interface StepProps {
   user: any;
@@ -29,9 +28,6 @@ const ProfileEdit = ({setState, user}: StepProps) => {
     name: '',
     slogan: '',
     avatar: '',
-    cnpj: '',
-    city: '',
-    uf: '',
     course: '',
     university: '',
     weight: '',
@@ -45,29 +41,7 @@ const ProfileEdit = ({setState, user}: StepProps) => {
   const validate = () => {
     const nameValidated = fieldValidate(dados.name);
     const avatarValidated = fieldValidate(dados.avatar);
-    const cityValidated = fieldValidate(dados.city);
-    const ufValidated = fieldValidate(dados.uf);
-    if (dados.type === 'gym') {
-      const cnpjValidated = cnpjValidate(dados.cnpj);
-      setErrors({
-        ...errors,
-        name: nameValidated.error,
-        cnpj: cnpjValidated.error,
-        avatar: avatarValidated.error,
-        city: cityValidated.error,
-        uf: ufValidated.error,
-      });
-      if (
-        !nameValidated.value &&
-        !cnpjValidated.value &&
-        !avatarValidated.value &&
-        !cityValidated.value &&
-        !ufValidated.value
-      ) {
-        return true;
-      }
-      return false;
-    }
+
     if (dados.type === 'common') {
       const ageValidated = fieldValidate(dados.age);
       const weightValidated = fieldValidate(dados.weight);
@@ -85,8 +59,6 @@ const ProfileEdit = ({setState, user}: StepProps) => {
         ...errors,
         name: nameValidated.error,
         avatar: avatarValidated.error,
-        city: cityValidated.error,
-        uf: ufValidated.error,
         age: ageValidated.error,
         weight: weightValidated.error,
         height: heightValidated.error,
@@ -98,8 +70,6 @@ const ProfileEdit = ({setState, user}: StepProps) => {
         !nameValidated.value &&
         !ageValidated.value &&
         !avatarValidated.value &&
-        !cityValidated.value &&
-        !ufValidated.value &&
         !weightValidated.value &&
         !heightValidated.value &&
         !lesionValidated.value &&
@@ -117,16 +87,13 @@ const ProfileEdit = ({setState, user}: StepProps) => {
         ...errors,
         name: nameValidated.error,
         avatar: avatarValidated.error,
-        city: cityValidated.error,
-        uf: ufValidated.error,
+
         course: courseValidated.error,
         university: universityValidated.error,
       });
       if (
         !nameValidated.value &&
         !avatarValidated.value &&
-        !cityValidated.value &&
-        !ufValidated.value &&
         !courseValidated.value &&
         !universityValidated.value
       ) {
@@ -153,8 +120,7 @@ const ProfileEdit = ({setState, user}: StepProps) => {
     }
     return showMessage({
       type: 'danger',
-      message:
-        errors.cnpj !== '' ? 'CNPJ inválido' : 'Preencha todos os campos!',
+      message: 'Preencha todos os campos!',
     });
   };
 

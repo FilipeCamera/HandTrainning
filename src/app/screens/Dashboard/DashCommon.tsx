@@ -27,7 +27,7 @@ const DashCommon = () => {
           height: 60,
         },
         tabBarLabelStyle: {
-          fontSize: 12,
+          fontSize: 9,
           fontFamily: 'Poppins-Medium',
         },
         tabBarActiveTintColor: Colors.textColorBlack,

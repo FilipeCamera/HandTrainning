@@ -1,11 +1,11 @@
 import {firestore} from 'firebase';
 
 const useInvites = () => {
-  const acceptedInvite = ({gymId, uid, onComplete, onFail}: any) => {
+  const acceptedInvite = ({userId, uid, onComplete, onFail}: any) => {
     firestore()
       .collection('invites')
       .where('from', '==', uid)
-      .where('to', '==', gymId)
+      .where('to', '==', userId)
       .get()
       .then(querySnapshot => {
         querySnapshot.docs.forEach(doc => {
@@ -25,7 +25,7 @@ const useInvites = () => {
       .catch(err => onFail(err));
   };
 
-  const getInvites = async (uid: any, {onComplete, onFail}: any) => {
+  const getInvites = async ({uid, onComplete, onFail}: any) => {
     await firestore()
       .collection('invites')
       .where('from', '==', uid)
@@ -42,11 +42,11 @@ const useInvites = () => {
       })
       .catch((error: any) => onFail(error));
   };
-  const recusedInvite = ({gymId, uid, onComplete, onFail}: any) => {
+  const recusedInvite = ({userId, uid, onComplete, onFail}: any) => {
     firestore()
       .collection('invites')
       .where('from', '==', uid)
-      .where('to', '==', gymId)
+      .where('to', '==', userId)
       .get()
       .then(querySnapshot => {
         querySnapshot.docs.forEach(doc => {

@@ -9,11 +9,11 @@ import ButtonGranInvite from './ButtonGranInvite';
 
 export {
   Button,
+  ButtonGranInvite,
+  ButtonInvite,
+  ButtonMiniRed,
   ButtonRed,
   ButtonText,
   CardButton,
   CircleButton,
-  ButtonInvite,
-  ButtonMiniRed,
-  ButtonGranInvite,
 };

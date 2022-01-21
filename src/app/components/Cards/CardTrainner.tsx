@@ -12,10 +12,9 @@ import {useGetRequests, useGetScore, useGetTrainning, useGetUser} from 'hooks';
 
 const CardTrainner = ({navigation, refresh}: any) => {
   const user = useSelector((state: any) => state.auth.user);
-  const gym = useSelector((state: any) => state.trainner.gym);
   const {getTrainningTrainner} = useGetTrainning();
-  const {getRequestsByGym} = useGetRequests();
-  const {getUserType} = useGetUser();
+  const {getUserCommonsTrainnerId} = useGetUser();
+  const {getRequests} = useGetRequests();
   const {getTrainnerScore} = useGetScore();
   const [trainnings, setTrainnings] = useState(0);
   const [requests, setRequests] = useState(0);
@@ -24,74 +23,56 @@ const CardTrainner = ({navigation, refresh}: any) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!!gym && gym.gym !== undefined) {
-      getTrainningTrainner({
-        uid: user.uid,
-        gym: gym.gym,
-        onComplete: trainning => {
-          if (trainning) {
-            setTrainnings(trainning.length);
-          }
-        },
-        onFail: err => {},
-      });
-      getRequestsByGym({
-        uid: user.uid,
-        gym: gym.gym,
-        onComplete: request => {
-          if (request) {
-            console.log(request);
-            setRequests(request.length);
-          }
-        },
-        onFail: err => {},
-      });
-      getTrainnerScore({
-        uid: user.uid,
-        onComplete: scores => {
-          if (scores) {
-            const result = scores
-              .map(scr => scr.score)
-              .reduce((total, scr) => (total += scr));
-            const total = result / scores.length;
-            setScore(total);
-          }
-        },
-        onFail: err => {},
-      });
-    }
-  }, [refresh, gym]);
-
-  useEffect(() => {
-    const resultList: any = [];
-    getUserType({
-      type: 'common',
-      onComplete: common => {
+    getTrainnerScore({
+      uid: user.uid,
+      onComplete: (scores: any) => {
+        if (scores) {
+          const result = scores
+            .map((scr: any) => parseFloat(scr.score))
+            .reduce((total: any, scr: any) => (total += scr));
+          const total = result / scores.length;
+          console.log(total);
+          setScore(total);
+        }
+      },
+      onFail: err => {},
+    });
+    getRequests({
+      uid: user.uid,
+      onComplete: request => {
+        if (request) {
+          setRequests(request.length);
+        }
+      },
+      onFail: err => {},
+    });
+    getUserCommonsTrainnerId({
+      uid: user.uid,
+      onComplete: (common: any) => {
         if (common) {
-          getTrainningTrainner({
-            uid: user.uid,
-            gym: gym.gym,
-            onComplete: trainning => {
-              if (trainning) {
-                common.map(c => {
-                  trainning.map(t => {
-                    if (t.commonId === c.uid) {
-                      resultList.push(c);
-                    }
-                  });
-                });
-                setCommons(resultList);
-                setLoading(false);
-              } else {
-                setLoading(false);
-              }
-            },
-            onFail: err => {},
-          });
+          setCommons(common);
+          setTrainnings(common.length);
+          setLoading(false);
+        }
+      },
+      onFail: err => {},
+    });
+    setLoading(false);
+  }, [refresh]);
+
+  /*useEffect(() => {
+    getUserCommonsTrainnerId({
+      uid: user.uid,
+      onComplete: (common: any) => {
+        if (common) {
+          setCommons(common);
+          setTrainnings(common.length);
+          setLoading(false);
         }
       },
     });
-  }, [refresh, gym]);
+    setLoading(false);
+  }, [refresh]);*/
   return (
     <CardTrainnerStyle style={styles.shadow}>
       <RectangleRed width="100%" style={{position: 'absolute', top: -14}} />

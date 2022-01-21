@@ -1,15 +1,15 @@
-import {CardTrainner, Carousel, Header} from 'components';
+import {CardTrainner, Header, Space} from 'components';
 
-import {RefreshControl, View} from 'react-native';
+import {RefreshControl} from 'react-native';
 import React, {useCallback, useState} from 'react';
 
-import {HomeStyle, NotifyStyle} from './styles';
+import {HomeStyle} from './styles';
 import Colors from '@styles';
+import {BannerAd, BannerAdSize, TestIds} from '@react-native-admob/admob';
 import {useSelector} from 'react-redux';
-import Notify from 'assets/svg/Notify.svg';
 
 const HomeTrainner = ({navigation}: any) => {
-  const gym = useSelector((state: any) => state.trainner.gym);
+  const user = useSelector((state: any) => state.auth.user);
   const [refresh, setRefresh] = useState(false);
 
   const wait = timeout => {
@@ -39,16 +39,13 @@ const HomeTrainner = ({navigation}: any) => {
       }
       showsVerticalScrollIndicator={false}>
       <Header navigation={navigation} refresh={refresh} />
-      {!!gym && !!gym.gym && (
+
+      <CardTrainner navigation={navigation} refresh={refresh} />
+      {!!user && user.plan === 'basic' && (
         <>
-          <Carousel refresh={refresh} />
-          <CardTrainner navigation={navigation} refresh={refresh} />
+          <BannerAd size={BannerAdSize.FULL_BANNER} unitId={TestIds.BANNER} />
+          <Space marginVertical={4} />
         </>
-      )}
-      {!gym && (
-        <NotifyStyle>
-          <Notify />
-        </NotifyStyle>
       )}
     </HomeStyle>
   );

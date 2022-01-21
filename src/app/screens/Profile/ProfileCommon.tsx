@@ -1,108 +1,101 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 
 import {ProfileContainer} from './styles';
 
 import BackRedHeader from 'assets/svg/RedTopBack.svg';
 import PlayIcon from 'assets/svg/PlayIcon.svg';
-import CloseIcon from 'assets/svg/CloseIcon.svg';
-import LocationIcon from 'assets/svg/locationIcon.svg';
 import LineGray from 'assets/svg/LineGran.svg';
-import {Dimensions, TouchableOpacity, View} from 'react-native';
-import {Button, CardMini, ModalUnbindGym, Space, Text} from 'components';
+import {Dimensions, RefreshControl, TouchableOpacity, View} from 'react-native';
+import {Button, Card, ModalRemoveTrainner, Space, Text} from 'components';
 import {Image} from 'react-native';
 import {Logout} from 'functions';
 import Colors from '@styles';
 import {useGetTrainning, useGetUser} from 'hooks';
+
+import ProfileEdit from './ProfileEdit';
+import AcademicIcon from 'assets/svg/academicIcon.svg';
+import TrashIcon from 'assets/svg/trashIcon.svg';
+import SkillIcon from 'assets/svg/skillLevelIcon.svg';
+import SpecsIcon from 'assets/svg/specsIcon.svg';
 import {firestore} from 'firebase';
 import {showMessage} from 'react-native-flash-message';
-import ProfileEdit from './ProfileEdit';
+import {BannerAd, BannerAdSize, TestIds} from '@react-native-admob/admob';
 
 const {width} = Dimensions.get('window');
 
 const ProfileCommon = ({user, navigation}: any) => {
-  const [gym, setGym] = useState<any>();
   const [trainner, setTrainner] = useState<any>();
   const [state, setState] = useState('');
   const [visible, setVisible] = useState(false);
-  const {getUser} = useGetUser();
-  const {getTrainning, getTrainningId} = useGetTrainning();
+  const {getTrainnerAssociate} = useGetUser();
+  const {getTrainningId} = useGetTrainning();
+  const [refresh, setRefresh] = useState(false);
 
-  const handleUnbindGym = () => {
+  const wait = timeout => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+  };
+
+  const handleRemoveTrainner = () => {
     firestore()
       .collection('users')
       .doc(user.uid)
-      .update({
-        userAssociate: '',
-        updatedAt: firestore.FieldValue.serverTimestamp(),
+      .update({trainnerAssociate: null})
+      .then(() => {
+        firestore()
+          .collection('users')
+          .doc(trainner.uid)
+          .update({
+            commons: trainner.commons.filter(common => common !== user.uid),
+          })
+          .finally(() => {
+            getTrainningId({
+              uid: user.uid,
+              onComplete: async id => {
+                if (id) {
+                  await firestore().collection('trainnings').doc(id).delete();
+                  await firestore()
+                    .collection('trainningScores')
+                    .doc(id)
+                    .delete();
+                }
+              },
+              onFail: err => {},
+            });
+            setTrainner(null);
+            setVisible(false);
+            showMessage({
+              type: 'success',
+              message: 'Removido',
+              description: 'Você não tem mais treinador',
+            });
+          });
       })
-      .then(res => {
-        getTrainningId({
-          uid: user.uid,
-          onComplete: trainning => {
-            if (trainning) {
-              firestore()
-                .collection('trainnings')
-                .doc(trainning)
-                .delete()
-                .then(res => {
-                  setVisible(false);
-                  showMessage({
-                    type: 'info',
-                    message: 'Você foi desvinculado da academia',
-                  });
-                })
-                .catch(err => {});
-            } else {
-              setVisible(false);
-              showMessage({
-                type: 'info',
-                message: 'Você foi desvinculado da academia',
-              });
-            }
-          },
-          onFail: err => {},
+      .catch(err => {
+        showMessage({
+          type: 'danger',
+          message: 'Erro',
+          description: 'Houve um problema, tente mais tarde',
         });
-      })
-      .catch(err => {});
+      });
   };
-
-  useEffect(() => {
-    getUser({
-      uid: user.uid,
-      onComplete: users => {
-        if (users) {
-          getUser({
-            uid: users.userAssociate,
-            onComplete: gyms => {
-              if (gyms) {
-                setGym(gyms);
-              }
-            },
-            onFail: err => {},
-          });
-        }
-      },
-      onFail: err => {},
-    });
-    getTrainning({
-      uid: user.uid,
-      onComplete: trainning => {
-        if (trainning) {
-          getUser({
-            uid: trainning.trainnerId,
-            onComplete: trainner => {
-              if (trainner) {
-                setTrainner(trainner);
-              }
-            },
-            onFail: err => {},
-          });
-        }
-      },
-      onFail: err => {},
-    });
+  const onRefresh = useCallback(() => {
+    setRefresh(true);
+    wait(1000).then(() => setRefresh(false));
   }, []);
 
+  useEffect(() => {
+    if (user.trainnerAssociate) {
+      getTrainnerAssociate({
+        uid: user.trainnerAssociate,
+        onComplete: (trainner: any) => {
+          if (trainner) {
+            setTrainner(trainner);
+          }
+        },
+        onFail: (err: any) => {},
+      });
+    }
+  }, [refresh]);
   if (state === 'edit') {
     return <ProfileEdit user={user} setState={setState} />;
   }
@@ -114,13 +107,22 @@ const ProfileCommon = ({user, navigation}: any) => {
         width: '100%',
         paddingBottom: 16,
       }}
+      refreshControl={
+        <RefreshControl
+          progressViewOffset={50}
+          refreshing={refresh}
+          onRefresh={onRefresh}
+          colors={[Colors.red]}
+          progressBackgroundColor={Colors.background}
+        />
+      }
       showsVerticalScrollIndicator={false}>
-      <ModalUnbindGym
+      <ModalRemoveTrainner
         visible={visible}
         setVisible={setVisible}
-        title="Deseja realmente desvincular?"
-        desc="Você perderá o seu treino caso faça isso."
-        onFunction={handleUnbindGym}
+        title="Deseja realmente remover treinador?"
+        desc="Caso faça isso, você perderá o seu treino"
+        onFunction={handleRemoveTrainner}
       />
       <View style={{width: '100%', height: width > 360 ? 228 : 200}}>
         <BackRedHeader
@@ -153,16 +155,7 @@ const ProfileCommon = ({user, navigation}: any) => {
           weight={600}
           color={Colors.textColorBlack}
         />
-        <View style={{flexDirection: 'row', alignItems: 'flex-start'}}>
-          <LocationIcon />
-          <Space marginHorizontal={1} />
-          <Text
-            title={`${user.city}, ${user.uf}`}
-            size={15}
-            weight={500}
-            color={Colors.grayMediumLight}
-          />
-        </View>
+
         <Space marginVertical={5} />
         <View
           style={{
@@ -181,19 +174,92 @@ const ProfileCommon = ({user, navigation}: any) => {
           />
         </View>
       </View>
-      <Space marginVertical={15} />
-      {!!gym && !!trainner && (
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-around',
-            width: '100%',
-          }}>
-          <CardMini avatar={gym.avatar} name={gym.name} />
-          <CardMini avatar={trainner.avatar} name={trainner.name} />
+      {!!trainner && <Space marginVertical={16} />}
+      {!!trainner && (
+        <View style={{width: '90%'}}>
+          <Card>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View style={{flexDirection: 'column', flex: 1}}>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <View style={{width: 40, height: 40, borderRadius: 20}}>
+                    <Image
+                      source={{uri: trainner.avatar}}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        borderRadius: 9999,
+                      }}
+                    />
+                  </View>
+                  <Space marginHorizontal={4} />
+                  <View>
+                    <Text title={trainner.name} size={14} weight={500} />
+                    <Text title="Treinador(a)" size={12} weight={400} />
+                  </View>
+                </View>
+                <Space marginVertical={4} />
+                <View style={{width: '90%'}}>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <View
+                      style={{
+                        backgroundColor: Colors.red,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: 20,
+                        height: 20,
+                        borderRadius: 10,
+                      }}>
+                      <AcademicIcon width="14px" height="14px" />
+                    </View>
+                    <Space marginHorizontal={3} />
+                    <Text
+                      title={`${trainner.course} - ${trainner.university}`}
+                      size={12}
+                      weight={500}
+                    />
+                  </View>
+                  <Space marginVertical={4} />
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <View
+                      style={{
+                        backgroundColor: Colors.red,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: 20,
+                        height: 20,
+                        borderRadius: 10,
+                      }}>
+                      <SkillIcon width="12px" height="12px" />
+                    </View>
+                    <Space marginHorizontal={3} />
+                    <Text title={trainner.experience} size={12} weight={500} />
+                  </View>
+                  <Space marginVertical={4} />
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <View
+                      style={{
+                        backgroundColor: Colors.red,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: 20,
+                        height: 20,
+                        borderRadius: 10,
+                      }}>
+                      <SpecsIcon width="12px" height="12px" />
+                    </View>
+                    <Space marginHorizontal={3} />
+                    <Text title={trainner.specs} size={12} weight={500} />
+                  </View>
+                </View>
+              </View>
+              <TouchableOpacity onPress={() => setVisible(true)}>
+                <TrashIcon />
+              </TouchableOpacity>
+            </View>
+          </Card>
         </View>
       )}
+      <Space marginVertical={15} />
       <Space marginVertical={30} />
       <View style={{width: '90%'}}>
         <TouchableOpacity
@@ -215,29 +281,6 @@ const ProfileCommon = ({user, navigation}: any) => {
         <LineGray width="100%" />
       </View>
       <Space marginVertical={8} />
-      {!!gym && (
-        <View style={{width: '90%'}}>
-          <TouchableOpacity
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}
-            onPress={() => {
-              setVisible(true);
-            }}>
-            <Text
-              title="Desvincular da academia"
-              size={17}
-              weight={600}
-              color={Colors.textColorBlack}
-              style={{marginLeft: 5}}
-            />
-            <CloseIcon />
-          </TouchableOpacity>
-          <LineGray width="100%" />
-        </View>
-      )}
       <Space marginVertical={60} />
       <View style={{width: '90%', alignItems: 'center'}}>
         <Button
@@ -256,6 +299,12 @@ const ProfileCommon = ({user, navigation}: any) => {
           color={Colors.textColorWhite}
           onPress={() => Logout().then(_ => navigation.navigate('Public'))}
         />
+        {!!user && user.plan === 'basic' && (
+          <>
+            <Space marginVertical={8} />
+            <BannerAd size={BannerAdSize.FULL_BANNER} unitId={TestIds.BANNER} />
+          </>
+        )}
       </View>
     </ProfileContainer>
   );

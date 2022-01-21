@@ -15,52 +15,26 @@ import {ActivityIndicator, Image, TouchableOpacity, View} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
 import {InvitesStyle} from './styles';
 
-import Notify from 'assets/svg/Notify.svg';
-import {userPersist} from 'functions';
 import Colors from '@styles';
 import InviteProfile from './InviteProfile';
 
 const InviteTrainner = ({auth, navigation}: any) => {
-  const {searchUser, getUsers, getUser, getUserType} = useGetUser();
+  const {searchUser, getUserType} = useGetUser();
   const {getInvites, recusedInvite, acceptedInvite} = useInvites();
 
   const [userSearch, setUserSearch] = useState('');
   const [usersSearch, setUsersSearch] = useState<any>([]);
-  const [users, setUsers] = useState<any>([]);
-  const [invites, setInvites] = useState<any>([]);
-  const [associated, setAssociated] = useState(false);
+  const [users, setUsers] = useState<any[]>([]);
+  const [invites, setInvites] = useState<any[]>([]);
+  const [inviteSend, setInviteSend] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [state, setState] = useState('');
   const [user, setUser] = useState<any>();
-  const [accepted, setAccepted] = useState<any[]>([]);
 
   useEffect(() => {
     if (loading) {
-      getUser({
+      getInvites({
         uid: auth.uid,
-        onComplete: user => {
-          if (user) {
-            const {userAssociate} = user;
-
-            if (userAssociate) {
-              setAccepted(userAssociate);
-              if (userAssociate.length === user.limitGym) {
-                setAssociated(true);
-                setLoading(false);
-              } else {
-                setLoading(false);
-              }
-            }
-          }
-        },
-        onFail: err => {},
-      });
-    }
-  }, [loading]);
-
-  useEffect(() => {
-    if (loading) {
-      getInvites(auth.uid, {
         onComplete: (invite: any) => {
           if (invite) {
             setInvites(invite);
@@ -70,7 +44,7 @@ const InviteTrainner = ({auth, navigation}: any) => {
         onFail: (error: any) => console.log(error),
       });
       getUserType({
-        type: 'gym',
+        type: 'common',
         onComplete: (user: any) => {
           setUsers(user);
         },
@@ -79,24 +53,21 @@ const InviteTrainner = ({auth, navigation}: any) => {
     }
   }, [loading]);
 
-  const handleAcceptOrRecused = (state: boolean, gymId: any) => {
+  const handleAcceptOrRecused = (state: boolean, commonId: any) => {
     if (!state) {
       recusedInvite({
-        gymId,
+        userId: commonId,
         uid: auth.uid,
         onComplete: res => {
           if (res) {
-            return console.log('recusado');
+            setUsers(users.filter(user => user.uid !== commonId));
           }
         },
         onFail: err => {},
       });
-      setUsers(users.filter(gym => gym.uid !== gymId));
     } else {
-      setAccepted([...accepted, gymId]);
-
       acceptedInvite({
-        gymId,
+        userId: commonId,
         uid: auth.uid,
         onComplete: res => {
           if (res) {
@@ -104,23 +75,46 @@ const InviteTrainner = ({auth, navigation}: any) => {
               .collection('users')
               .doc(auth.uid)
               .update({
-                userAssociate: [...accepted, gymId],
+                commons: [...auth.commons, commonId],
                 updatedAt: firestore.FieldValue.serverTimestamp(),
               })
               .then(res => {
-                setLoading(true);
+                firestore()
+                  .collection('users')
+                  .doc(commonId)
+                  .get()
+                  .then(query => {
+                    const common = query.data();
+                    if (
+                      (!!common && !common.trainnerAssociate) ||
+                      (!!common && common.trainnerAssociate === '')
+                    ) {
+                      firestore().collection('users').doc(commonId).update({
+                        trainnerAssociate: auth.uid,
+                        updatedAt: firestore.FieldValue.serverTimestamp(),
+                      });
+                      setUsers(users.filter(user => user.uid !== commonId));
+                    }
+                  });
               })
               .catch(err => {});
           }
         },
         onFail: err => {},
       });
-      setUsers(users.filter(gym => gym.uid !== gymId));
     }
   };
 
   if (state === 'profile') {
-    return <InviteProfile profile={user} onBack={setState} auth={auth} />;
+    return (
+      <InviteProfile
+        profile={user}
+        onBack={setState}
+        auth={auth}
+        setInviteSend={setInviteSend}
+        inviteSend={inviteSend}
+      />
+    );
   }
   return (
     <InvitesStyle
@@ -137,32 +131,13 @@ const InviteTrainner = ({auth, navigation}: any) => {
           <ActivityIndicator size="large" color={Colors.red} />
         </View>
       )}
-      {!loading && !!associated && (
-        <View
-          style={{
-            flex: 1,
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <Space marginVertical={20} />
-          <Notify />
-          <Space marginVertical={12} />
-          <Text
-            title="Você já atingiu o seu limite de academias"
-            size={15}
-            weight={500}
-            color={Colors.grayMediumLight}
-            center
-          />
-        </View>
-      )}
-      {!loading && !associated && (
+
+      {!loading && (
         <Search
           user={userSearch}
           onSearch={e => {
             setUserSearch(e),
-              searchUser(e, 'gym', {
+              searchUser(e, 'common', {
                 onComplete: (users: any) => {
                   if (users) {
                     setUsersSearch(users);
@@ -177,7 +152,6 @@ const InviteTrainner = ({auth, navigation}: any) => {
         />
       )}
       {!loading &&
-        !associated &&
         usersSearch.length !== 0 &&
         usersSearch.map((userInvite: any) => {
           return (
@@ -249,25 +223,24 @@ const InviteTrainner = ({auth, navigation}: any) => {
                   color={Colors.textColorWhite}
                   to={auth}
                   from={userInvite.uid}
+                  inviteSend={inviteSend}
+                  setInviteSend={setInviteSend}
                 />
               </View>
             </View>
           );
         })}
       <Space marginVertical={5} />
-      {!loading && !associated && usersSearch.length === 0 && (
-        <Label title="Academias" />
-      )}
+      {!loading && usersSearch.length === 0 && <Label title="Alunos" />}
       <Space marginVertical={5} />
-      {!associated &&
-        usersSearch.length === 0 &&
+      {usersSearch.length === 0 &&
         users.map(userInvite => {
           const invite = invites.filter(
             (invite: any) => invite.to === userInvite.uid,
           );
           const status = invite.length > 0 ? invite[0].accept : {status: null};
           if (status === null) {
-            if (userInvite.type === 'gym') {
+            if (userInvite.type === 'common') {
               return (
                 <View
                   key={userInvite.uid}
@@ -319,7 +292,7 @@ const InviteTrainner = ({auth, navigation}: any) => {
                         color={Colors.textColorBlack}
                       />
                       <Text
-                        title="Academia"
+                        title="Aluno(a)"
                         size={12}
                         weight={500}
                         color={Colors.textColorBlack}

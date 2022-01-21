@@ -8,7 +8,7 @@ import {
   Text,
 } from 'components';
 
-import {useGetCategories, useGetExercise} from 'hooks';
+import {useGetCategories, useGetExercises} from 'hooks';
 import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
@@ -28,10 +28,8 @@ interface CreateTrainningProps {
 }
 
 const CreateTrainning = ({setState, setButtonTitle}: CreateTrainningProps) => {
-  const gym = useSelector((state: any) => state.trainner.gym);
-
   const getCategories = useGetCategories();
-  const {getExerciseByGym} = useGetExercise();
+  const {getExercises} = useGetExercises();
   const [error, setError] = useState({aluno: ''});
   const [trainningStep, setTrainningStep] = useState('');
   const [student, setStudent] = useState('');
@@ -88,8 +86,7 @@ const CreateTrainning = ({setState, setButtonTitle}: CreateTrainningProps) => {
   }, []);
 
   useEffect(() => {
-    getExerciseByGym({
-      uid: gym.gym,
+    getExercises({
       onComplete: exercise => {
         if (exercise) {
           setExercises(exercise);

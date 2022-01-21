@@ -13,19 +13,6 @@ const useGetRequests = () => {
       .catch(err => onFail(err));
   };
 
-  const getRequestsByGym = ({uid, gym, onComplete, onFail}: any) => {
-    firestore()
-      .collection('requests')
-      .where('trainnerId', '==', uid)
-      .where('gym', '==', gym)
-      .get()
-      .then(querySnapshot => {
-        const listRequests = querySnapshot.docs.map(doc => doc.data());
-        onComplete(listRequests);
-      })
-      .catch(err => onFail(err));
-  };
-
   const removeRequestByCommonId = ({uid, onComplete, onFail}: any) => {
     firestore()
       .collection('requests')
@@ -46,7 +33,7 @@ const useGetRequests = () => {
       .catch(err => onFail(err));
   };
 
-  return {getRequests, getRequestsByGym, removeRequestByCommonId};
+  return {getRequests, removeRequestByCommonId};
 };
 
 export default useGetRequests;

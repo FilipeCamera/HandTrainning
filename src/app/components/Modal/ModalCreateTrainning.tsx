@@ -41,7 +41,6 @@ const ModalCreateTrainning = ({
   commonId,
   trainnerId,
 }: ModalProps) => {
-  const gym = useSelector((state: any) => state.trainner.gym);
   const {removeRequestByCommonId} = useGetRequests();
   const {getTrainningId} = useGetTrainning();
   const [expire, setExpire] = useState('');
@@ -59,7 +58,6 @@ const ModalCreateTrainning = ({
   const data = {
     trainnerId: trainnerId,
     commonId: commonId,
-    gymId: gym.gym,
     trainning: exercisesSelected,
     categories: categoriesSelected,
     expiredTrainning: expire,
@@ -87,10 +85,11 @@ const ModalCreateTrainning = ({
     setDate(currentDate);
   };
 
-  const createTr = () => {
+  const createTr = async () => {
     getTrainningId({
       uid: commonId,
       onComplete: trainning => {
+        console.log(trainning);
         if (trainning) {
           firestore()
             .collection('trainnings')
@@ -130,7 +129,7 @@ const ModalCreateTrainning = ({
                     setCreated(true);
                   }
                 },
-                onFail: err => {},
+                onFail: err => console.log(err),
               });
               setLoading(false);
               showMessage({
@@ -139,10 +138,10 @@ const ModalCreateTrainning = ({
               });
               setCreated(true);
             })
-            .catch(err => {});
+            .catch(err => console.log(err));
         }
       },
-      onFail: err => {},
+      onFail: err => console.log(err),
     });
   };
   return (

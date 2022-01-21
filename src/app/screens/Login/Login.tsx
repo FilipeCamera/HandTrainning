@@ -96,6 +96,7 @@ const Login = ({navigation}: any) => {
           navigation.navigate('Private');
         })
         .catch(error => {
+          console.log(error);
           switch (error.code) {
             case 'auth/user-not-found':
               return showMessage({

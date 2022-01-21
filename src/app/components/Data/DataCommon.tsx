@@ -19,9 +19,7 @@ interface DataProps {
 const DataCommon = ({dados, setDados, errors}: DataProps) => {
   const [name, setName] = useState(dados.name || '');
   const [slogan, setSlogan] = useState(dados.slogan || '');
-  const [uf, setUF] = useState(dados.uf || '');
   const [sex, setSex] = useState(dados.sex || '');
-  const [city, setCity] = useState(dados.city || '');
   const [weight, setWeight] = useState(dados.weight || '');
   const [age, setAge] = useState(dados.age || '');
   const [height, setHeight] = useState(dados.height || '');
@@ -69,8 +67,6 @@ const DataCommon = ({dados, setDados, errors}: DataProps) => {
       ...dados,
       name: name,
       slogan: slogan,
-      city: city,
-      uf: uf,
       age: age,
       sex: sex,
       height: height,
@@ -94,8 +90,6 @@ const DataCommon = ({dados, setDados, errors}: DataProps) => {
   }, [
     name,
     slogan,
-    city,
-    uf,
     age,
     sex,
     height,
@@ -133,24 +127,6 @@ const DataCommon = ({dados, setDados, errors}: DataProps) => {
 
       <Label title="Informações do Aluno" />
       <Space marginVertical={4} />
-      <View
-        style={{
-          flexDirection: 'row',
-          width: '95%',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}>
-        <Input
-          city
-          placeholder="Cidade"
-          width="60%"
-          value={city}
-          onText={setCity}
-          error={errors.city}
-        />
-        <Space marginHorizontal={5} />
-        <DropdownUF value={uf} onValue={setUF} error={errors.uf} />
-      </View>
       <View style={{width: '95%', marginVertical: 8}}>
         <DropdownGender value={sex} onValue={setSex} error={errors.sex} />
       </View>

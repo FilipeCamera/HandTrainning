@@ -1,5 +1,5 @@
 import Colors from '@styles';
-import {Button, ButtonText, Input, Label, Space, Text} from 'components';
+import {Button, Input, Label, Space, Text} from 'components';
 import React from 'react';
 import {View} from 'react-native';
 
@@ -72,7 +72,15 @@ const ModalScore = ({
               numeric
               placeholder="Sua nota"
               value={value}
-              onText={e => setValue(e)}
+              onText={(e: number) => {
+                if (e > 10) {
+                  setValue('');
+                } else if (e < 0) {
+                  setValue('');
+                } else {
+                  setValue(e);
+                }
+              }}
               center
             />
           </View>

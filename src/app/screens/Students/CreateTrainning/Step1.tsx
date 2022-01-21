@@ -21,7 +21,7 @@ import CalendarIcon from 'assets/svg/calendarIcon.svg';
 import HeightIcon from 'assets/svg/heightIcon.svg';
 import VerticalLine from 'assets/svg/verticalLine.svg';
 import {useSelector} from 'react-redux';
-import {useGetExercise, useGetUser} from 'hooks';
+import {useGetExercises, useGetUser} from 'hooks';
 
 interface StepProps {
   categorySelected: any[];
@@ -38,8 +38,7 @@ const Step1 = ({
   exercisesSelected,
   setExercisesSelected,
 }: StepProps) => {
-  const gym = useSelector((state: any) => state.trainner.gym);
-  const {getExerciseByGym} = useGetExercise();
+  const {getExercises} = useGetExercises();
   const {getUser} = useGetUser();
   const [student, setStudent] = useState<any>();
   const [category, setCategory] = useState<any[]>(categorySelected);
@@ -49,8 +48,7 @@ const Step1 = ({
   const [selectedCategory, setSelectedCategory] = useState('');
 
   useEffect(() => {
-    getExerciseByGym({
-      uid: gym.gym,
+    getExercises({
       onComplete: exercise => {
         if (exercise) {
           setExercises(exercise);

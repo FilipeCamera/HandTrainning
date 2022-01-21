@@ -32,7 +32,7 @@ const Step2 = ({stateChange, setDados, dados}: StepProps) => {
         <Runner
           width={(width / 100) * 55}
           height={(height / 100) * 65}
-          style={{position: 'absolute', right: 0, top: (height / 100) * 25}}
+          style={{position: 'absolute', right: 0, top: (height / 100) * 10}}
         />
         <CardButton
           title="Aluno"
@@ -48,13 +48,7 @@ const Step2 = ({stateChange, setDados, dados}: StepProps) => {
             stateChange();
           }}
         />
-        <CardButton
-          title="Academia"
-          onPress={() => {
-            setDados({...dados, type: 'gym'});
-            stateChange();
-          }}
-        />
+
         <Space marginVertical={80} />
         <View
           style={{
