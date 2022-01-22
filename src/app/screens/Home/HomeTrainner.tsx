@@ -8,7 +8,7 @@ import Colors from '@styles';
 import {BannerAd, BannerAdSize, TestIds} from '@react-native-admob/admob';
 import {useSelector} from 'react-redux';
 
-const HomeTrainner = ({navigation}: any) => {
+const HomeTrainner = ({navigation, purchase}: any) => {
   const user = useSelector((state: any) => state.auth.user);
   const [refresh, setRefresh] = useState(false);
 

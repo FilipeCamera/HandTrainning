@@ -1,19 +1,26 @@
 import Colors from '@styles';
 import {
   ButtonRed,
+  ButtonText,
   DataCommon,
   DataTrainner,
+  Input,
+  Label,
+  ModalPlan,
   Scroll,
   SimpleHeader,
   Space,
+  Text,
 } from 'components';
 import {firestore} from 'firebase';
 import {userPersist} from 'functions';
 import {useGetUser} from 'hooks';
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, View} from 'react-native';
+import {ActivityIndicator, TouchableOpacity, View} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
 import {fieldValidate} from 'validation';
+import RefreshIcon from 'assets/svg/refresh.svg';
+import {requestSubscription, updateSubscription} from 'payments';
 
 interface StepProps {
   user: any;
@@ -23,7 +30,9 @@ interface StepProps {
 const ProfileEdit = ({setState, user}: StepProps) => {
   const {getUser} = useGetUser();
   const [loading, setLoading] = useState(true);
+  const [planVisible, setPlanVisible] = useState(false);
   const [dados, setDados] = useState<any>();
+  const [selected, setSelected] = useState<any>();
   const [errors, setErrors] = useState({
     name: '',
     slogan: '',
@@ -102,7 +111,19 @@ const ProfileEdit = ({setState, user}: StepProps) => {
       return false;
     }
   };
-  const handleUpdateProfile = () => {
+
+  const updatePlan = e => {
+    setSelected(e);
+  };
+  const handleUpdateProfile = async () => {
+    if (dados.plan !== selected) {
+      dados.plan = selected;
+      const planId =
+        selected === 'individual'
+          ? 'android.test.purchased'
+          : 'android.test.canceled';
+      await requestSubscription(planId);
+    }
     const validated = validate();
     if (validated) {
       return firestore()
@@ -129,6 +150,7 @@ const ProfileEdit = ({setState, user}: StepProps) => {
       uid: user.uid,
       onComplete: users => {
         if (users) {
+          setSelected(users.plan);
           setDados(users);
           setLoading(false);
         }
@@ -138,6 +160,13 @@ const ProfileEdit = ({setState, user}: StepProps) => {
   }, []);
   return (
     <View style={{backgroundColor: Colors.background, flex: 1}}>
+      <ModalPlan
+        visible={planVisible}
+        setVisible={setPlanVisible}
+        onFunction={e => updatePlan(e)}
+        selected={selected}
+        setSelected={setSelected}
+      />
       <Scroll>
         <SimpleHeader
           title="Editar Perfil"
@@ -161,9 +190,51 @@ const ProfileEdit = ({setState, user}: StepProps) => {
             {dados.type === 'trainner' && (
               <DataTrainner dados={dados} setDados={setDados} errors={errors} />
             )}
-            {dados.type === 'gym' && (
-              <DataGym dados={dados} setDados={setDados} errors={errors} />
-            )}
+            <Space marginVertical={20} />
+            <Label title="Plano" />
+            <Space marginVertical={8} />
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                width: '100%',
+              }}>
+              <View
+                style={{
+                  height: 56,
+                  backgroundColor: Colors.inputBack,
+                  flex: 1,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  paddingLeft: 8,
+                  borderRadius: 10,
+                }}>
+                <Text
+                  title={selected === 'individual' ? 'Individual' : 'Básico'}
+                  size={15}
+                  weight={500}
+                  color={Colors.textColorRXC}
+                />
+              </View>
+              <Space marginHorizontal={4} />
+              <TouchableOpacity
+                style={{
+                  height: 56,
+                  width: 56,
+                  backgroundColor: Colors.inputBack,
+                  borderRadius: 10,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+                onPress={() => setPlanVisible(true)}>
+                <RefreshIcon
+                  width="24px"
+                  height="24px"
+                  color={Colors.textColorRXC}
+                />
+              </TouchableOpacity>
+            </View>
             <Space marginVertical={25} />
             <ButtonRed
               title="Salvar"
@@ -171,6 +242,14 @@ const ProfileEdit = ({setState, user}: StepProps) => {
               size={15}
               weight={500}
               onPress={() => handleUpdateProfile()}
+            />
+            <Space marginVertical={12} />
+            <ButtonText
+              title="Cancelar conta"
+              color={Colors.red}
+              size={15}
+              weight={500}
+              onPress={() => {}}
             />
             <Space marginVertical={6} />
           </>

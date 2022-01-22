@@ -5,6 +5,8 @@ import ModalVisualTrainning from './ModalVisualTrainning';
 import ModalScore from './ModalScore';
 import ModalObservation from './ModalObservation';
 import ModalRemoveTrainner from './ModalRemoveTrainner';
+import ModalPlan from './ModalPlan';
+
 export {
   Modal,
   ModalInstruction,
@@ -13,4 +15,5 @@ export {
   ModalScore,
   ModalObservation,
   ModalRemoveTrainner,
+  ModalPlan,
 };

@@ -10,13 +10,12 @@ import {RefreshControl} from 'react-native';
 import {BannerAd, BannerAdSize, TestIds} from '@react-native-admob/admob';
 import {purchased} from 'payments';
 
-const defaultSubId = 'android.test.canceled';
+const defaultSubId = 'android.test.purchased';
 
-const HomeCommon = ({navigation}: any) => {
+const HomeCommon = ({navigation, purchase}: any) => {
   const user = useSelector((state: any) => state.auth.user);
   const {getTrainning} = useGetTrainning();
   const {getUser} = useGetUser();
-  const [purchase, setPurchase] = useState(false);
   const [visible, setVisible] = useState(false);
   const [trainner, setTrainner] = useState<any>();
   const [loading, setLoading] = useState(true);
@@ -26,11 +25,6 @@ const HomeCommon = ({navigation}: any) => {
 
   const wait = timeout => {
     return new Promise(resolve => setTimeout(resolve, timeout));
-  };
-
-  const loadPurchase = async () => {
-    const res = await purchased(defaultSubId);
-    setPurchase(res);
   };
 
   const onRefresh = useCallback(() => {
@@ -61,11 +55,9 @@ const HomeCommon = ({navigation}: any) => {
   };
 
   useEffect(() => {
-    loadPurchase();
     getTrainning({
       uid: user.uid,
       onComplete: (trainningUser: any) => {
-        console.log(trainningUser);
         if (trainningUser) {
           getUser({
             uid: trainningUser.trainnerId,
@@ -95,7 +87,7 @@ const HomeCommon = ({navigation}: any) => {
       onFail: err => {},
     });
   }, [loading, refresh]);
-  console.log(purchase);
+
   return (
     <HomeStyle
       contentContainerStyle={{

@@ -23,6 +23,7 @@ import Refresh from 'assets/svg/refresh.svg';
 import {
   ActivityIndicator,
   Image,
+  Platform,
   ScrollView,
   TouchableOpacity,
   View,
@@ -37,6 +38,17 @@ import moment from 'moment';
 import {firestore} from 'firebase';
 import {showMessage} from 'react-native-flash-message';
 import {BannerAd, BannerAdSize, TestIds} from '@react-native-admob/admob';
+import {listAvailableSubscriptions, purchased} from 'payments';
+
+const itemsSubs = Platform.select({
+  android: [
+    'android.test.purchased',
+    'android.test.canceled',
+    'android.test.refunded',
+  ],
+});
+
+const defaultSubId = 'android.test.purchased';
 
 const Trainning = ({navigation}: any) => {
   const user = useSelector((state: any) => state.auth.user);
@@ -44,6 +56,7 @@ const Trainning = ({navigation}: any) => {
   const {getUser} = useGetUser();
   const {getScore} = useGetScore();
   const [visible, setVisible] = useState(false);
+  const [purchase, setPurchase] = useState(false);
   const [scoreVisible, setScoreVisible] = useState(false);
   const [visibleSelect, setVisibleSelect] = useState(false);
   const [trainning, setTrainning] = useState<any>();
@@ -60,6 +73,15 @@ const Trainning = ({navigation}: any) => {
   const [visibleObs, setVisibleObs] = useState(false);
   const [title, setTitle] = useState('Observação');
   const [observation, setObservation] = useState('');
+
+  const loadPurchase = async () => {
+    const res = await purchased(defaultSubId);
+    setPurchase(res);
+  };
+  useEffect(() => {
+    listAvailableSubscriptions(itemsSubs);
+    loadPurchase();
+  }, [purchase]);
 
   const handleSelect = (index, value) => {
     setSelected(index);
@@ -737,11 +759,17 @@ const Trainning = ({navigation}: any) => {
           />
         </View>
       )}
-      {!!user && user.plan === 'basic' && (
+      {!!user && user.plan === 'basic' ? (
         <>
           <BannerAd size={BannerAdSize.FULL_BANNER} unitId={TestIds.BANNER} />
+          <Space marginVertical={4} />
         </>
-      )}
+      ) : !purchase ? (
+        <>
+          <BannerAd size={BannerAdSize.FULL_BANNER} unitId={TestIds.BANNER} />
+          <Space marginVertical={4} />
+        </>
+      ) : null}
     </TrainningStyle>
   );
 };

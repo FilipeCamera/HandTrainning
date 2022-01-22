@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Background} from './styles';
 
 import Runner from 'assets/svg/Runner.svg';
@@ -32,20 +32,36 @@ const defaultSubId = 'android.test.purchased';
 
 const Step3 = ({stateChange, backStateChange, dados, setDados}: StepProps) => {
   const {width, height} = Dimensions.get('screen');
-
   useEffect(() => {
     listAvailableSubscriptions(itemsSubs);
   }, []);
   const handleSubscription = async (plan: string, productId: any) => {
-    if (plan === 'individual') {
+    if (dados.type === 'common' && plan === 'individual') {
       const res = await requestSubscription(productId);
       if (res) {
         setDados({...dados, plan: plan});
         stateChange();
       }
-    } else {
-      setDados({...dados, plan: plan});
-      stateChange();
+    } else if (dados.type === 'trainner' && plan === 'individual') {
+      const res = await requestSubscription(productId);
+      if (res) {
+        setDados({
+          ...dados,
+          plan: plan,
+          limitTrainning: 'infinito',
+        });
+        stateChange();
+      } else if (dados.type === 'trainner') {
+        setDados({
+          ...dados,
+          plan: plan,
+          limitTrainning: 20,
+        });
+        stateChange();
+      } else {
+        setDados({...dados, plan: plan});
+        stateChange();
+      }
     }
   };
   return (
@@ -85,22 +101,12 @@ const Step3 = ({stateChange, backStateChange, dados, setDados}: StepProps) => {
             <CardButton
               title="Básico - Grátis"
               desc="Nesse plano você tem acesso ao aplicativo, porém vai ter propagande e um limite de criação de 20 treinos"
-              onPress={() => {
-                setDados({...dados, plan: 'basic', limitTrainning: 20});
-                stateChange();
-              }}
+              onPress={() => handleSubscription('basic', defaultSubId)}
             />
             <CardButton
               title="Individual - R$ 11,90 / mês"
               desc="Nesse plano você tem acesso ao aplicativo sem propagandas e um limite infinito para criar treinos."
-              onPress={() => {
-                setDados({
-                  ...dados,
-                  plan: 'individual',
-                  limitTrainning: 'infinito',
-                });
-                stateChange();
-              }}
+              onPress={() => handleSubscription('individual', defaultSubId)}
             />
           </>
         )}

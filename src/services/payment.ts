@@ -1,26 +1,25 @@
 import {showMessage} from 'react-native-flash-message';
 import RNIap, {purchaseUpdatedListener} from 'react-native-iap';
 
-export const listAvailableSubscriptions = async products => {
+export const loadPayments = async () => {
+  const res = await RNIap.initConnection();
+  return res;
+};
+
+export const listAvailableSubscriptions = async (products: any) => {
   try {
-    const res = await RNIap.initConnection();
-    if (res) {
-      await RNIap.getProducts(products);
-    }
+    const product = await RNIap.getProducts(products);
+    return product;
   } catch (err) {
-    console.log(err);
+    console.log('List', err);
   }
 };
 
-export const requestSubscription = async productId => {
+export const requestSubscription = async (productId: any) => {
   try {
-    const res = await RNIap.initConnection();
-    if (res) {
-      await RNIap.requestSubscription(productId);
-      return true;
-    }
+    await RNIap.requestSubscription(productId);
+    return true;
   } catch (err) {
-    console.log(err);
     showMessage({
       type: 'danger',
       message: 'Erro',
@@ -31,12 +30,24 @@ export const requestSubscription = async productId => {
   }
 };
 
-export const updateSubscription = async productId => {};
+export const updateSubscription = async () => {
+  try {
+    purchaseUpdatedListener(async purchase => {
+      const receipt = purchase.transactionReceipt;
 
-export const purchased = async productId => {
+      if (receipt) {
+        await RNIap.finishTransaction(purchase);
+        return true;
+      }
+    });
+  } catch (err) {
+    return false;
+  }
+};
+
+export const purchased = async (productId: any) => {
   let isPurchased = false;
   try {
-    await RNIap.initConnection();
     const purchases = await RNIap.getAvailablePurchases();
 
     purchases.forEach(purchase => {
@@ -45,6 +56,7 @@ export const purchased = async productId => {
         return;
       }
     });
+
     return isPurchased;
   } catch (err) {
     return false;

@@ -9,7 +9,7 @@
  */
 
 import React, {useEffect} from 'react';
-import {SafeAreaView, StatusBar, LogBox} from 'react-native';
+import {SafeAreaView, StatusBar, LogBox, Platform} from 'react-native';
 import {Provider} from 'react-redux';
 import {NavigationContainer} from '@react-navigation/native';
 
@@ -25,6 +25,7 @@ import normalize from '@normalize';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import Google_key_ID from 'keys';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
+import {updateSubscription, loadPayments} from 'payments';
 
 LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
@@ -33,7 +34,14 @@ LogBox.ignoreLogs([
 
 const App = () => {
   const {getUserLogged, getUser} = useGetUser();
+  const load = async () => {
+    const res = await loadPayments();
+    if (res) {
+      await updateSubscription();
+    }
+  };
   useEffect(() => {
+    load();
     onPermission();
     getUserLogged({
       onComplete: user => {

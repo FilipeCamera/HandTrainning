@@ -5,7 +5,13 @@ import {ProfileContainer} from './styles';
 import BackRedHeader from 'assets/svg/RedTopBack.svg';
 import PlayIcon from 'assets/svg/PlayIcon.svg';
 import LineGray from 'assets/svg/LineGran.svg';
-import {Dimensions, RefreshControl, TouchableOpacity, View} from 'react-native';
+import {
+  Dimensions,
+  Platform,
+  RefreshControl,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {Button, Card, ModalRemoveTrainner, Space, Text} from 'components';
 import {Image} from 'react-native';
 import {Logout} from 'functions';
@@ -20,13 +26,25 @@ import SpecsIcon from 'assets/svg/specsIcon.svg';
 import {firestore} from 'firebase';
 import {showMessage} from 'react-native-flash-message';
 import {BannerAd, BannerAdSize, TestIds} from '@react-native-admob/admob';
+import {listAvailableSubscriptions, purchased} from 'payments';
 
 const {width} = Dimensions.get('window');
+
+const itemsSubs = Platform.select({
+  android: [
+    'android.test.purchased',
+    'android.test.canceled',
+    'android.test.refunded',
+  ],
+});
+
+const defaultSubId = 'android.test.purchased';
 
 const ProfileCommon = ({user, navigation}: any) => {
   const [trainner, setTrainner] = useState<any>();
   const [state, setState] = useState('');
   const [visible, setVisible] = useState(false);
+  const [purchase, setPurchase] = useState(false);
   const {getTrainnerAssociate} = useGetUser();
   const {getTrainningId} = useGetTrainning();
   const [refresh, setRefresh] = useState(false);
@@ -34,6 +52,15 @@ const ProfileCommon = ({user, navigation}: any) => {
   const wait = timeout => {
     return new Promise(resolve => setTimeout(resolve, timeout));
   };
+
+  const loadPurchase = async () => {
+    const res = await purchased(defaultSubId);
+    setPurchase(res);
+  };
+  useEffect(() => {
+    listAvailableSubscriptions(itemsSubs);
+    loadPurchase();
+  }, [purchase]);
 
   const handleRemoveTrainner = () => {
     firestore()
@@ -159,15 +186,15 @@ const ProfileCommon = ({user, navigation}: any) => {
         <Space marginVertical={5} />
         <View
           style={{
-            width: 70,
             height: 25,
+            paddingHorizontal: 8,
             borderRadius: 13,
             alignItems: 'center',
             justifyContent: 'center',
             backgroundColor: Colors.red,
           }}>
           <Text
-            title={user.plan}
+            title={user.plan === 'individual' ? 'Individual' : 'Básico'}
             size={12}
             weight={600}
             color={Colors.textColorWhite}
@@ -299,12 +326,17 @@ const ProfileCommon = ({user, navigation}: any) => {
           color={Colors.textColorWhite}
           onPress={() => Logout().then(_ => navigation.navigate('Public'))}
         />
-        {!!user && user.plan === 'basic' && (
+        {!!user && user.plan === 'basic' ? (
           <>
             <Space marginVertical={8} />
             <BannerAd size={BannerAdSize.FULL_BANNER} unitId={TestIds.BANNER} />
           </>
-        )}
+        ) : !purchase ? (
+          <>
+            <Space marginVertical={8} />
+            <BannerAd size={BannerAdSize.FULL_BANNER} unitId={TestIds.BANNER} />
+          </>
+        ) : null}
       </View>
     </ProfileContainer>
   );
