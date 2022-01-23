@@ -25,18 +25,27 @@ import normalize from '@normalize';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import Google_key_ID from 'keys';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
-import {updateSubscription, loadPayments} from 'payments';
+import {
+  updateSubscription,
+  loadPayments,
+  listAvailableSubscriptions,
+} from 'payments';
 
 LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
   'Require cycle',
 ]);
 
+const itemsSubs = Platform.select({
+  android: ['individual_cm_01', 'individual_tn_01'],
+});
+
 const App = () => {
   const {getUserLogged, getUser} = useGetUser();
   const load = async () => {
     const res = await loadPayments();
     if (res) {
+      await listAvailableSubscriptions(itemsSubs);
       await updateSubscription();
     }
   };

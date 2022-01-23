@@ -10,6 +10,7 @@ import {
 import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
+  BackHandler,
   Image,
   ScrollView,
   TouchableOpacity,
@@ -46,6 +47,18 @@ const Step1 = ({
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState('');
+
+  const handleBack = () => {
+    setTrainningStep('');
+    return true;
+  };
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      handleBack,
+    );
+    return () => backHandler.remove();
+  }, []);
 
   useEffect(() => {
     getExercises({

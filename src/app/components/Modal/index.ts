@@ -6,6 +6,7 @@ import ModalScore from './ModalScore';
 import ModalObservation from './ModalObservation';
 import ModalRemoveTrainner from './ModalRemoveTrainner';
 import ModalPlan from './ModalPlan';
+import ModalForgotPassword from './ModalForgotPasword';
 
 export {
   Modal,
@@ -16,4 +17,5 @@ export {
   ModalObservation,
   ModalRemoveTrainner,
   ModalPlan,
+  ModalForgotPassword,
 };

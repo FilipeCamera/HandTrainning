@@ -4,7 +4,6 @@ import {
   ButtonText,
   DataCommon,
   DataTrainner,
-  Input,
   Label,
   ModalPlan,
   Scroll,
@@ -16,11 +15,16 @@ import {firestore} from 'firebase';
 import {userPersist} from 'functions';
 import {useGetUser} from 'hooks';
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, TouchableOpacity, View} from 'react-native';
+import {
+  ActivityIndicator,
+  BackHandler,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
 import {fieldValidate} from 'validation';
 import RefreshIcon from 'assets/svg/refresh.svg';
-import {requestSubscription, updateSubscription} from 'payments';
+import {requestSubscription} from 'payments';
 
 interface StepProps {
   user: any;
@@ -46,6 +50,18 @@ const ProfileEdit = ({setState, user}: StepProps) => {
     breath: '',
     sex: '',
   });
+
+  const handleBack = () => {
+    setState('');
+    return true;
+  };
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      handleBack,
+    );
+    return () => backHandler.remove();
+  }, []);
 
   const validate = () => {
     const nameValidated = fieldValidate(dados.name);
@@ -119,10 +135,24 @@ const ProfileEdit = ({setState, user}: StepProps) => {
     if (dados.plan !== selected) {
       dados.plan = selected;
       const planId =
-        selected === 'individual'
-          ? 'android.test.purchased'
-          : 'android.test.canceled';
-      await requestSubscription(planId);
+        selected === 'individual' && dados.type === 'trainner'
+          ? 'individual_tn_01'
+          : selected === 'individual' && dados.type === 'common'
+          ? 'individual_cm_01'
+          : '';
+
+      if (planId !== '') {
+        const res = await requestSubscription(planId);
+        if (!res) {
+          return showMessage({
+            type: 'danger',
+            message: 'Erro',
+            description:
+              'Houve um problema na alteração de seu plano, tente novamente.',
+          });
+        }
+        dados.planId = planId;
+      }
     }
     const validated = validate();
     if (validated) {
@@ -166,6 +196,7 @@ const ProfileEdit = ({setState, user}: StepProps) => {
         onFunction={e => updatePlan(e)}
         selected={selected}
         setSelected={setSelected}
+        user={user}
       />
       <Scroll>
         <SimpleHeader

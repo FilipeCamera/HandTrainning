@@ -7,13 +7,20 @@ import {Modal, Portal} from 'react-native-paper';
 
 interface ModalProps {
   visible: boolean;
+  user: any;
   setVisible: any;
   selected: any;
   setSelected: any;
   onFunction: (value: string) => any;
 }
 
-const ModalPlan = ({visible, setVisible, selected, onFunction}: ModalProps) => {
+const ModalPlan = ({
+  visible,
+  setVisible,
+  user,
+  selected,
+  onFunction,
+}: ModalProps) => {
   return (
     <Portal>
       <Modal
@@ -30,19 +37,40 @@ const ModalPlan = ({visible, setVisible, selected, onFunction}: ModalProps) => {
         }}>
         <View style={{width: '100%'}}>
           <Label title="Escolha seu plano" center />
-          <Check
-            value={selected === 'basic' ? true : false}
-            setValue={() => onFunction('basic')}
-            title="Plano Básico - Grátis"
-            size={14}
-          />
+          {user.type === 'common' && (
+            <>
+              <Check
+                value={selected === 'basic' ? true : false}
+                setValue={() => onFunction('basic')}
+                title="Plano Básico - Grátis"
+                size={14}
+              />
 
-          <Check
-            value={selected === 'individual' ? true : false}
-            setValue={() => onFunction('individual')}
-            title="Plano Individual - R$5,99 / mês"
-            size={14}
-          />
+              <Check
+                value={selected === 'individual' ? true : false}
+                setValue={() => onFunction('individual')}
+                title="Plano Individual - R$6,99 / mês"
+                size={14}
+              />
+            </>
+          )}
+          {user.type === 'trainner' && (
+            <>
+              <Check
+                value={selected === 'basic' ? true : false}
+                setValue={() => onFunction('basic')}
+                title="Plano Básico - Grátis"
+                size={14}
+              />
+
+              <Check
+                value={selected === 'individual' ? true : false}
+                setValue={() => onFunction('individual')}
+                title="Plano Individual - R$12,99 / mês"
+                size={14}
+              />
+            </>
+          )}
         </View>
       </Modal>
     </Portal>

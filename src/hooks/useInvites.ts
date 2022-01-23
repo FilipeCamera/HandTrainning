@@ -77,7 +77,7 @@ const useInvites = () => {
       .doc()
       .set(data)
       .then((res: any) => {
-        onComplete(res);
+        onComplete(true);
       })
       .catch(error => onFail(error));
   };

@@ -1,4 +1,4 @@
-import {CardTrainner, Header, Space} from 'components';
+import {CardTrainner, Header} from 'components';
 
 import {RefreshControl} from 'react-native';
 import React, {useCallback, useState} from 'react';
@@ -21,33 +21,34 @@ const HomeTrainner = ({navigation, purchase}: any) => {
     wait(1000).then(() => setRefresh(false));
   }, []);
   return (
-    <HomeStyle
-      contentContainerStyle={{
-        flexGrow: 1,
-        padding: 16,
-        alignItems: 'center',
-        width: '100%',
-      }}
-      refreshControl={
-        <RefreshControl
-          progressViewOffset={50}
-          refreshing={refresh}
-          onRefresh={onRefresh}
-          colors={[Colors.red]}
-          progressBackgroundColor={Colors.background}
-        />
-      }
-      showsVerticalScrollIndicator={false}>
-      <Header navigation={navigation} refresh={refresh} />
+    <>
+      <HomeStyle
+        contentContainerStyle={{
+          flexGrow: 1,
+          padding: 16,
+          alignItems: 'center',
+          width: '100%',
+        }}
+        refreshControl={
+          <RefreshControl
+            progressViewOffset={50}
+            refreshing={refresh}
+            onRefresh={onRefresh}
+            colors={[Colors.red]}
+            progressBackgroundColor={Colors.background}
+          />
+        }
+        showsVerticalScrollIndicator={false}>
+        <Header navigation={navigation} refresh={refresh} />
 
-      <CardTrainner navigation={navigation} refresh={refresh} />
-      {!!user && user.plan === 'basic' && (
-        <>
-          <BannerAd size={BannerAdSize.FULL_BANNER} unitId={TestIds.BANNER} />
-          <Space marginVertical={4} />
-        </>
-      )}
-    </HomeStyle>
+        <CardTrainner navigation={navigation} refresh={refresh} />
+      </HomeStyle>
+      {!!user && user.plan === 'basic' ? (
+        <BannerAd size={BannerAdSize.FULL_BANNER} unitId={TestIds.BANNER} />
+      ) : !!user && user.plan === 'individual' && !purchase ? (
+        <BannerAd size={BannerAdSize.FULL_BANNER} unitId={TestIds.BANNER} />
+      ) : null}
+    </>
   );
 };
 

@@ -13,6 +13,7 @@ import {
 import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
+  BackHandler,
   Image,
   ScrollView,
   TextInput,
@@ -60,6 +61,18 @@ const Step2 = ({
   const [visible, setVisible] = useState(false);
   const [createTrainning, setCreateTrainning] = useState(false);
   const [exercise, setExercise] = useState<any>();
+
+  const handleBack = () => {
+    setTrainningStep('step1');
+    return true;
+  };
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      handleBack,
+    );
+    return () => backHandler.remove();
+  }, []);
 
   useEffect(() => {
     getUser({

@@ -12,6 +12,7 @@ import {useGetCategories, useGetExercises} from 'hooks';
 import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
+  BackHandler,
   ScrollView,
   TouchableOpacity,
   View,
@@ -59,6 +60,18 @@ const CreateTrainning = ({setState, setButtonTitle}: CreateTrainningProps) => {
     setCategories(list);
     setSelectedCategory(listSelected);
   };
+
+  const handleBack = () => {
+    setState('');
+    return true;
+  };
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      handleBack,
+    );
+    return () => backHandler.remove();
+  }, []);
 
   useEffect(() => {
     if (send === true) {

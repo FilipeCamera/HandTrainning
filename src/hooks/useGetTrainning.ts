@@ -8,6 +8,7 @@ const useGetTrainning = () => {
       .get()
       .then(querySnapshot => {
         const trainning = querySnapshot.docs.map(doc => doc.data());
+
         return onComplete(trainning[0]);
       })
       .catch(err => onFail(err));

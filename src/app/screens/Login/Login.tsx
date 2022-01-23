@@ -3,6 +3,7 @@ import {
   ButtonRed,
   ButtonText,
   Input,
+  ModalForgotPassword,
   Scroll,
   SimpleHeader,
   Space,
@@ -26,6 +27,7 @@ const Login = ({navigation}: any) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({email: '', password: ''});
+  const [visible, setVisible] = useState(false);
   const {getUserLogged, getUser} = useGetUser();
   const validate = () => {
     const emailValidated = emailValidate(email);
@@ -119,6 +121,7 @@ const Login = ({navigation}: any) => {
   };
   return (
     <Container>
+      <ModalForgotPassword visible={visible} setVisible={setVisible} />
       <Scroll>
         <SimpleHeader
           back
@@ -148,6 +151,7 @@ const Login = ({navigation}: any) => {
             weight={600}
             size={13}
             color={Colors.red}
+            onPress={() => setVisible(true)}
           />
         </View>
         <Space marginVertical={20} />
@@ -222,6 +226,7 @@ const Login = ({navigation}: any) => {
           color={Colors.textColorBlack}
           weight={500}
           size={15}
+          disabled
           notShadow
         />
       </Scroll>

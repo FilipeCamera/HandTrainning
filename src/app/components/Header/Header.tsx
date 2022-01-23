@@ -3,10 +3,13 @@ import {View, Image} from 'react-native';
 import {HeaderStyle, ButtonAlert} from './styles';
 
 import Alert from 'assets/svg/bell-outline.svg';
-import ArrowExchange from 'assets/svg/arrowExchange.svg';
+
 import {Space, Text} from 'components';
 import {useSelector} from 'react-redux';
 import Colors from '@styles';
+import {useGetWarnings} from 'hooks';
+import {setNotVisualize} from 'functions';
+import moment from 'moment';
 
 interface HeaderProps {
   navigation: any;
@@ -16,9 +19,21 @@ interface HeaderProps {
 const Header = ({navigation, refresh}: HeaderProps) => {
   const user = useSelector((state: any) => state.auth.user);
   const visualized = useSelector((state: any) => state.visualized.visualized);
-
+  const {getWarnings} = useGetWarnings();
   const [info, setInfo] = useState(false);
 
+  useEffect(() => {
+    getWarnings({
+      uid: user.uid,
+      onComplete: (warnings: any[]) => {
+        if (warnings.length !== 0) {
+          setInfo(true);
+          setNotVisualize();
+        }
+      },
+      onFail: err => {},
+    });
+  }, []);
   return (
     <>
       <HeaderStyle>

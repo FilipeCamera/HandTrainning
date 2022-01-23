@@ -6,6 +6,7 @@ import Telegram from 'assets/svg/telegram.svg';
 import {ButtonInviteStyle} from './styles';
 import {useInvites, useVerification} from 'hooks';
 import {showMessage} from 'react-native-flash-message';
+import {firestore} from 'firebase';
 
 interface ButtonProps {
   title: string;
@@ -17,6 +18,7 @@ interface ButtonProps {
   onPress: () => any;
   to: any;
   from: any;
+  name: string;
   inviteSend: any[];
   setInviteSend: any;
 }
@@ -29,6 +31,7 @@ const ButtonInvite = ({
   sendTitle,
   to,
   from,
+  name,
   inviteSend,
   setInviteSend,
 }: ButtonProps) => {
@@ -38,7 +41,7 @@ const ButtonInvite = ({
   );
   const {sendInvite} = useInvites();
   const {verifyUserAssociate} = useVerification();
-  const handleVerifySendInvite = (user, uid) => {
+  const handleVerifySendInvite = (user, uid, name) => {
     verifyUserAssociate({
       uid: uid,
       onComplete: (error: any, value: boolean) => {
@@ -50,6 +53,15 @@ const ButtonInvite = ({
             from: from,
             onComplete: () => {
               setInviteSend([...inviteSend, from]);
+              firestore()
+                .collection('warnings')
+                .doc()
+                .set({
+                  title: 'Você recebeu um convite',
+                  desc: `${name} enviou um convite`,
+                  from: uid,
+                  createdAt: firestore.FieldValue.serverTimestamp(),
+                });
               setSend(true);
             },
             onFail: err => {},
@@ -61,7 +73,7 @@ const ButtonInvite = ({
   };
   return (
     <ButtonInviteStyle
-      onPress={() => handleVerifySendInvite(to, from)}
+      onPress={() => handleVerifySendInvite(to, from, name)}
       disabled={
         inviteSend.length !== 0
           ? inviteSend.some(invite => invite === from)

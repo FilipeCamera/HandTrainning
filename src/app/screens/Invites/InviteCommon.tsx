@@ -19,9 +19,10 @@ import Notify from 'assets/svg/Notify.svg';
 
 import Colors from '@styles';
 import InviteProfile from './InviteProfile';
+import {userPersist} from 'functions';
 
 const InviteCommon = ({auth, navigation}: any) => {
-  const {searchUser, getUser} = useGetUser();
+  const {searchUser, getUser, getUserType} = useGetUser();
   const {getInvites, recusedInvite, acceptedInvite} = useInvites();
 
   const [userSearch, setUserSearch] = useState('');
@@ -52,7 +53,6 @@ const InviteCommon = ({auth, navigation}: any) => {
       });
     }
   }, [loading]);
-
   useEffect(() => {
     if (loading === true) {
       getInvites({
@@ -65,13 +65,24 @@ const InviteCommon = ({auth, navigation}: any) => {
         },
         onFail: (error: any) => {},
       });
+      getUserType({
+        type: 'trainner',
+        onComplete: (user: any) => {
+          setUsers(user);
+        },
+        onFail: (error: any) => console.log(error),
+      });
     }
   }, [loading]);
 
-  const handleAcceptOrRecused = (state: boolean, trainnerId: any) => {
+  const handleAcceptOrRecused = (
+    state: boolean,
+    trainner: any,
+    userName: string,
+  ) => {
     if (!state) {
       recusedInvite({
-        userId: trainnerId,
+        userId: trainner.uid,
         uid: auth.uid,
         onComplete: res => {
           if (res) {
@@ -79,10 +90,12 @@ const InviteCommon = ({auth, navigation}: any) => {
         },
         onFail: err => {},
       });
-      setUsers(users.filter((trainner: any) => trainner.uid !== trainnerId));
+      setUsers(
+        users.filter((trainners: any) => trainners.uid !== trainner.uid),
+      );
     } else {
       acceptedInvite({
-        userId: trainnerId,
+        userId: trainner.uid,
         uid: auth.uid,
         onComplete: res => {
           if (res) {
@@ -90,10 +103,37 @@ const InviteCommon = ({auth, navigation}: any) => {
               .collection('users')
               .doc(auth.uid)
               .update({
-                trainnerAssociate: trainnerId,
+                trainnerAssociate: trainner.uid,
                 updatedAt: firestore.FieldValue.serverTimestamp(),
               })
               .then(res => {
+                getUser({
+                  uid: auth.uid,
+                  onComplete: updateUser => {
+                    if (updateUser) {
+                      userPersist(updateUser);
+                    }
+                  },
+                  onFail: err => {},
+                });
+                firestore()
+                  .collection('users')
+                  .doc(trainner.uid)
+                  .update({
+                    commons: trainner.commons
+                      ? [...trainner.commons, auth.uid]
+                      : [auth.uid],
+                    updatedAt: firestore.FieldValue.serverTimestamp(),
+                  });
+                firestore()
+                  .collection('warnings')
+                  .doc()
+                  .set({
+                    title: 'Convite aceito',
+                    desc: `${userName} aceitou o seu convite.`,
+                    from: trainner.uid,
+                    createdAt: firestore.FieldValue.serverTimestamp(),
+                  });
                 setLoading(true);
               })
               .catch(err => {});
@@ -101,7 +141,7 @@ const InviteCommon = ({auth, navigation}: any) => {
         },
         onFail: err => {},
       });
-      setUsers(users.filter(trainner => trainner.uid !== trainnerId));
+      setUsers(users.filter(trainners => trainners.uid !== trainner.uid));
     }
   };
 
@@ -113,6 +153,7 @@ const InviteCommon = ({auth, navigation}: any) => {
         auth={auth}
         setInviteSend={setInviteSend}
         inviteSend={inviteSend}
+        handleAcceptOrRecused={handleAcceptOrRecused}
       />
     );
   }
@@ -239,6 +280,7 @@ const InviteCommon = ({auth, navigation}: any) => {
                   color={Colors.textColorWhite}
                   to={auth}
                   from={userInvite.uid}
+                  name={userInvite.name}
                   inviteSend={inviteSend}
                   setInviteSend={setInviteSend}
                 />
@@ -282,7 +324,12 @@ const InviteCommon = ({auth, navigation}: any) => {
 
                     elevation: 5,
                   }}>
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setUser({...userInvite, invite: true});
+                      setState('profile');
+                    }}
+                    style={{flexDirection: 'row', alignItems: 'center'}}>
                     <View style={{width: 50, height: 50, borderRadius: 25}}>
                       <Image
                         source={{uri: userInvite.avatar}}
@@ -316,7 +363,7 @@ const InviteCommon = ({auth, navigation}: any) => {
                         color={Colors.textColorBlack}
                       />
                     </View>
-                  </View>
+                  </TouchableOpacity>
                   <View
                     style={{
                       width: 70,
@@ -330,7 +377,7 @@ const InviteCommon = ({auth, navigation}: any) => {
                       size={11}
                       color={Colors.textColorWhite}
                       onPress={() =>
-                        handleAcceptOrRecused(true, userInvite.uid)
+                        handleAcceptOrRecused(true, userInvite, auth.name)
                       }
                     />
                     <Space marginVertical={5} />
@@ -340,7 +387,7 @@ const InviteCommon = ({auth, navigation}: any) => {
                       size={11}
                       color={Colors.red}
                       onPress={() =>
-                        handleAcceptOrRecused(false, userInvite.uid)
+                        handleAcceptOrRecused(false, userInvite, auth.name)
                       }
                     />
                   </View>

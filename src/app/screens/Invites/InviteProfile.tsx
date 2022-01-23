@@ -3,15 +3,14 @@ import {Image, View, TouchableOpacity, BackHandler} from 'react-native';
 import {InvitesProfileStyle} from './styles';
 
 import BackRedHeader from 'assets/svg/RedTopBack.svg';
-import LocationIcon from 'assets/svg/locationIcon.svg';
+
 import AcademicIcon from 'assets/svg/academicIcon.svg';
 import SkillIcon from 'assets/svg/skillLevelIcon.svg';
 import SpecsIcon from 'assets/svg/specsIcon.svg';
 import BackIcon from 'assets/svg/arrowBackWhite.svg';
 import {Button, ButtonGranInvite, ButtonText, Space, Text} from 'components';
-import {firestore} from 'firebase';
+
 import Colors from '@styles';
-import {useGetUser} from 'hooks';
 
 interface InviteProfileProps {
   profile: any;
@@ -99,7 +98,7 @@ const InviteProfile = ({
             backgroundColor: Colors.red,
           }}>
           <Text
-            title={profile.type === 'common' ? 'aluno' : 'treinador'}
+            title={profile.type === 'common' ? 'Aluno(a)' : 'Treinador(a)'}
             size={11}
             weight={600}
             color={Colors.textColorWhite}
@@ -307,6 +306,7 @@ const InviteProfile = ({
             color={Colors.textColorWhite}
             to={auth}
             from={profile.uid}
+            name={profile.name}
             setSendInvite={setInviteSend}
             sendInviteId={inviteSend}
           />
@@ -320,14 +320,7 @@ const InviteProfile = ({
             weight={500}
             color={Colors.textColorWhite}
             background={Colors.red}
-            onPress={() =>
-              handleAcceptOrRecused(
-                true,
-                profile.uid,
-                profile.type,
-                profile.userAssociate,
-              )
-            }
+            onPress={() => handleAcceptOrRecused(true, profile.uid, auth.name)}
           />
           <Space marginVertical={8} />
           <ButtonText
@@ -335,14 +328,7 @@ const InviteProfile = ({
             size={14}
             weight={500}
             color={Colors.redMedium}
-            onPress={() =>
-              handleAcceptOrRecused(
-                false,
-                profile.uid,
-                profile.type,
-                profile.userAssociate,
-              )
-            }
+            onPress={() => handleAcceptOrRecused(false, profile.uid, auth.name)}
           />
           <Space marginVertical={8} />
         </>

@@ -9,7 +9,7 @@ import {
   ButtonText,
 } from 'components';
 import {firestore} from 'firebase';
-import {useGetUser, useInvites} from 'hooks';
+import {useGetUser, useInvites, useVerification} from 'hooks';
 import React, {useState, useEffect} from 'react';
 import {ActivityIndicator, Image, TouchableOpacity, View} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
@@ -17,11 +17,13 @@ import {InvitesStyle} from './styles';
 
 import Colors from '@styles';
 import InviteProfile from './InviteProfile';
+import {userPersist} from 'functions';
 
 const InviteTrainner = ({auth, navigation}: any) => {
-  const {searchUser, getUserType} = useGetUser();
+  const {searchUser, getUserType, getUser} = useGetUser();
   const {getInvites, recusedInvite, acceptedInvite} = useInvites();
-
+  const {verifyUserAssociate} = useVerification();
+  const [limit, setLimit] = useState('');
   const [userSearch, setUserSearch] = useState('');
   const [usersSearch, setUsersSearch] = useState<any>([]);
   const [users, setUsers] = useState<any[]>([]);
@@ -32,6 +34,7 @@ const InviteTrainner = ({auth, navigation}: any) => {
   const [user, setUser] = useState<any>();
 
   useEffect(() => {
+    console.log(auth);
     if (loading) {
       getInvites({
         uid: auth.uid,
@@ -50,10 +53,23 @@ const InviteTrainner = ({auth, navigation}: any) => {
         },
         onFail: (error: any) => console.log(error),
       });
+      verifyUserAssociate({
+        uid: auth.uid,
+        onComplete: (desc, value) => {
+          if (value) {
+            setLimit(desc);
+          }
+        },
+        onFail: err => {},
+      });
     }
   }, [loading]);
 
-  const handleAcceptOrRecused = (state: boolean, commonId: any) => {
+  const handleAcceptOrRecused = (
+    state: boolean,
+    commonId: any,
+    userName: string,
+  ) => {
     if (!state) {
       recusedInvite({
         userId: commonId,
@@ -75,10 +91,22 @@ const InviteTrainner = ({auth, navigation}: any) => {
               .collection('users')
               .doc(auth.uid)
               .update({
-                commons: [...auth.commons, commonId],
+                commons:
+                  auth.commons !== undefined
+                    ? [...auth.commons, commonId]
+                    : [commonId],
                 updatedAt: firestore.FieldValue.serverTimestamp(),
               })
               .then(res => {
+                getUser({
+                  uid: auth.uid,
+                  onComplete: updateUser => {
+                    if (updateUser) {
+                      userPersist(updateUser);
+                    }
+                  },
+                  onFail: err => {},
+                });
                 firestore()
                   .collection('users')
                   .doc(commonId)
@@ -93,6 +121,15 @@ const InviteTrainner = ({auth, navigation}: any) => {
                         trainnerAssociate: auth.uid,
                         updatedAt: firestore.FieldValue.serverTimestamp(),
                       });
+                      firestore()
+                        .collection('warnings')
+                        .doc()
+                        .set({
+                          title: 'Convite aceito',
+                          desc: `${userName} aceitou o seu convite.`,
+                          from: commonId,
+                          createdAt: firestore.FieldValue.serverTimestamp(),
+                        });
                       setUsers(users.filter(user => user.uid !== commonId));
                     }
                   });
@@ -104,7 +141,13 @@ const InviteTrainner = ({auth, navigation}: any) => {
       });
     }
   };
-
+  if (limit !== '') {
+    return (
+      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <Text title={limit} size={15} weight={500} color={Colors.gray} />
+      </View>
+    );
+  }
   if (state === 'profile') {
     return (
       <InviteProfile
@@ -113,6 +156,7 @@ const InviteTrainner = ({auth, navigation}: any) => {
         auth={auth}
         setInviteSend={setInviteSend}
         inviteSend={inviteSend}
+        handleAcceptOrRecused={handleAcceptOrRecused}
       />
     );
   }
@@ -223,6 +267,7 @@ const InviteTrainner = ({auth, navigation}: any) => {
                   color={Colors.textColorWhite}
                   to={auth}
                   from={userInvite.uid}
+                  name={auth.name}
                   inviteSend={inviteSend}
                   setInviteSend={setInviteSend}
                 />
@@ -265,7 +310,7 @@ const InviteTrainner = ({auth, navigation}: any) => {
                   }}>
                   <TouchableOpacity
                     onPress={() => {
-                      setUser(userInvite);
+                      setUser({...userInvite, invite: true});
                       setState('profile');
                     }}
                     style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -312,7 +357,7 @@ const InviteTrainner = ({auth, navigation}: any) => {
                       size={11}
                       color={Colors.textColorWhite}
                       onPress={() =>
-                        handleAcceptOrRecused(true, userInvite.uid)
+                        handleAcceptOrRecused(true, userInvite.uid, auth.name)
                       }
                     />
                     <Space marginVertical={5} />
@@ -322,7 +367,7 @@ const InviteTrainner = ({auth, navigation}: any) => {
                       size={11}
                       color={Colors.red}
                       onPress={() =>
-                        handleAcceptOrRecused(false, userInvite.uid)
+                        handleAcceptOrRecused(false, userInvite.uid, auth.name)
                       }
                     />
                   </View>

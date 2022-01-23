@@ -18,6 +18,7 @@ interface ButtonProps {
   google: boolean;
   apple: boolean;
   facebook: boolean;
+  disabled?: boolean;
   notShadow: boolean;
 }
 
@@ -32,11 +33,13 @@ const Button = ({
   apple,
   facebook,
   notShadow,
+  disabled,
   onPress,
 }: ButtonProps) => {
   return (
     <ButtonStyle
       onPress={onPress}
+      disabled={disabled}
       background={background}
       border={border}
       style={notShadow ? '' : styles.shadow}>

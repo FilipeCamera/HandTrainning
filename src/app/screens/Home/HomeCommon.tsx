@@ -89,52 +89,48 @@ const HomeCommon = ({navigation, purchase}: any) => {
   }, [loading, refresh]);
 
   return (
-    <HomeStyle
-      contentContainerStyle={{
-        flexGrow: 1,
-        padding: 16,
-        alignItems: 'center',
-        width: '100%',
-      }}
-      refreshControl={
-        <RefreshControl
-          progressViewOffset={50}
-          refreshing={refresh}
-          onRefresh={onRefresh}
-          colors={[Colors.red]}
-          progressBackgroundColor={Colors.background}
+    <>
+      <HomeStyle
+        contentContainerStyle={{
+          flexGrow: 1,
+          padding: 16,
+          alignItems: 'center',
+          width: '100%',
+        }}
+        refreshControl={
+          <RefreshControl
+            progressViewOffset={50}
+            refreshing={refresh}
+            onRefresh={onRefresh}
+            colors={[Colors.red]}
+            progressBackgroundColor={Colors.background}
+          />
+        }
+        showsVerticalScrollIndicator={false}>
+        <Header navigation={navigation} />
+        <Modal
+          visible={visible}
+          setVisible={setVisible}
+          trainner={trainner}
+          loading={loading}
+          send={send}
+          title="Escolha um novo treinador"
+          onFunction={(e: string | any) => handleRequestTrainner(e)}
         />
-      }
-      showsVerticalScrollIndicator={false}>
-      <Header navigation={navigation} />
-      <Modal
-        visible={visible}
-        setVisible={setVisible}
-        trainner={trainner}
-        loading={loading}
-        send={send}
-        title="Escolha um novo treinador"
-        onFunction={(e: string | any) => handleRequestTrainner(e)}
-      />
-      <CardCommon
-        navigation={navigation}
-        setVisible={setVisible}
-        setSend={setSend}
-        setLoading={setLoading}
-        refresh={refresh}
-      />
+        <CardCommon
+          navigation={navigation}
+          setVisible={setVisible}
+          setSend={setSend}
+          setLoading={setLoading}
+          refresh={refresh}
+        />
+      </HomeStyle>
       {!!user && user.plan === 'basic' ? (
-        <>
-          <BannerAd size={BannerAdSize.FULL_BANNER} unitId={TestIds.BANNER} />
-          <Space marginVertical={4} />
-        </>
+        <BannerAd size={BannerAdSize.FULL_BANNER} unitId={TestIds.BANNER} />
       ) : !!user && user.plan === 'individual' && !purchase ? (
-        <>
-          <BannerAd size={BannerAdSize.FULL_BANNER} unitId={TestIds.BANNER} />
-          <Space marginVertical={4} />
-        </>
+        <BannerAd size={BannerAdSize.FULL_BANNER} unitId={TestIds.BANNER} />
       ) : null}
-    </HomeStyle>
+    </>
   );
 };
 

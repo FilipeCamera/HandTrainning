@@ -1,18 +1,11 @@
 import {useInterstitialAd, TestIds} from '@react-native-admob/admob';
-import {purchased, listAvailableSubscriptions} from 'payments';
+import {purchased} from 'payments';
 import React, {useEffect, useState} from 'react';
-import {Platform} from 'react-native';
+import {BackHandler} from 'react-native';
+
 import {useSelector} from 'react-redux';
 import HomeCommon from './HomeCommon';
 import HomeTrainner from './HomeTrainner';
-
-const itemsSubs = Platform.select({
-  android: [
-    'android.test.purchased',
-    'android.test.canceled',
-    'android.test.refunded',
-  ],
-});
 
 const defaultSubId = 'android.test.purchased';
 
@@ -28,9 +21,20 @@ const Home = ({navigation}: any) => {
     setPurchase(res);
   };
   useEffect(() => {
-    listAvailableSubscriptions(itemsSubs);
     loadPurchase();
   }, [purchase]);
+
+  const handleExitApp = () => {
+    BackHandler.exitApp();
+    return true;
+  };
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      handleExitApp,
+    );
+    return () => backHandler.remove();
+  }, []);
 
   useEffect(() => {
     if ((user.plan === 'basic' && adLoaded) || (!purchase && adLoaded)) {

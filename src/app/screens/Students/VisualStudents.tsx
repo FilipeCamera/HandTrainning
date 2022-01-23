@@ -52,7 +52,7 @@ const VisualStudents = ({
   setButtonTitle,
   setMode,
 }: VisualStudentsProps) => {
-  const {getTrainning} = useGetTrainning();
+  const {getTrainningId, getTrainning} = useGetTrainning();
   const getCategories = useGetCategories();
   const [trainning, setTrainning] = useState<any>();
   const [visible, setVisible] = useState(false);
@@ -75,6 +75,7 @@ const VisualStudents = ({
       uid: common.uid,
       onComplete: trainningUser => {
         const list: any = [];
+
         if (trainningUser) {
           setTrainning(trainningUser);
           getCategories({
@@ -94,6 +95,8 @@ const VisualStudents = ({
             },
             onFail: err => {},
           });
+        } else {
+          setLoading(false);
         }
       },
       onFail: err => {},
@@ -118,26 +121,26 @@ const VisualStudents = ({
   const handleUpdate = () => {
     const verified = verify();
     if (verified) {
-      firestore()
-        .collection('trainnings')
-        .where('commonId', '==', common.uid)
-        .get()
-        .then(querySnapshot => {
-          const trainningId = querySnapshot.docs.map(doc => doc.id);
-          firestore()
-            .collection('trainnings')
-            .doc(trainningId[0])
-            .update(trainning)
-            .then(res => {
-              showMessage({
-                type: 'success',
-                message: 'Treino alterado com sucesso!',
-              });
-              setState('');
-            })
-            .catch(err => {});
-        })
-        .catch(err => []);
+      getTrainningId({
+        uid: common.uid,
+        onComplete: trainningId => {
+          if (trainningId) {
+            firestore()
+              .collection('trainnings')
+              .doc(trainningId)
+              .update(trainning)
+              .then(res => {
+                showMessage({
+                  type: 'success',
+                  message: 'Treino alterado com sucesso!',
+                });
+                setState('');
+              })
+              .catch(err => {});
+          }
+        },
+        onFail: err => {},
+      });
     } else {
       showMessage({
         type: 'warning',
@@ -204,6 +207,16 @@ const VisualStudents = ({
       {!!loading && (
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
           <ActivityIndicator size="large" color={Colors.red} />
+        </View>
+      )}
+      {!loading && !trainning && (
+        <View>
+          <Text
+            title="Aluno ainda não tem um treino"
+            size={15}
+            weight={500}
+            color={Colors.gray}
+          />
         </View>
       )}
       {!loading && !!trainning && (

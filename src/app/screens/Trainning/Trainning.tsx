@@ -23,7 +23,6 @@ import Refresh from 'assets/svg/refresh.svg';
 import {
   ActivityIndicator,
   Image,
-  Platform,
   ScrollView,
   TouchableOpacity,
   View,
@@ -39,16 +38,6 @@ import {firestore} from 'firebase';
 import {showMessage} from 'react-native-flash-message';
 import {BannerAd, BannerAdSize, TestIds} from '@react-native-admob/admob';
 import {listAvailableSubscriptions, purchased} from 'payments';
-
-const itemsSubs = Platform.select({
-  android: [
-    'android.test.purchased',
-    'android.test.canceled',
-    'android.test.refunded',
-  ],
-});
-
-const defaultSubId = 'android.test.purchased';
 
 const Trainning = ({navigation}: any) => {
   const user = useSelector((state: any) => state.auth.user);
@@ -75,11 +64,10 @@ const Trainning = ({navigation}: any) => {
   const [observation, setObservation] = useState('');
 
   const loadPurchase = async () => {
-    const res = await purchased(defaultSubId);
+    const res = await purchased(user.planId);
     setPurchase(res);
   };
   useEffect(() => {
-    listAvailableSubscriptions(itemsSubs);
     loadPurchase();
   }, [purchase]);
 
@@ -211,566 +199,571 @@ const Trainning = ({navigation}: any) => {
   };
 
   return (
-    <TrainningStyle
-      contentContainerStyle={{
-        flexGrow: 1,
-        padding: 16,
-        alignItems: 'center',
-        width: '100%',
-      }}
-      showsVerticalScrollIndicator={false}>
-      <Header navigation={navigation} />
-      <Modal
-        visible={visibleSelect}
-        setVisible={setVisibleSelect}
-        trainner={trainner}
-        loading={loading}
-        send={send}
-        title="Escolha um novo treinador"
-        onFunction={(e: string | any) => handleRequestTrainner(e)}
-      />
-      <ModalObservation
-        visible={visibleObs}
-        setVisible={setVisibleObs}
-        title={title}
-        observation={observation}
-      />
-      <ModalScore
-        visible={scoreVisible}
-        setVisible={setScoreVisible}
-        value={scoreValue}
-        setValue={setScoreValue}
-        onFunction={handleScore}
-        title="Avaliação do seu treino"
-        desc="Sua nota vai ser muito importante para a pontuação do treinador"
-      />
-      <ModalVisualTrainning
-        visible={visible}
-        setVisible={setVisible}
-        title={selectedExercise ? selectedExercise.name : ''}
-        image={selectedExercise ? selectedExercise.url : ''}
-        imageTwo={
-          selectedExercise
-            ? selectedExercise.urlTwo
+    <>
+      <TrainningStyle
+        contentContainerStyle={{
+          flexGrow: 1,
+          padding: 16,
+          alignItems: 'center',
+          width: '100%',
+        }}
+        showsVerticalScrollIndicator={false}>
+        <Header navigation={navigation} />
+        <Modal
+          visible={visibleSelect}
+          setVisible={setVisibleSelect}
+          trainner={trainner}
+          loading={loading}
+          send={send}
+          title="Escolha um novo treinador"
+          onFunction={(e: string | any) => handleRequestTrainner(e)}
+        />
+        <ModalObservation
+          visible={visibleObs}
+          setVisible={setVisibleObs}
+          title={title}
+          observation={observation}
+        />
+        <ModalScore
+          visible={scoreVisible}
+          setVisible={setScoreVisible}
+          value={scoreValue}
+          setValue={setScoreValue}
+          onFunction={handleScore}
+          title="Avaliação do seu treino"
+          desc="Sua nota vai ser muito importante para a pontuação do treinador"
+        />
+        <ModalVisualTrainning
+          visible={visible}
+          setVisible={setVisible}
+          title={selectedExercise ? selectedExercise.name : ''}
+          image={selectedExercise ? selectedExercise.url : ''}
+          imageTwo={
+            selectedExercise
               ? selectedExercise.urlTwo
+                ? selectedExercise.urlTwo
+                : ''
               : ''
-            : ''
-        }
-      />
-      {!!loading && (
-        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-          <ActivityIndicator size="large" color={Colors.red} />
-        </View>
-      )}
-      {!loading && !!trainning && (
-        <>
-          <Space marginVertical={20} />
-          <Card>
-            {!!trainning && (
+          }
+        />
+        {!!loading && (
+          <View
+            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            <ActivityIndicator size="large" color={Colors.red} />
+          </View>
+        )}
+        {!loading && !!trainning && (
+          <>
+            <Space marginVertical={20} />
+            <Card>
+              {!!trainning && (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'flex-end',
+                  }}>
+                  <Text
+                    title={`${moment
+                      .unix(trainning.expiredTrainning.seconds)
+                      .format('[Expira em] DD [de] MMM [de] YYYY')}`}
+                    weight={600}
+                    size={11}
+                    color={Colors.textGrayLight}
+                  />
+                  <Clock style={{marginLeft: 5}} />
+                </View>
+              )}
+              <Space marginVertical={5} />
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <View style={{width: 30, height: 30, borderRadius: 15}}>
+                  <Image
+                    source={{uri: trainner.avatar}}
+                    style={{height: '100%', width: '100%', borderRadius: 9999}}
+                  />
+                </View>
+                <Space marginHorizontal={4} />
+                <Text
+                  title={trainner.name}
+                  size={14}
+                  weight={500}
+                  color={Colors.inputColorText}
+                />
+                <Space marginHorizontal={12} />
+                <TouchableOpacity onPress={() => setScoreVisible(true)}>
+                  <StarOutlineIcon />
+                </TouchableOpacity>
+                <Space marginHorizontal={4} />
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: Colors.backgroundLight,
+                    padding: 8,
+                    borderRadius: 9999,
+                  }}
+                  onPress={() => setVisibleSelect(true)}>
+                  <Refresh width="14px" height="14px" />
+                </TouchableOpacity>
+              </View>
+              <Space marginVertical={5} />
+              {!!categories && (
+                <ScrollView
+                  horizontal={true}
+                  showsHorizontalScrollIndicator={false}>
+                  {categories.length !== 0 &&
+                    categories.map((category, index) => {
+                      return (
+                        <TouchableOpacity
+                          key={category.label}
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor:
+                              index === selected
+                                ? Colors.lightRed2
+                                : Colors.background,
+                            borderRadius: 5,
+                            paddingVertical: 2,
+                            paddingHorizontal: 8,
+                            marginRight: 8,
+                          }}
+                          onPress={() => handleSelect(index, category.value)}>
+                          <Text
+                            title={category.label}
+                            size={14}
+                            weight={500}
+                            color={
+                              index === selected ? Colors.red : Colors.gray
+                            }
+                          />
+                        </TouchableOpacity>
+                      );
+                    })}
+                </ScrollView>
+              )}
+              <Space marginVertical={8} />
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <View style={{flex: 1}}>
+                  <View style={{height: 20}} />
+                </View>
+                <View
+                  style={{
+                    width: 35,
+                    alignItems: 'center',
+                  }}>
+                  <WeightSmallIcon />
+                  <Space marginVertical={2} />
+                </View>
+                <Space marginHorizontal={2} />
+                <View style={{width: 35, alignItems: 'center'}}>
+                  <SerieIcon />
+                  <Space marginVertical={2} />
+                </View>
+                <Space marginHorizontal={2} />
+                <View style={{width: 35, alignItems: 'center'}}>
+                  <RepeatIcon />
+                  <Space marginVertical={2} />
+                </View>
+                <Space marginHorizontal={2} />
+                <View style={{width: 35, alignItems: 'center'}}>
+                  <DurationIcon />
+                  <Space marginVertical={2} />
+                </View>
+                <Space marginHorizontal={2} />
+                <View style={{width: 35, alignItems: 'center'}}>
+                  <InstructionIcon />
+                  <Space marginVertical={2} />
+                </View>
+              </View>
+              <View style={{flexDirection: 'column', alignItems: 'flex-start'}}>
+                {!!trainning &&
+                  trainning.trainning.length !== 0 &&
+                  trainning.trainning.map(exercise => {
+                    if (exercise.category === selectedCategory) {
+                      return (
+                        <View
+                          key={exercise.name}
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            marginBottom: 8,
+                          }}>
+                          <TouchableOpacity
+                            style={{flex: 1}}
+                            onPress={() => {
+                              setSelectedExercise(exercise);
+                              setVisible(true);
+                            }}>
+                            <Text
+                              title={exercise.name}
+                              size={14}
+                              weight={500}
+                              color={Colors.inputColorText}
+                              numberOfLines={2}
+                              ellipsizeMode="tail"
+                            />
+                          </TouchableOpacity>
+                          <View
+                            style={{
+                              width: 35,
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              backgroundColor: Colors.blueMedium,
+                              borderRadius: 8,
+                              paddingVertical: 8,
+                            }}>
+                            <Text
+                              size={14}
+                              title={exercise.type.weight}
+                              weight={500}
+                            />
+                          </View>
+                          <Space marginHorizontal={2} />
+                          <View
+                            style={{
+                              width: 35,
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              backgroundColor: Colors.blueLight,
+                              borderRadius: 8,
+                              paddingVertical: 8,
+                            }}>
+                            <Text
+                              size={14}
+                              title={exercise.type.series}
+                              weight={500}
+                            />
+                          </View>
+                          <Space marginHorizontal={2} />
+                          <View
+                            style={{
+                              width: 35,
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              backgroundColor: Colors.blueLight,
+                              borderRadius: 8,
+                              paddingVertical: 8,
+                            }}>
+                            <Text
+                              size={14}
+                              title={exercise.type.repeat}
+                              weight={500}
+                            />
+                          </View>
+                          <Space marginHorizontal={2} />
+                          <View
+                            style={{
+                              width: 35,
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              backgroundColor: Colors.blueLight,
+                              borderRadius: 8,
+                              paddingVertical: 8,
+                            }}>
+                            <Text
+                              size={14}
+                              title={exercise.type.duration}
+                              weight={500}
+                            />
+                          </View>
+                          <Space marginHorizontal={2} />
+                          <TouchableOpacity
+                            onPress={() => {
+                              if (exercise.instruction.value === 'BST') {
+                                setTitle('Exercício');
+                                setObservation(exercise.instruction.selected);
+                                setVisibleObs(true);
+                              } else {
+                                setTitle('Observação');
+                                setObservation(exercise.instruction.desc);
+                                setVisibleObs(true);
+                              }
+                            }}
+                            disabled={
+                              exercise.instruction.value === 'BST' ||
+                              exercise.instruction.value === 'OBS'
+                                ? false
+                                : true
+                            }
+                            style={{
+                              width: 35,
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              backgroundColor:
+                                exercise.instruction.value === 'DRP'
+                                  ? Colors.grayLight
+                                  : exercise.instruction.value === 'PIR'
+                                  ? Colors.greenLight
+                                  : exercise.instruction.value === 'BST'
+                                  ? Colors.lightRed
+                                  : exercise.instruction.value === 'OBS'
+                                  ? Colors.backYellowLight
+                                  : exercise.instruction.value === 'MIN'
+                                  ? Colors.colorBackRgba
+                                  : exercise.instruction.value === 'ADP'
+                                  ? Colors.lightOrange
+                                  : Colors.background,
+                              borderRadius: 8,
+                            }}>
+                            <View
+                              style={{
+                                borderRadius: 8,
+                                paddingVertical: 8,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                              }}>
+                              <Text
+                                title={
+                                  exercise.instruction.value !== ''
+                                    ? exercise.instruction.value
+                                    : ''
+                                }
+                                size={13}
+                                weight={600}
+                                color={
+                                  exercise.instruction.value === 'DRP'
+                                    ? Colors.textGrayMedium
+                                    : exercise.instruction.value === 'PIR'
+                                    ? Colors.green
+                                    : exercise.instruction.value === 'BST'
+                                    ? Colors.redDark
+                                    : exercise.instruction.value === 'OBS'
+                                    ? Colors.textYellow
+                                    : exercise.instruction.value === 'MIN'
+                                    ? Colors.textColorRXC
+                                    : exercise.instruction.value === 'ADP'
+                                    ? Colors.orange
+                                    : Colors.inputColorText
+                                }
+                              />
+                            </View>
+                          </TouchableOpacity>
+                        </View>
+                      );
+                    }
+                  })}
+              </View>
+            </Card>
+            <Space marginVertical={20} />
+            <Card>
               <View
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
-                  justifyContent: 'flex-end',
+                  justifyContent: 'space-around',
                 }}>
-                <Text
-                  title={`${moment
-                    .unix(trainning.expiredTrainning.seconds)
-                    .format('[Expira em] DD [de] MMM [de] YYYY')}`}
-                  weight={600}
-                  size={11}
-                  color={Colors.textGrayLight}
-                />
-                <Clock style={{marginLeft: 5}} />
+                <View
+                  style={{
+                    width: 45,
+                    height: 25,
+                    borderRadius: 8,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: Colors.lightRed,
+                  }}>
+                  <Text
+                    title="BST"
+                    weight={600}
+                    color={Colors.redDark}
+                    size={14}
+                  />
+                </View>
+                <View style={{width: '80%'}}>
+                  <Text
+                    title="Realização de dois exercícios sem descanso entre eles para o mesmo músculo"
+                    weight={500}
+                    color={Colors.inputColorText}
+                    size={14}
+                  />
+                </View>
               </View>
-            )}
-            <Space marginVertical={5} />
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <View style={{width: 30, height: 30, borderRadius: 15}}>
-                <Image
-                  source={{uri: trainner.avatar}}
-                  style={{height: '100%', width: '100%', borderRadius: 9999}}
-                />
-              </View>
-              <Space marginHorizontal={4} />
-              <Text
-                title={trainner.name}
-                size={14}
-                weight={500}
-                color={Colors.inputColorText}
-              />
-              <Space marginHorizontal={12} />
-              <TouchableOpacity onPress={() => setScoreVisible(true)}>
-                <StarOutlineIcon />
-              </TouchableOpacity>
-              <Space marginHorizontal={4} />
-              <TouchableOpacity
-                style={{
-                  backgroundColor: Colors.backgroundLight,
-                  padding: 8,
-                  borderRadius: 9999,
-                }}
-                onPress={() => setVisibleSelect(true)}>
-                <Refresh width="14px" height="14px" />
-              </TouchableOpacity>
-            </View>
-            <Space marginVertical={5} />
-            {!!categories && (
-              <ScrollView
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}>
-                {categories.length !== 0 &&
-                  categories.map((category, index) => {
-                    return (
-                      <TouchableOpacity
-                        key={category.label}
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          backgroundColor:
-                            index === selected
-                              ? Colors.lightRed2
-                              : Colors.background,
-                          borderRadius: 5,
-                          paddingVertical: 2,
-                          paddingHorizontal: 8,
-                          marginRight: 8,
-                        }}
-                        onPress={() => handleSelect(index, category.value)}>
-                        <Text
-                          title={category.label}
-                          size={14}
-                          weight={500}
-                          color={index === selected ? Colors.red : Colors.gray}
-                        />
-                      </TouchableOpacity>
-                    );
-                  })}
-              </ScrollView>
-            )}
-            <Space marginVertical={8} />
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <View style={{flex: 1}}>
-                <View style={{height: 20}} />
-              </View>
+              <Space marginVertical={8} />
               <View
                 style={{
-                  width: 35,
+                  flexDirection: 'row',
                   alignItems: 'center',
+                  justifyContent: 'space-around',
                 }}>
-                <WeightSmallIcon />
-                <Space marginVertical={2} />
+                <View
+                  style={{
+                    width: 45,
+                    height: 25,
+                    borderRadius: 8,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: Colors.greenLight,
+                  }}>
+                  <Text
+                    title="PIR"
+                    weight={600}
+                    color={Colors.green}
+                    size={14}
+                  />
+                </View>
+                <View style={{width: '80%'}}>
+                  <Text
+                    title="Realizar exercício com o peso mais baixo e ir aumentando a cada série, reduzindo o número de repetições. (Pode ser feito o contrário)"
+                    weight={500}
+                    color={Colors.inputColorText}
+                    size={14}
+                  />
+                </View>
               </View>
-              <Space marginHorizontal={2} />
-              <View style={{width: 35, alignItems: 'center'}}>
-                <SerieIcon />
-                <Space marginVertical={2} />
-              </View>
-              <Space marginHorizontal={2} />
-              <View style={{width: 35, alignItems: 'center'}}>
-                <RepeatIcon />
-                <Space marginVertical={2} />
-              </View>
-              <Space marginHorizontal={2} />
-              <View style={{width: 35, alignItems: 'center'}}>
-                <DurationIcon />
-                <Space marginVertical={2} />
-              </View>
-              <Space marginHorizontal={2} />
-              <View style={{width: 35, alignItems: 'center'}}>
-                <InstructionIcon />
-                <Space marginVertical={2} />
-              </View>
-            </View>
-            <View style={{flexDirection: 'column', alignItems: 'flex-start'}}>
-              {!!trainning &&
-                trainning.trainning.length !== 0 &&
-                trainning.trainning.map(exercise => {
-                  if (exercise.category === selectedCategory) {
-                    return (
-                      <View
-                        key={exercise.name}
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          marginBottom: 8,
-                        }}>
-                        <TouchableOpacity
-                          style={{flex: 1}}
-                          onPress={() => {
-                            setSelectedExercise(exercise);
-                            setVisible(true);
-                          }}>
-                          <Text
-                            title={exercise.name}
-                            size={14}
-                            weight={500}
-                            color={Colors.inputColorText}
-                            numberOfLines={2}
-                            ellipsizeMode="tail"
-                          />
-                        </TouchableOpacity>
-                        <View
-                          style={{
-                            width: 35,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: Colors.blueMedium,
-                            borderRadius: 8,
-                            paddingVertical: 8,
-                          }}>
-                          <Text
-                            size={14}
-                            title={exercise.type.weight}
-                            weight={500}
-                          />
-                        </View>
-                        <Space marginHorizontal={2} />
-                        <View
-                          style={{
-                            width: 35,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: Colors.blueLight,
-                            borderRadius: 8,
-                            paddingVertical: 8,
-                          }}>
-                          <Text
-                            size={14}
-                            title={exercise.type.series}
-                            weight={500}
-                          />
-                        </View>
-                        <Space marginHorizontal={2} />
-                        <View
-                          style={{
-                            width: 35,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: Colors.blueLight,
-                            borderRadius: 8,
-                            paddingVertical: 8,
-                          }}>
-                          <Text
-                            size={14}
-                            title={exercise.type.repeat}
-                            weight={500}
-                          />
-                        </View>
-                        <Space marginHorizontal={2} />
-                        <View
-                          style={{
-                            width: 35,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: Colors.blueLight,
-                            borderRadius: 8,
-                            paddingVertical: 8,
-                          }}>
-                          <Text
-                            size={14}
-                            title={exercise.type.duration}
-                            weight={500}
-                          />
-                        </View>
-                        <Space marginHorizontal={2} />
-                        <TouchableOpacity
-                          onPress={() => {
-                            if (exercise.instruction.value === 'BST') {
-                              setTitle('Exercício');
-                              setObservation(exercise.instruction.selected);
-                              setVisibleObs(true);
-                            } else {
-                              setTitle('Observação');
-                              setObservation(exercise.instruction.desc);
-                              setVisibleObs(true);
-                            }
-                          }}
-                          disabled={
-                            exercise.instruction.value === 'BST' ||
-                            exercise.instruction.value === 'OBS'
-                              ? false
-                              : true
-                          }
-                          style={{
-                            width: 35,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor:
-                              exercise.instruction.value === 'DRP'
-                                ? Colors.grayLight
-                                : exercise.instruction.value === 'PIR'
-                                ? Colors.greenLight
-                                : exercise.instruction.value === 'BST'
-                                ? Colors.lightRed
-                                : exercise.instruction.value === 'OBS'
-                                ? Colors.backYellowLight
-                                : exercise.instruction.value === 'MIN'
-                                ? Colors.colorBackRgba
-                                : exercise.instruction.value === 'ADP'
-                                ? Colors.lightOrange
-                                : Colors.background,
-                            borderRadius: 8,
-                          }}>
-                          <View
-                            style={{
-                              borderRadius: 8,
-                              paddingVertical: 8,
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                            }}>
-                            <Text
-                              title={
-                                exercise.instruction.value !== ''
-                                  ? exercise.instruction.value
-                                  : ''
-                              }
-                              size={13}
-                              weight={600}
-                              color={
-                                exercise.instruction.value === 'DRP'
-                                  ? Colors.textGrayMedium
-                                  : exercise.instruction.value === 'PIR'
-                                  ? Colors.green
-                                  : exercise.instruction.value === 'BST'
-                                  ? Colors.redDark
-                                  : exercise.instruction.value === 'OBS'
-                                  ? Colors.textYellow
-                                  : exercise.instruction.value === 'MIN'
-                                  ? Colors.textColorRXC
-                                  : exercise.instruction.value === 'ADP'
-                                  ? Colors.orange
-                                  : Colors.inputColorText
-                              }
-                            />
-                          </View>
-                        </TouchableOpacity>
-                      </View>
-                    );
-                  }
-                })}
-            </View>
-          </Card>
-          <Space marginVertical={20} />
-          <Card>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-around',
-              }}>
+              <Space marginVertical={8} />
               <View
                 style={{
-                  width: 45,
-                  height: 25,
-                  borderRadius: 8,
+                  flexDirection: 'row',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: Colors.lightRed,
+                  justifyContent: 'space-around',
                 }}>
-                <Text
-                  title="BST"
-                  weight={600}
-                  color={Colors.redDark}
-                  size={14}
-                />
+                <View
+                  style={{
+                    width: 45,
+                    height: 25,
+                    borderRadius: 8,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: Colors.grayLight,
+                  }}>
+                  <Text
+                    title="DRP"
+                    weight={600}
+                    color={Colors.textGrayMedium}
+                    size={14}
+                  />
+                </View>
+                <View style={{width: '80%'}}>
+                  <Text
+                    title="Realizar o número de repetições no seu limite de esforço e ir diminuindo o peso"
+                    weight={500}
+                    color={Colors.inputColorText}
+                    size={14}
+                  />
+                </View>
               </View>
-              <View style={{width: '80%'}}>
-                <Text
-                  title="Realização de dois exercícios sem descanso entre eles para o mesmo músculo"
-                  weight={500}
-                  color={Colors.inputColorText}
-                  size={14}
-                />
-              </View>
-            </View>
-            <Space marginVertical={8} />
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-around',
-              }}>
-              <View
-                style={{
-                  width: 45,
-                  height: 25,
-                  borderRadius: 8,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: Colors.greenLight,
-                }}>
-                <Text title="PIR" weight={600} color={Colors.green} size={14} />
-              </View>
-              <View style={{width: '80%'}}>
-                <Text
-                  title="Realizar exercício com o peso mais baixo e ir aumentando a cada série, reduzindo o número de repetições. (Pode ser feito o contrário)"
-                  weight={500}
-                  color={Colors.inputColorText}
-                  size={14}
-                />
-              </View>
-            </View>
-            <Space marginVertical={8} />
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-around',
-              }}>
-              <View
-                style={{
-                  width: 45,
-                  height: 25,
-                  borderRadius: 8,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: Colors.grayLight,
-                }}>
-                <Text
-                  title="DRP"
-                  weight={600}
-                  color={Colors.textGrayMedium}
-                  size={14}
-                />
-              </View>
-              <View style={{width: '80%'}}>
-                <Text
-                  title="Realizar o número de repetições no seu limite de esforço e ir diminuindo o peso"
-                  weight={500}
-                  color={Colors.inputColorText}
-                  size={14}
-                />
-              </View>
-            </View>
-            <Space marginVertical={8} />
+              <Space marginVertical={8} />
 
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-around',
-              }}>
               <View
                 style={{
-                  backgroundColor: Colors.backYellowLight,
-                  width: 45,
-                  height: 25,
+                  flexDirection: 'row',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: 8,
+                  justifyContent: 'space-around',
                 }}>
-                <Text
-                  title="OBS"
-                  weight={600}
-                  color={Colors.textYellow}
-                  size={14}
-                />
+                <View
+                  style={{
+                    backgroundColor: Colors.backYellowLight,
+                    width: 45,
+                    height: 25,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: 8,
+                  }}>
+                  <Text
+                    title="OBS"
+                    weight={600}
+                    color={Colors.textYellow}
+                    size={14}
+                  />
+                </View>
+                <View style={{width: '80%'}}>
+                  <Text
+                    title="Exercício possui uma observação"
+                    weight={500}
+                    color={Colors.inputColorText}
+                    size={14}
+                  />
+                </View>
               </View>
-              <View style={{width: '80%'}}>
-                <Text
-                  title="Exercício possui uma observação"
-                  weight={500}
-                  color={Colors.inputColorText}
-                  size={14}
-                />
-              </View>
-            </View>
-            <Space marginVertical={8} />
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-around',
-              }}>
+              <Space marginVertical={8} />
               <View
                 style={{
-                  width: 45,
-                  height: 25,
-                  borderRadius: 8,
+                  flexDirection: 'row',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: Colors.colorBackRgba,
+                  justifyContent: 'space-around',
                 }}>
-                <Text
-                  title="MIN"
-                  weight={600}
-                  color={Colors.textColorRXC}
-                  size={14}
-                />
+                <View
+                  style={{
+                    width: 45,
+                    height: 25,
+                    borderRadius: 8,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: Colors.colorBackRgba,
+                  }}>
+                  <Text
+                    title="MIN"
+                    weight={600}
+                    color={Colors.textColorRXC}
+                    size={14}
+                  />
+                </View>
+                <View style={{width: '80%'}}>
+                  <Text
+                    title="A contagem do descanco é por minuto"
+                    weight={500}
+                    color={Colors.inputColorText}
+                    size={14}
+                  />
+                </View>
               </View>
-              <View style={{width: '80%'}}>
-                <Text
-                  title="A contagem do descanco é por minuto"
-                  weight={500}
-                  color={Colors.inputColorText}
-                  size={14}
-                />
-              </View>
-            </View>
-            <Space marginVertical={8} />
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-around',
-              }}>
+              <Space marginVertical={8} />
               <View
                 style={{
-                  width: 45,
-                  height: 25,
-                  borderRadius: 8,
+                  flexDirection: 'row',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: Colors.lightOrange,
+                  justifyContent: 'space-around',
                 }}>
-                <Text
-                  title="ADP"
-                  weight={600}
-                  color={Colors.orange}
-                  size={14}
-                />
+                <View
+                  style={{
+                    width: 45,
+                    height: 25,
+                    borderRadius: 8,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: Colors.lightOrange,
+                  }}>
+                  <Text
+                    title="ADP"
+                    weight={600}
+                    color={Colors.orange}
+                    size={14}
+                  />
+                </View>
+                <View style={{width: '80%'}}>
+                  <Text
+                    title="O exercício pode adaptar o peso de acordo com seu ritmo"
+                    weight={500}
+                    color={Colors.inputColorText}
+                    size={14}
+                  />
+                </View>
               </View>
-              <View style={{width: '80%'}}>
-                <Text
-                  title="O exercício pode adaptar o peso de acordo com seu ritmo"
-                  weight={500}
-                  color={Colors.inputColorText}
-                  size={14}
-                />
-              </View>
-            </View>
-          </Card>
-          <Space marginVertical={16} />
-        </>
-      )}
-      {!loading && !trainning && (
-        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-          <ExerciseIcon width="120px" height="120px" />
-          <Space marginVertical={4} />
-          <Text
-            title="Ops! Você não tem um treino"
-            size={15}
-            weight={500}
-            color={Colors.grayMediumLight}
-            center
-          />
-        </View>
-      )}
+            </Card>
+            <Space marginVertical={16} />
+          </>
+        )}
+        {!loading && !trainning && (
+          <View
+            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            <ExerciseIcon width="120px" height="120px" />
+            <Space marginVertical={4} />
+            <Text
+              title="Ops! Você não tem um treino"
+              size={15}
+              weight={500}
+              color={Colors.grayMediumLight}
+              center
+            />
+          </View>
+        )}
+      </TrainningStyle>
       {!!user && user.plan === 'basic' ? (
-        <>
-          <BannerAd size={BannerAdSize.FULL_BANNER} unitId={TestIds.BANNER} />
-          <Space marginVertical={4} />
-        </>
+        <BannerAd size={BannerAdSize.FULL_BANNER} unitId={TestIds.BANNER} />
       ) : !purchase ? (
-        <>
-          <BannerAd size={BannerAdSize.FULL_BANNER} unitId={TestIds.BANNER} />
-          <Space marginVertical={4} />
-        </>
+        <BannerAd size={BannerAdSize.FULL_BANNER} unitId={TestIds.BANNER} />
       ) : null}
-    </TrainningStyle>
+    </>
   );
 };
 

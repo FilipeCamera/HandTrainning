@@ -1,9 +1,6 @@
 import {firestore} from 'firebase';
-import {useSelector} from 'react-redux';
 
 const useVerification = () => {
-  const auth = useSelector((state: any) => state.auth.user);
-
   const verifyUserAssociate = ({uid, onComplete, onFail}: any) => {
     firestore()
       .collection('users')
