@@ -759,9 +759,15 @@ const Trainning = ({navigation}: any) => {
         )}
       </TrainningStyle>
       {!!user && user.plan === 'basic' ? (
-        <BannerAd size={BannerAdSize.FULL_BANNER} unitId={TestIds.BANNER} />
+        <BannerAd
+          size={BannerAdSize.FULL_BANNER}
+          unitId="ca-app-pub-4288571417280592/8570033270"
+        />
       ) : !purchase ? (
-        <BannerAd size={BannerAdSize.FULL_BANNER} unitId={TestIds.BANNER} />
+        <BannerAd
+          size={BannerAdSize.FULL_BANNER}
+          unitId="ca-app-pub-4288571417280592/8570033270"
+        />
       ) : null}
     </>
   );

@@ -6,9 +6,13 @@ const useGetWarnings = () => {
     firestore()
       .collection('warnings')
       .where('from', '==', uid)
+      .where('visualized', '==', false)
       .get()
       .then(querySnapshot => {
-        const list = querySnapshot.docs.map(doc => doc.data());
+        const list = querySnapshot.docs.map(doc => {
+          return {id: doc.id, ...doc.data()};
+        });
+
         const warnings = list.filter(warnings => {
           if (
             moment.unix(warnings.createdAt.seconds).isSame(Date.now(), 'day')

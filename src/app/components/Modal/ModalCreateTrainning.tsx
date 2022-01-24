@@ -17,7 +17,6 @@ import {showMessage} from 'react-native-flash-message';
 import {firestore} from 'firebase';
 
 import SucessIcon from 'assets/svg/sucessIcon.svg';
-import {useSelector} from 'react-redux';
 import {useGetRequests, useGetTrainning} from 'hooks';
 
 interface ModalProps {
@@ -106,6 +105,13 @@ const ModalCreateTrainning = ({
                 },
                 onFail: err => {},
               });
+              firestore().collection('warnings').doc().set({
+                title: 'Treino Criado',
+                desc: 'O seu novo treino já tá disponível.',
+                from: commonId,
+                visualized: false,
+                createdAt: firestore.FieldValue.serverTimestamp(),
+              });
               setLoading(false);
               showMessage({
                 type: 'success',
@@ -130,6 +136,13 @@ const ModalCreateTrainning = ({
                   }
                 },
                 onFail: err => console.log(err),
+              });
+              firestore().collection('warnings').doc().set({
+                title: 'Treino Criado',
+                desc: 'O seu novo treino já tá disponível.',
+                from: commonId,
+                visualized: false,
+                createdAt: firestore.FieldValue.serverTimestamp(),
               });
               setLoading(false);
               showMessage({

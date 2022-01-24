@@ -8,6 +8,7 @@ import Colors from '@styles';
 import {useSelector} from 'react-redux';
 import {setVisualize} from 'functions';
 import {useGetWarnings} from 'hooks';
+import {firestore} from 'firebase';
 
 const Warnings = ({navigation}: any) => {
   const user = useSelector((state: any) => state.auth.user);
@@ -24,6 +25,12 @@ const Warnings = ({navigation}: any) => {
       uid: user.uid,
       onComplete: (warnings: any[]) => {
         if (warnings && warnings.length !== 0) {
+          warnings.forEach(warning => {
+            firestore()
+              .collection('warnings')
+              .doc(warning.id)
+              .update({visualized: true});
+          });
           setWarnings(warnings);
         }
       },

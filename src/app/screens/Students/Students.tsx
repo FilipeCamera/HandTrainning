@@ -110,7 +110,9 @@ const Students = ({navigation}: any) => {
   };
 
   useEffect(() => {
-    setMode('');
+    if (state === 'Criar treino') {
+      setMode('');
+    }
     getUserCommonsTrainnerId({
       uid: user.uid,
       onComplete: (common: any) => {
@@ -216,21 +218,12 @@ const Students = ({navigation}: any) => {
               }}>
               <Button
                 background={Colors.red}
-                title="Criar primeiro treino"
+                title="Convidar primeiro aluno"
                 size={14}
                 weight={500}
                 color={Colors.textColorWhite}
                 onPress={() => {
-                  if (!!commons && commons.length !== 0) {
-                    setState('Criar treino');
-                  } else {
-                    showMessage({
-                      type: 'danger',
-                      message: 'Aviso',
-                      description:
-                        'Você precisa ter um aluno para criar um treino.',
-                    });
-                  }
+                  navigation.navigate('Invites');
                 }}
               />
             </View>
@@ -446,9 +439,15 @@ const Students = ({navigation}: any) => {
         )}
       </StudentStyle>
       {!!user && user.plan === 'basic' ? (
-        <BannerAd size={BannerAdSize.FULL_BANNER} unitId={TestIds.BANNER} />
+        <BannerAd
+          size={BannerAdSize.FULL_BANNER}
+          unitId="ca-app-pub-4288571417280592/8570033270"
+        />
       ) : !purchase ? (
-        <BannerAd size={BannerAdSize.FULL_BANNER} unitId={TestIds.BANNER} />
+        <BannerAd
+          size={BannerAdSize.FULL_BANNER}
+          unitId="ca-app-pub-4288571417280592/8570033270"
+        />
       ) : null}
     </>
   );

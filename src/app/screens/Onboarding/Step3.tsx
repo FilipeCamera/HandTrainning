@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {Background} from './styles';
 
 import Runner from 'assets/svg/Runner.svg';

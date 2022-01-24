@@ -136,8 +136,8 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         missingDimensionStrategy 'store', 'play'
         multiDexEnabled true
-        versionCode 5
-        versionName "1.0.2-beta"
+        versionCode 6
+        versionName "1.0.3"
     }
     splits {
         abi {

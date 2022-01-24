@@ -132,6 +132,7 @@ const InviteCommon = ({auth, navigation}: any) => {
                     title: 'Convite aceito',
                     desc: `${userName} aceitou o seu convite.`,
                     from: trainner.uid,
+                    visualized: false,
                     createdAt: firestore.FieldValue.serverTimestamp(),
                   });
                 setLoading(true);

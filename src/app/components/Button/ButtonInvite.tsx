@@ -60,6 +60,7 @@ const ButtonInvite = ({
                   title: 'Você recebeu um convite',
                   desc: `${name} enviou um convite`,
                   from: uid,
+                  visualized: false,
                   createdAt: firestore.FieldValue.serverTimestamp(),
                 });
               setSend(true);

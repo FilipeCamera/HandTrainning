@@ -7,7 +7,7 @@ import PlayIcon from 'assets/svg/PlayIcon.svg';
 import LineGray from 'assets/svg/LineGran.svg';
 import {Dimensions, TouchableOpacity, View} from 'react-native';
 import {Button, Space, Text} from 'components';
-import {Image} from 'react-native';
+import {Image, Share} from 'react-native';
 import {Logout} from 'functions';
 import Colors from '@styles';
 
@@ -29,6 +29,30 @@ const ProfileTrainner = ({user, navigation}: any) => {
   useEffect(() => {
     loadPurchase();
   }, [purchase]);
+
+  const onShare = async () => {
+    try {
+      const result = await Share.share(
+        {
+          message:
+            'Tenha o seu treino no seu celular, baixe o nosso App!! https://play.google.com/store/apps/details?id=com.handtrainning.handtrainning',
+        },
+        {dialogTitle: 'Baixar o aplicativo HandTrainning'},
+      );
+
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      return;
+    }
+  };
 
   if (state === 'edit') {
     return <ProfileEdit user={user} setState={setState} />;
@@ -103,7 +127,7 @@ const ProfileTrainner = ({user, navigation}: any) => {
               alignItems: 'center',
               justifyContent: 'space-between',
             }}
-            onPress={() => {}}>
+            onPress={onShare}>
             <Text
               title="Convidar amigos"
               size={16}
@@ -138,9 +162,15 @@ const ProfileTrainner = ({user, navigation}: any) => {
         </View>
       </ProfileContainer>
       {!!user && user.plan === 'basic' ? (
-        <BannerAd size={BannerAdSize.FULL_BANNER} unitId={TestIds.BANNER} />
+        <BannerAd
+          size={BannerAdSize.FULL_BANNER}
+          unitId="ca-app-pub-4288571417280592/8570033270"
+        />
       ) : !purchase ? (
-        <BannerAd size={BannerAdSize.FULL_BANNER} unitId={TestIds.BANNER} />
+        <BannerAd
+          size={BannerAdSize.FULL_BANNER}
+          unitId="ca-app-pub-4288571417280592/8570033270"
+        />
       ) : null}
     </>
   );

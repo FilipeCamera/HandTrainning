@@ -10,7 +10,10 @@ const useVerification = () => {
         const user = querySnapshot.docs.map(users => users.data());
         if (user[0].type === 'trainner') {
           if (!!user[0].commons && user[0].commons !== 0) {
-            if (user[0].plan === 'basic' && user[0].commons.length >= 20) {
+            if (
+              user[0].plan === 'basic' &&
+              user[0].commons.length >= user[0].limitTrainning
+            ) {
               onComplete('Usuário já possui o máximo de alunos', true);
             } else {
               onComplete('', false);

@@ -12,10 +12,13 @@ const defaultSubId = 'android.test.purchased';
 const Home = ({navigation}: any) => {
   const user = useSelector((state: any) => state.auth.user);
   const [purchase, setPurchase] = useState(false);
-  const {adLoaded, show} = useInterstitialAd(TestIds.INTERSTITIAL, {
-    loadOnDismissed: false,
-    requestOptions: {requestNonPersonalizedAdsOnly: true},
-  });
+  const {adLoaded, show} = useInterstitialAd(
+    'ca-app-pub-4288571417280592/6716528578',
+    {
+      loadOnDismissed: false,
+      requestOptions: {requestNonPersonalizedAdsOnly: true},
+    },
+  );
   const loadPurchase = async () => {
     const res = await purchased(defaultSubId);
     setPurchase(res);

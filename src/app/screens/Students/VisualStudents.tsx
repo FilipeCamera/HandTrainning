@@ -24,6 +24,7 @@ import VerticalLine from 'assets/svg/verticalLine.svg';
 
 import {
   ActivityIndicator,
+  BackHandler,
   ScrollView,
   TouchableOpacity,
   View,
@@ -65,10 +66,25 @@ const VisualStudents = ({
   const [desc, setDesc] = useState('');
   const [categories, setCategories] = useState<any[]>([]);
   const [selectedExercise, setSelectedExercise] = useState<any>();
+
   const handleSelect = (index, value) => {
     setSelected(index);
     setSelectedCategory(value);
   };
+
+  const handleBack = () => {
+    setMode('');
+    setButtonTitle('Criar treino');
+    setState('');
+    return true;
+  };
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      handleBack,
+    );
+    return () => backHandler.remove();
+  }, []);
 
   useEffect(() => {
     getTrainning({
@@ -130,6 +146,9 @@ const VisualStudents = ({
               .doc(trainningId)
               .update(trainning)
               .then(res => {
+                setMode('');
+                setButtonTitle('Criar treino');
+                setState('');
                 showMessage({
                   type: 'success',
                   message: 'Treino alterado com sucesso!',
@@ -207,16 +226,6 @@ const VisualStudents = ({
       {!!loading && (
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
           <ActivityIndicator size="large" color={Colors.red} />
-        </View>
-      )}
-      {!loading && !trainning && (
-        <View>
-          <Text
-            title="Aluno ainda não tem um treino"
-            size={15}
-            weight={500}
-            color={Colors.gray}
-          />
         </View>
       )}
       {!loading && !!trainning && (
@@ -479,6 +488,7 @@ const VisualStudents = ({
                           alignItems: 'center',
                           justifyContent: 'center',
                           marginBottom: 8,
+                          paddingVertical: mode === 'Editar' ? 0 : 8,
                         }}>
                         <TouchableOpacity
                           style={{flex: 1}}
@@ -496,6 +506,7 @@ const VisualStudents = ({
                         <View
                           style={{
                             width: 35,
+                            maxHeight: 50,
                             alignItems: 'center',
                             justifyContent: 'center',
                             backgroundColor:
@@ -521,6 +532,8 @@ const VisualStudents = ({
                         <View
                           style={{
                             width: 35,
+
+                            maxHeight: 50,
                             alignItems: 'center',
                             justifyContent: 'center',
                             backgroundColor:
@@ -546,6 +559,8 @@ const VisualStudents = ({
                         <View
                           style={{
                             width: 35,
+
+                            maxHeight: 50,
                             alignItems: 'center',
                             justifyContent: 'center',
                             backgroundColor:
@@ -571,6 +586,8 @@ const VisualStudents = ({
                         <View
                           style={{
                             width: 35,
+
+                            maxHeight: 50,
                             alignItems: 'center',
                             justifyContent: 'center',
                             backgroundColor:
@@ -603,6 +620,8 @@ const VisualStudents = ({
                           }
                           style={{
                             width: 35,
+
+                            maxHeight: 50,
                             alignItems: 'center',
                             justifyContent: 'center',
                             backgroundColor:

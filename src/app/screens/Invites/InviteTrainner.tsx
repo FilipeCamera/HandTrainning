@@ -128,6 +128,7 @@ const InviteTrainner = ({auth, navigation}: any) => {
                           title: 'Convite aceito',
                           desc: `${userName} aceitou o seu convite.`,
                           from: commonId,
+                          visualized: false,
                           createdAt: firestore.FieldValue.serverTimestamp(),
                         });
                       setUsers(users.filter(user => user.uid !== commonId));
